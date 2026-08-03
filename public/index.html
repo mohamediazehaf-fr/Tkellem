@@ -297,31 +297,76 @@ Fais avancer naturellement vers l'étape suivante après 1-2 échanges sur une �
   {
     id:'souk', icon:'🧵', name:'Au souk', role:'Marchand de tapis',
     desc:"Marchander un tapis ou un vêtement",
-    persona:`Tu joues un marchand de tapis et de vêtements dans un souk marocain. Tu es un vendeur habile qui vante sa marchandise et négocie les prix avec insistance mais bonne humeur. Encourage le marchandage. Registre commerçant, expressif, un peu théâtral.`,
+    persona:`Tu joues un marchand de tapis et de vêtements dans un souk marocain, vendeur habile et un peu théâtral, qui vante sa marchandise avec passion. Registre commerçant, expressif, bonne humeur.
+
+Arc de la conversation, à faire progresser naturellement :
+1. Accueil enthousiaste, tu présentes un article (tapis "zerbiya", djellaba, babouches "belgha"...) en vantant sa qualité et son origine
+2. Le client demande le prix ("bcheHal") — tu annonces un prix volontairement élevé (c'est l'usage au souk)
+3. Négociation : le client propose moins, tu résistes en argumentant ("qualité", "fait main"), puis tu cèdes progressivement vers un compromis
+4. Vous tombez d'accord sur un prix final, tu peux proposer un thé à la menthe ("atay") pour sceller l'accord
+5. Paiement et salutations chaleureuses, tu invites à revenir
+
+Fais avancer l'étape après 1-2 échanges, sans t'éterniser sur la même étape.`,
     opening:{ar:"مرحبا بيك! شوف هاد الزربية، بغالي بزاف، صنعة اليد!",latin:"Marhba bik! Chouf had zerbiya, bghalya bezzaf, sna3a lyed!",fr:"Bienvenue ! Regarde ce tapis, il me tient à cœur, fait main !"}
   },
   {
     id:'mairie', icon:'🏛️', name:'À la mairie', role:'Agent d\'état civil',
     desc:"Demander un document officiel",
-    persona:`Tu joues un agent d'état civil dans une mairie marocaine (moqata3a). Tu es poli, un peu formel, tu expliques les démarches administratives (acte de naissance, carte d'identité, etc.) et demandes les documents nécessaires. Registre formel mais courtois.`,
+    persona:`Tu joues un agent d'état civil dans une mairie marocaine (moqata3a). Registre formel mais courtois, poli et un peu procédural.
+
+Arc de la conversation :
+1. Accueil et demande du motif de la visite ("achno khedma bghiti?")
+2. Le client précise le document souhaité (acte de naissance "3aqd wilada", carte d'identité "carte nationale", extrait...)
+3. Tu demandes les pièces justificatives nécessaires (ancienne CIN, livret de famille, photo...) et vérifies qu'il les a
+4. Tu indiques le délai de traitement et où/quand récupérer le document, éventuellement un petit frais à payer
+5. Salutations de fin formelles et courtoises
+
+Fais avancer l'étape après 1-2 échanges. Reste digne et un peu bureaucratique, mais jamais désagréable.`,
     opening:{ar:"صباح الخير، مرحبا بيك. أشنو خدمة بغيتي؟",latin:"Sbah lkhir, marhba bik. Achno khedma bghiti?",fr:"Bonjour, bienvenue. Quel service désirez-vous ?"}
   },
   {
     id:'taxi', icon:'🚕', name:'Dans un taxi', role:'Chauffeur de taxi',
     desc:"Donner une destination, discuter du prix",
-    persona:`Tu joues un chauffeur de taxi marocain sympathique. Tu demandes la destination, discutes un peu de la circulation, du prix de la course, et fais parfois la conversation sur la ville ou la météo. Registre familier, détendu.`,
+    persona:`Tu joues un chauffeur de taxi marocain sympathique et bavard. Registre familier, détendu.
+
+Arc de la conversation :
+1. Accueil, tu demandes la destination ("fin ghadi?")
+2. Petite discussion pendant le trajet (circulation, quartier, météo, ou une question amicale sur le client)
+3. Arrivée à destination, tu annonces le prix de la course
+4. Le client peut négocier légèrement le prix (fréquent au Maroc pour les petits taxis sans compteur) — tu discutes un peu puis acceptes un compromis raisonnable
+5. Paiement et salutations de départ chaleureuses
+
+Fais avancer l'étape après 1-2 échanges.`,
     opening:{ar:"مرحبا، فين غادي؟",latin:"Marhba, fin ghadi?",fr:"Bonjour, où allez-vous ?"}
   },
   {
     id:'police', icon:'👮', name:'Contrôle policier', role:'Agent de police',
     desc:"Contrôle de papiers sur la route",
-    persona:`Tu joues un policier marocain lors d'un contrôle routier de routine. Tu es poli mais ferme, tu demandes les papiers (carte grise, permis), poses quelques questions simples sur le trajet. Registre respectueux, un peu formel.`,
+    persona:`Tu joues un policier marocain lors d'un contrôle routier de routine. Registre respectueux, ferme mais poli, un peu formel.
+
+Arc de la conversation :
+1. Salutation et demande des papiers du véhicule ("lwraq dyal ssiyara") et du permis de conduire
+2. Tu poses une ou deux questions simples (destination, provenance, ceinture de sécurité...)
+3. Tu vérifies les documents (silence bref simulé dans ta réponse, "un instant"), puis commentes — soit tout est en ordre, soit une remarque mineure (ex: feu arrière, vitesse)
+4. Conclusion : tu laisses repartir le client avec un avertissement amical ou en confirmant que tout va bien
+5. Salutations de fin respectueuses ("bslama", "treq salama" = bonne route)
+
+Fais avancer l'étape après 1-2 échanges. Reste toujours courtois, jamais agressif.`,
     opening:{ar:"مساء الخير، الوراق ديال السيارة من فضلك.",latin:"Msa lkhir, lwraq dyal ssiyara min fadlik.",fr:"Bonsoir, les papiers de la voiture s'il vous plaît."}
   },
   {
     id:'famille', icon:'👵', name:'Retrouvailles', role:'Un membre de la famille',
     desc:"Retrouver un proche après longtemps",
-    persona:`Tu joues un membre de la famille (une tante ou un oncle) que l'apprenant n'a pas vu depuis longtemps. Tu es chaleureux, ému, tu poses beaucoup de questions sur sa vie, sa santé, sa famille, tu proposes de manger. Registre affectueux, familier.`,
+    persona:`Tu joues un membre de la famille (tante ou oncle) que l'apprenant n'a pas vu depuis longtemps. Registre affectueux, chaleureux, un peu ému.
+
+Arc de la conversation :
+1. Accueil très chaleureux et ému, tu exprimes que ça faisait longtemps ("chhal had lwaqt ma tchafina")
+2. Tu poses des questions sur sa santé, son travail, sa vie en général
+3. Tu demandes des nouvelles du reste de la famille (parents, frères et sœurs, enfants s'il en a)
+4. Tu proposes de manger ou de boire un thé ensemble, partages une anecdote ou un souvenir familial
+5. Salutations chaleureuses de fin, tu insistes pour qu'il revienne vite
+
+Fais avancer l'étape après 1-2 échanges, dans un ton toujours affectueux.`,
     opening:{ar:"واه شحال هاد الوقت ما تشافينا! كيداير راسك؟",latin:"Waah chhal had lwaqt ma tchafina! Kidayer rassek?",fr:"Waouh, ça fait si longtemps qu'on ne s'est pas vus ! Comment vas-tu ?"}
   }
 ];
@@ -515,52 +560,93 @@ function removeThinking(){
 }
 
 // ---------------------------------------------------------------
-// RECONNAISSANCE VOCALE
+// ENREGISTREMENT VOCAL (MediaRecorder + ElevenLabs Speech-to-Text)
 // ---------------------------------------------------------------
-function setupSpeechRecognition(){
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let mediaRecorder = null;
+let audioChunks = [];
+let recordTimeout = null;
+
+async function setupSpeechRecognition(){
   const micWrap = document.getElementById('mic-wrap');
   const micBtn = document.getElementById('mic-btn');
   const status = document.getElementById('status-text');
   const note = document.getElementById('compat-note');
 
-  if(!SR){
+  if(!navigator.mediaDevices || !window.MediaRecorder){
     micBtn.disabled = true;
-    note.textContent = "Ton navigateur ne supporte pas la reconnaissance vocale (fréquent sur iOS Safari). Utilise le champ texte ci-dessous pour tester la conversation.";
+    note.textContent = "L'enregistrement audio n'est pas supporté par ce navigateur. Utilise le champ texte ci-dessous.";
     status.textContent = "Micro indisponible ici — écris ta réponse";
     return;
   }
   note.textContent = "";
-  recognition = new SR();
-  recognition.lang = 'ar-MA';
-  recognition.interimResults = false;
-  recognition.continuous = false;
 
-  recognition.onstart = ()=>{
-    micWrap.classList.add('listening');
-    status.textContent = "Écoute... parle maintenant";
-  };
-  recognition.onerror = (e)=>{
-    micWrap.classList.remove('listening');
-    status.textContent = e.error === 'not-allowed'
-      ? "Micro refusé — autorise l'accès au micro dans ton navigateur"
-      : "Je n'ai pas bien entendu, réessaie";
-  };
-  recognition.onend = ()=>{
-    micWrap.classList.remove('listening');
-  };
-  recognition.onresult = (e)=>{
-    const transcript = e.results[0][0].transcript;
-    handleUserInput(transcript);
-  };
-
-  micBtn.onclick = ()=>{
+  micBtn.onclick = async ()=>{
     if(micWrap.classList.contains('listening')){
-      recognition.stop();
-    } else {
-      try{ recognition.start(); }catch(e){}
+      stopRecording();
+      return;
+    }
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioChunks = [];
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : '';
+      mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = (e)=> audioChunks.push(e.data);
+      mediaRecorder.onstop = ()=>{
+        stream.getTracks().forEach(t => t.stop());
+        clearTimeout(recordTimeout);
+        micWrap.classList.remove('listening');
+        sendRecordedAudio();
+      };
+      mediaRecorder.start();
+      micWrap.classList.add('listening');
+      status.textContent = "Écoute... appuie à nouveau pour arrêter";
+      // sécurité : arrêt automatique après 20s pour éviter un enregistrement infini
+      recordTimeout = setTimeout(()=>{ if(mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop(); }, 20000);
+    }catch(err){
+      console.error('Erreur micro:', err);
+      status.textContent = err.name === 'NotAllowedError'
+        ? "Micro refusé — autorise l'accès au micro dans ton navigateur"
+        : "Impossible d'accéder au micro sur cet appareil";
     }
   };
+}
+
+function stopRecording(){
+  if(mediaRecorder && mediaRecorder.state === 'recording'){
+    mediaRecorder.stop();
+  }
+}
+
+async function sendRecordedAudio(){
+  const status = document.getElementById('status-text');
+  status.textContent = "Transcription en cours...";
+  try{
+    const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+    const base64 = await blobToBase64(blob);
+    const res = await fetch('/api/transcribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ audio_base64: base64, mime_type: blob.type })
+    });
+    const data = await res.json();
+    if(!res.ok || !data.text){
+      throw new Error(data.error?.message || data.error || 'Aucun texte reconnu, réessaie en parlant un peu plus fort/lentement.');
+    }
+    status.textContent = "Appuie sur le micro pour parler";
+    handleUserInput(data.text.trim());
+  }catch(err){
+    console.error('Erreur transcription:', err);
+    status.textContent = "⚠ " + err.message;
+  }
+}
+
+function blobToBase64(blob){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onloadend = ()=> resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
 }
 
 // fallback texte, toujours actif
