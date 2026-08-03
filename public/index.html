@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Tkellem — Apprends le Darija</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --zellige:#164B54;
+    --zellige-light:#2C7A8C;
+    --saffron:#E3A23B;
+    --henna:#A6383B;
+    --cream:#F3ECD9;
+    --ink:#242019;
+    --palm:#5B7A5A;
+    --card-bg:#FFFDF8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'IBM Plex Sans Arabic','Inter',sans-serif;
+    min-height:100vh;
+  }
+  .app{
+    max-width:520px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    background:
+      radial-gradient(circle at 10% 0%, rgba(227,162,59,0.12), transparent 40%),
+      radial-gradient(circle at 90% 100%, rgba(22,75,84,0.10), transparent 45%),
+      var(--cream);
+  }
+  header.top{
+    padding:22px 20px 14px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    border-bottom:1px solid rgba(22,75,84,0.12);
+  }
+  .brand-mark{
+    width:38px;height:38px;border-radius:10px;
+    background:var(--zellige);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--cream);font-family:'Cairo',sans-serif;font-weight:800;font-size:18px;
+    flex-shrink:0;
+  }
+  header.top h1{
+    font-family:'Cairo',sans-serif;font-weight:800;font-size:20px;margin:0;letter-spacing:.2px;
+  }
+  header.top .sub{font-size:12.5px;color:var(--zellige-light);margin-top:1px;}
+
+  /* ---------- SCREEN: SELECTOR ---------- */
+  #screen-select{padding:20px;flex:1;}
+  #screen-select .intro{font-size:14.5px;color:#4c463c;line-height:1.5;margin:6px 0 20px;}
+  .scenario-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .scenario-card{
+    background:var(--card-bg);
+    border:1px solid rgba(22,75,84,0.14);
+    border-radius:16px;
+    padding:16px 14px;
+    cursor:pointer;
+    text-align:left;
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .scenario-card:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(22,75,84,0.12);border-color:var(--saffron);}
+  .scenario-card .icon{font-size:26px;}
+  .scenario-card .name{font-family:'Cairo',sans-serif;font-weight:700;font-size:15px;}
+  .scenario-card .desc{font-size:12px;color:#6b6357;line-height:1.35;}
+
+  /* ---------- SCREEN: CONVERSATION ---------- */
+  #screen-convo{display:none;flex:1;flex-direction:column;}
+  .convo-header{
+    padding:14px 18px;
+    display:flex;align-items:center;gap:12px;
+    background:var(--zellige);color:var(--cream);
+  }
+  .convo-header .back{
+    background:none;border:none;color:var(--cream);font-size:20px;cursor:pointer;padding:4px 8px 4px 0;
+  }
+  .convo-header .titles{flex:1;}
+  .convo-header .name{font-family:'Cairo',sans-serif;font-weight:700;font-size:15.5px;}
+  .convo-header .role{font-size:12px;opacity:.8;}
+  .convo-header .icon{font-size:24px;}
+
+  #transcript{
+    flex:1;overflow-y:auto;padding:18px 16px 10px;display:flex;flex-direction:column;gap:14px;
+  }
+  .bubble{max-width:86%;}
+  .bubble.avatar{align-self:flex-start;}
+  .bubble.user{align-self:flex-end;}
+  .bubble .card{
+    background:var(--card-bg);border-radius:14px;padding:12px 14px;
+    border:1px solid rgba(22,75,84,0.10);
+  }
+  .bubble.user .card{background:var(--zellige);color:var(--cream);border-color:var(--zellige);}
+  .bubble .ar{font-size:17px;direction:rtl;font-weight:600;line-height:1.5;}
+  .bubble .latin{font-size:12.5px;font-style:italic;opacity:.75;margin-top:4px;}
+  .bubble .fr{font-size:12px;opacity:.65;margin-top:5px;border-top:1px dashed rgba(0,0,0,0.15);padding-top:5px;}
+  .bubble.user .fr{border-top-color:rgba(255,255,255,0.25);}
+  .bubble .replay{
+    margin-top:6px;background:none;border:none;color:var(--zellige-light);font-size:11.5px;cursor:pointer;padding:0;
+  }
+  .bubble.user .replay{color:rgba(255,255,255,0.8);}
+
+  .hint-row{align-self:center;font-size:12px;color:var(--zellige-light);}
+  .thinking{align-self:flex-start;font-size:13px;color:#8a8272;padding:0 4px;}
+
+  .coach-note{
+    align-self:center;max-width:90%;
+    background:rgba(227,162,59,0.14);
+    border:1px dashed var(--saffron);
+    border-radius:12px;
+    padding:9px 13px;
+    font-size:12.5px;line-height:1.4;color:#5c4a26;
+    display:flex;gap:8px;align-items:flex-start;
+  }
+  .coach-icon{flex-shrink:0;}
+
+  .error-note{
+    align-self:center;max-width:92%;
+    background:rgba(166,56,58,0.10);
+    border:1px solid var(--henna);
+    border-radius:12px;
+    padding:10px 13px;
+    font-size:12.5px;line-height:1.4;color:var(--henna);
+    display:flex;flex-direction:column;gap:8px;align-items:flex-start;
+  }
+  .error-note .retry-btn{
+    background:var(--henna);color:#fff;border:none;border-radius:8px;
+    padding:6px 14px;font-size:12px;cursor:pointer;font-weight:600;
+  }
+
+  .control-bar{
+    padding:14px 16px 22px;
+    background:var(--card-bg);
+    border-top:1px solid rgba(22,75,84,0.12);
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+  }
+  .status-text{font-size:12.5px;color:#6b6357;min-height:16px;}
+
+  .mic-wrap{position:relative;width:78px;height:78px;}
+  .mic-ring{
+    position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(from 0deg, var(--saffron), var(--henna), var(--zellige-light), var(--saffron));
+    opacity:0;transition:opacity .2s ease;
+    animation:spin 3s linear infinite;
+  }
+  .mic-wrap.listening .mic-ring{opacity:1;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .mic-btn{
+    position:absolute;inset:5px;border-radius:50%;
+    background:var(--henna);color:#fff;border:none;
+    font-size:26px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .mic-btn:active{transform:scale(.94);}
+  .mic-btn:disabled{background:#b6ada0;cursor:not-allowed;}
+  .mic-wrap.listening .mic-btn{background:var(--zellige);}
+
+  .text-fallback{
+    display:flex;gap:8px;width:100%;margin-top:2px;
+  }
+  .text-fallback input{
+    flex:1;padding:10px 12px;border-radius:10px;border:1px solid rgba(22,75,84,0.2);
+    font-size:14px;font-family:inherit;
+  }
+  .text-fallback button{
+    background:var(--zellige);color:var(--cream);border:none;border-radius:10px;
+    padding:0 16px;font-weight:600;cursor:pointer;font-size:14px;
+  }
+  .hint-btn{
+    background:none;border:1px solid var(--saffron);color:var(--henna);
+    border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer;
+  }
+  .note{font-size:11px;color:#9a9280;text-align:center;max-width:280px;}
+
+  .voice-panel{
+    background:var(--card-bg);border:1px solid rgba(22,75,84,0.14);
+    border-radius:14px;padding:12px 14px;margin-bottom:18px;
+  }
+  .voice-panel-head{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:'Cairo',sans-serif;font-weight:700;font-size:13.5px;
+  }
+  .voice-status{font-family:'Inter',sans-serif;font-weight:500;font-size:11.5px;color:var(--palm);}
+  .voice-status.connected{color:var(--zellige);}
+  .voice-status.error{color:var(--henna);font-weight:700;}
+  .voice-hint{font-size:11.5px;color:#7a7266;margin:8px 0 8px;line-height:1.4;}
+  .voice-hint a{color:var(--henna);text-decoration:none;font-weight:600;}
+  .voice-row{display:flex;gap:8px;}
+  .voice-row input{
+    flex:1;padding:8px 10px;border-radius:8px;border:1px solid rgba(22,75,84,0.2);
+    font-size:12.5px;font-family:inherit;
+  }
+  .voice-row button{
+    background:var(--zellige);color:var(--cream);border:none;border-radius:8px;
+    padding:0 14px;font-weight:600;cursor:pointer;font-size:12.5px;
+  }
+  .voice-row button:disabled{background:#b6ada0;cursor:wait;}
+  #voice-select{
+    margin-top:8px;width:100%;padding:8px 10px;border-radius:8px;
+    border:1px solid rgba(22,75,84,0.2);font-size:12.5px;font-family:inherit;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <div class="brand-mark">ت</div>
+    <div>
+      <h1>Tkellem</h1>
+      <div class="sub">Apprends le Darija en le parlant</div>
+    </div>
+  </header>
+
+  <!-- SCREEN 1 : sélection du scénario -->
+  <div id="screen-select">
+    <p class="intro">Choisis une situation. Un avatar te répond en Darija — écoute, parle, et laisse-toi guider par la conversation.</p>
+
+    <div class="voice-panel" id="voice-panel">
+      <div class="voice-panel-head">
+        <span>🔊 Voix de l'avatar</span>
+        <span class="voice-status" id="voice-status">Chargement des voix...</span>
+      </div>
+      <div class="voice-panel-body" id="voice-panel-body">
+        <select id="voice-select" style="display:none;"></select>
+      </div>
+    </div>
+
+    <div class="scenario-grid" id="scenario-grid"></div>
+  </div>
+
+  <!-- SCREEN 2 : conversation -->
+  <div id="screen-convo">
+    <div class="convo-header">
+      <button class="back" id="back-btn">←</button>
+      <div class="icon" id="convo-icon">🛍️</div>
+      <div class="titles">
+        <div class="name" id="convo-name">—</div>
+        <div class="role" id="convo-role">—</div>
+      </div>
+    </div>
+    <div id="transcript"></div>
+    <div class="control-bar">
+      <div class="status-text" id="status-text">Appuie sur le micro pour parler</div>
+      <div class="mic-wrap" id="mic-wrap">
+        <div class="mic-ring"></div>
+        <button class="mic-btn" id="mic-btn">🎙️</button>
+      </div>
+      <button class="hint-btn" id="hint-btn">💡 Une idée de réponse ?</button>
+      <div class="text-fallback">
+        <input type="text" id="text-input" placeholder="Ou écris ta réponse ici...">
+        <button id="send-btn">Envoyer</button>
+      </div>
+      <div class="note" id="compat-note"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ---------------------------------------------------------------
+// DONNÉES DES SCÉNARIOS
+// ---------------------------------------------------------------
+const SCENARIOS = [
+  {
+    id:'epicerie', icon:'🛒', name:'Chez l\'épicier', role:'Le "bqal" du quartier',
+    desc:"Acheter des produits du quotidien",
+    persona:`Tu joues le rôle d'un épicier marocain ("bqal") chaleureux et bavard dans sa petite épicerie de quartier. Registre familier et chaleureux, tu plaisantes un peu.
+
+La conversation doit suivre un arc naturel en plusieurs étapes, sans forcer le rythme mais en faisant progresser la scène si le client avance :
+1. Accueil et demande de ce que le client veut
+2. Le client cite un ou plusieurs produits du quotidien (pain "khobz", lait "hlib", œufs "beid", légumes "khodra", sucre "sokkar", thé "atay"...) — tu confirmes, proposes parfois autre chose en plus ("bghiti chi haja khra?")
+3. Tu annonces les quantités et le prix total en dirhams ("dirham")
+4. Le client paie, tu rends la monnaie si besoin, tu remercies
+5. Salutations de départ chaleureuses ("bslama", "tsbah 3la khir" selon l'heure)
+
+Fais avancer naturellement vers l'étape suivante après 1-2 échanges sur une étape donnée, sans boucler indéfiniment sur le même sujet.`,
+    opening:{ar:"أهلا بيك خويا! أشنو بغيتي اليوم؟",latin:"Ahlan bik khouya! Achno bghiti lyoum?",fr:"Bienvenue mon frère ! Qu'est-ce que tu veux aujourd'hui ?"}
+  },
+  {
+    id:'souk', icon:'🧵', name:'Au souk', role:'Marchand de tapis',
+    desc:"Marchander un tapis ou un vêtement",
+    persona:`Tu joues un marchand de tapis et de vêtements dans un souk marocain. Tu es un vendeur habile qui vante sa marchandise et négocie les prix avec insistance mais bonne humeur. Encourage le marchandage. Registre commerçant, expressif, un peu théâtral.`,
+    opening:{ar:"مرحبا بيك! شوف هاد الزربية، بغالي بزاف، صنعة اليد!",latin:"Marhba bik! Chouf had zerbiya, bghalya bezzaf, sna3a lyed!",fr:"Bienvenue ! Regarde ce tapis, il me tient à cœur, fait main !"}
+  },
+  {
+    id:'mairie', icon:'🏛️', name:'À la mairie', role:'Agent d\'état civil',
+    desc:"Demander un document officiel",
+    persona:`Tu joues un agent d'état civil dans une mairie marocaine (moqata3a). Tu es poli, un peu formel, tu expliques les démarches administratives (acte de naissance, carte d'identité, etc.) et demandes les documents nécessaires. Registre formel mais courtois.`,
+    opening:{ar:"صباح الخير، مرحبا بيك. أشنو خدمة بغيتي؟",latin:"Sbah lkhir, marhba bik. Achno khedma bghiti?",fr:"Bonjour, bienvenue. Quel service désirez-vous ?"}
+  },
+  {
+    id:'taxi', icon:'🚕', name:'Dans un taxi', role:'Chauffeur de taxi',
+    desc:"Donner une destination, discuter du prix",
+    persona:`Tu joues un chauffeur de taxi marocain sympathique. Tu demandes la destination, discutes un peu de la circulation, du prix de la course, et fais parfois la conversation sur la ville ou la météo. Registre familier, détendu.`,
+    opening:{ar:"مرحبا، فين غادي؟",latin:"Marhba, fin ghadi?",fr:"Bonjour, où allez-vous ?"}
+  },
+  {
+    id:'police', icon:'👮', name:'Contrôle policier', role:'Agent de police',
+    desc:"Contrôle de papiers sur la route",
+    persona:`Tu joues un policier marocain lors d'un contrôle routier de routine. Tu es poli mais ferme, tu demandes les papiers (carte grise, permis), poses quelques questions simples sur le trajet. Registre respectueux, un peu formel.`,
+    opening:{ar:"مساء الخير، الوراق ديال السيارة من فضلك.",latin:"Msa lkhir, lwraq dyal ssiyara min fadlik.",fr:"Bonsoir, les papiers de la voiture s'il vous plaît."}
+  },
+  {
+    id:'famille', icon:'👵', name:'Retrouvailles', role:'Un membre de la famille',
+    desc:"Retrouver un proche après longtemps",
+    persona:`Tu joues un membre de la famille (une tante ou un oncle) que l'apprenant n'a pas vu depuis longtemps. Tu es chaleureux, ému, tu poses beaucoup de questions sur sa vie, sa santé, sa famille, tu proposes de manger. Registre affectueux, familier.`,
+    opening:{ar:"واه شحال هاد الوقت ما تشافينا! كيداير راسك؟",latin:"Waah chhal had lwaqt ma tchafina! Kidayer rassek?",fr:"Waouh, ça fait si longtemps qu'on ne s'est pas vus ! Comment vas-tu ?"}
+  }
+];
+
+// ---------------------------------------------------------------
+// ÉTAT
+// ---------------------------------------------------------------
+let currentScenario = null;
+let history = []; // {role:'avatar'|'user', ar, latin, fr}
+let recognition = null;
+let arabicVoice = null;
+
+// ---------------------------------------------------------------
+// INIT VOIX
+// ---------------------------------------------------------------
+function loadArabicVoice(){
+  const voices = speechSynthesis.getVoices();
+  arabicVoice = voices.find(v => v.lang.toLowerCase().startsWith('ar-ma'))
+    || voices.find(v => v.lang.toLowerCase().startsWith('ar'))
+    || null;
+  if(!arabicVoice && voices.length){
+    // aucune voix arabe : on garde une voix par défaut pour au moins produire du son
+    fallbackAnyVoice = voices.find(v => v.lang.toLowerCase().startsWith('en')) || voices[0];
+  }
+}
+let fallbackAnyVoice = null;
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged = loadArabicVoice;
+  loadArabicVoice();
+}
+
+let elevenLabsVoiceId = null;
+
+function speakBrowserFallback(text, latinText){
+  if(!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  // une voix non-arabe ne peut pas lire l'alphabet arabe : on lui donne la version latine si dispo
+  const textToSpeak = arabicVoice ? text : (latinText || text);
+  const u = new SpeechSynthesisUtterance(textToSpeak);
+  if(arabicVoice){
+    u.voice = arabicVoice;
+    u.lang = arabicVoice.lang;
+  } else if(fallbackAnyVoice){
+    u.voice = fallbackAnyVoice;
+  }
+  u.rate = 0.85;
+  speechSynthesis.speak(u);
+}
+
+async function speak(text, latinText){
+  try{
+    if(elevenLabsVoiceId){
+      try{
+        const res = await fetch('/api/speak', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ text, voice_id: elevenLabsVoiceId })
+        });
+        if(!res.ok){
+          const errText = await res.text();
+          throw new Error(errText.slice(0,200));
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        audio.play();
+        return;
+      }catch(err){
+        console.warn('Voix serveur indisponible, repli sur voix navigateur:', err.message || err);
+        const status = document.getElementById('voice-status');
+        status.textContent = '⚠ Voix serveur indisponible — voix navigateur utilisée';
+        status.className = 'voice-status error';
+      }
+    }
+    speakBrowserFallback(text, latinText);
+  }catch(outerErr){
+    console.warn('Synthèse vocale indisponible :', outerErr);
+  }
+}
+
+// ---------------------------------------------------------------
+// CHARGEMENT DES VOIX (via le serveur, aucune clé côté client)
+// ---------------------------------------------------------------
+async function loadVoices(){
+  const status = document.getElementById('voice-status');
+  const select = document.getElementById('voice-select');
+  try{
+    const res = await fetch('/api/voices');
+    const data = await res.json();
+    if(!data.voices || !data.voices.length){
+      status.textContent = 'Voix serveur non configurée — voix du navigateur utilisée';
+      status.className = 'voice-status error';
+      return;
+    }
+    select.innerHTML = '';
+    data.voices.forEach(v=>{
+      const opt = document.createElement('option');
+      opt.value = v.voice_id;
+      opt.textContent = v.name;
+      select.appendChild(opt);
+    });
+    select.style.display = 'block';
+    select.onchange = ()=>{ elevenLabsVoiceId = select.value; };
+    elevenLabsVoiceId = select.value;
+    status.textContent = '✓ Voix ElevenLabs prête';
+    status.className = 'voice-status connected';
+  }catch(err){
+    status.textContent = 'Impossible de charger les voix — voix du navigateur utilisée';
+    status.className = 'voice-status error';
+  }
+}
+loadVoices();
+
+// ---------------------------------------------------------------
+// RENDER SÉLECTEUR
+// ---------------------------------------------------------------
+const grid = document.getElementById('scenario-grid');
+SCENARIOS.forEach(s=>{
+  const card = document.createElement('div');
+  card.className = 'scenario-card';
+  card.innerHTML = `<div class="icon">${s.icon}</div><div class="name">${s.name}</div><div class="desc">${s.desc}</div>`;
+  card.onclick = ()=> startScenario(s);
+  grid.appendChild(card);
+});
+
+// ---------------------------------------------------------------
+// NAVIGATION
+// ---------------------------------------------------------------
+function startScenario(s){
+  currentScenario = s;
+  history = [];
+  document.getElementById('screen-select').style.display = 'none';
+  document.getElementById('screen-convo').style.display = 'flex';
+  document.getElementById('convo-icon').textContent = s.icon;
+  document.getElementById('convo-name').textContent = s.name;
+  document.getElementById('convo-role').textContent = s.role;
+  document.getElementById('transcript').innerHTML = '';
+  addBubble('avatar', s.opening.ar, s.opening.latin, s.opening.fr);
+  history.push({role:'avatar', ...s.opening});
+  speak(s.opening.ar, s.opening.latin);
+  setupSpeechRecognition();
+}
+
+document.getElementById('back-btn').onclick = ()=>{
+  speechSynthesis.cancel();
+  if(recognition) try{recognition.stop();}catch(e){}
+  document.getElementById('screen-convo').style.display = 'none';
+  document.getElementById('screen-select').style.display = 'block';
+};
+
+// ---------------------------------------------------------------
+// TRANSCRIPT UI
+// ---------------------------------------------------------------
+function addBubble(role, ar, latin, fr){
+  const t = document.getElementById('transcript');
+  const b = document.createElement('div');
+  b.className = 'bubble ' + role;
+  b.innerHTML = `
+    <div class="card">
+      <div class="ar">${ar}</div>
+      <div class="latin">${latin}</div>
+      <div class="fr">${fr}</div>
+      <button class="replay">🔊 Réécouter</button>
+    </div>`;
+  b.querySelector('.replay').onclick = ()=> speak(ar, latin);
+  t.appendChild(b);
+  t.scrollTop = t.scrollHeight;
+}
+
+function addCoachNote(message){
+  const t = document.getElementById('transcript');
+  const d = document.createElement('div');
+  d.className = 'coach-note';
+  d.innerHTML = `<span class="coach-icon">📘</span><span>${message}</span>`;
+  t.appendChild(d);
+  t.scrollTop = t.scrollHeight;
+}
+
+function addThinking(){
+  const t = document.getElementById('transcript');
+  const d = document.createElement('div');
+  d.className = 'thinking';
+  d.id = 'thinking-indicator';
+  d.textContent = '💬 réflexion...';
+  t.appendChild(d);
+  t.scrollTop = t.scrollHeight;
+}
+function removeThinking(){
+  const el = document.getElementById('thinking-indicator');
+  if(el) el.remove();
+}
+
+// ---------------------------------------------------------------
+// RECONNAISSANCE VOCALE
+// ---------------------------------------------------------------
+function setupSpeechRecognition(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const micWrap = document.getElementById('mic-wrap');
+  const micBtn = document.getElementById('mic-btn');
+  const status = document.getElementById('status-text');
+  const note = document.getElementById('compat-note');
+
+  if(!SR){
+    micBtn.disabled = true;
+    note.textContent = "Ton navigateur ne supporte pas la reconnaissance vocale (fréquent sur iOS Safari). Utilise le champ texte ci-dessous pour tester la conversation.";
+    status.textContent = "Micro indisponible ici — écris ta réponse";
+    return;
+  }
+  note.textContent = "";
+  recognition = new SR();
+  recognition.lang = 'ar-MA';
+  recognition.interimResults = false;
+  recognition.continuous = false;
+
+  recognition.onstart = ()=>{
+    micWrap.classList.add('listening');
+    status.textContent = "Écoute... parle maintenant";
+  };
+  recognition.onerror = (e)=>{
+    micWrap.classList.remove('listening');
+    status.textContent = e.error === 'not-allowed'
+      ? "Micro refusé — autorise l'accès au micro dans ton navigateur"
+      : "Je n'ai pas bien entendu, réessaie";
+  };
+  recognition.onend = ()=>{
+    micWrap.classList.remove('listening');
+  };
+  recognition.onresult = (e)=>{
+    const transcript = e.results[0][0].transcript;
+    handleUserInput(transcript);
+  };
+
+  micBtn.onclick = ()=>{
+    if(micWrap.classList.contains('listening')){
+      recognition.stop();
+    } else {
+      try{ recognition.start(); }catch(e){}
+    }
+  };
+}
+
+// fallback texte, toujours actif
+document.getElementById('send-btn').onclick = ()=>{
+  const input = document.getElementById('text-input');
+  if(input.value.trim()){
+    handleUserInput(input.value.trim());
+    input.value = '';
+  }
+};
+document.getElementById('text-input').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') document.getElementById('send-btn').click();
+});
+
+// ---------------------------------------------------------------
+// APPEL API — génération de la réponse de l'avatar
+// ---------------------------------------------------------------
+function handleUserInput(userText){
+  document.getElementById('status-text').textContent = "Appuie sur le micro pour parler";
+  addBubble('user', userText, '', '');
+  history.push({role:'user', ar:userText, latin:'', fr:''});
+  addThinking();
+  callAvatarAPI();
+}
+
+async function callAvatarAPI(){
+  try{
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        system: buildSystemPrompt(),
+        messages: history.filter(h=>h.ar).map(h => ({role: h.role === 'avatar' ? 'assistant' : 'user', content: h.ar}))
+      })
+    });
+    const data = await response.json();
+    const raw = data.content.map(b => b.text || '').join('').trim();
+    console.log('Réponse brute de l\'API :', raw);
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if(!jsonMatch) throw new Error('Aucun JSON trouvé dans la réponse : ' + raw.slice(0,150));
+    const parsed = JSON.parse(jsonMatch[0]);
+
+    removeThinking();
+    if(parsed.feedback){
+      addCoachNote(parsed.feedback);
+    }
+    addBubble('avatar', parsed.darija_ar, parsed.darija_latin, parsed.french);
+    history.push({role:'avatar', ar:parsed.darija_ar, latin:parsed.darija_latin, fr:parsed.french});
+    speak(parsed.darija_ar, parsed.darija_latin);
+  }catch(err){
+    console.error('Erreur callAvatarAPI:', err);
+    removeThinking();
+    addErrorBubble(err.message);
+  }
+}
+
+function addErrorBubble(message){
+  const t = document.getElementById('transcript');
+  const d = document.createElement('div');
+  d.className = 'error-note';
+  d.innerHTML = `<span>⚠ Petit souci technique : ${message}</span><button class="retry-btn">🔄 Réessayer</button>`;
+  d.querySelector('.retry-btn').onclick = ()=>{
+    d.remove();
+    addThinking();
+    callAvatarAPI();
+  };
+  t.appendChild(d);
+  t.scrollTop = t.scrollHeight;
+}
+
+function buildSystemPrompt(){
+  return `${currentScenario.persona}
+
+Tu dois répondre UNIQUEMENT en JSON valide, sans markdown, sans backticks, sans texte avant ou après, au format exact suivant :
+{"darija_ar": "réponse en darija marocain écrite en alphabet arabe", "darija_latin": "la même réponse transcrite en alphabet latin (arabizi/darija)", "french": "traduction française naturelle de la réponse", "feedback": null}
+
+Règles pour la réponse en darija (rôle-play) :
+- Réponds en Darija marocain authentique et courant, JAMAIS en arabe standard (fusha).
+- Reste strictement dans ton personnage et le contexte de la scène.
+- Réponses courtes et naturelles (1 à 2 phrases maximum), comme dans une vraie conversation orale.
+- Termine souvent par une question ou une relance pour faire avancer la conversation.
+
+Règles pour le champ "feedback" (coach de langue, distinct du rôle-play) :
+Analyse le DERNIER message de l'apprenant (pas le tien) et remplis "feedback" ainsi :
+- Si son darija contenait une erreur de mot, de structure ou de prononciation transcrite : mets une courte phrase en français (max 20 mots) expliquant l'erreur et donnant la bonne formulation. Exemple : "On dit plutôt 'bghit lhlib' que 'ana bghi hlib' pour dire 'je veux du lait'."
+- S'il a répondu uniquement en français, en anglais, ou semble ne pas savoir quoi dire en darija : mets une phrase encourageante qui lui donne la formulation darija qu'il aurait pu utiliser. Exemple : "Pour dire ça en darija, tu peux essayer : 'bghit chi khobz'."
+- S'il semble complètement perdu ou n'a pas compris ta question précédente : mets une phrase qui reformule simplement ce que tu attendais de lui.
+- Si sa réponse en darija était correcte et adaptée : mets "feedback" à null. NE COMMENTE PAS systématiquement — seulement quand ça apporte une vraie valeur pédagogique, sinon ça devient fatigant.
+
+IMPORTANT : ta réponse doit être un objet JSON unique et valide, sans virgule finale superflue, sans guillemets non échappés à l'intérieur des chaînes.`;
+}
+
+// ---------------------------------------------------------------
+// BOUTON "UNE IDÉE DE RÉPONSE ?"
+// ---------------------------------------------------------------
+document.getElementById('hint-btn').onclick = async ()=>{
+  const status = document.getElementById('status-text');
+  status.textContent = "Génération d'une suggestion...";
+  const lastAvatarTurn = [...history].reverse().find(h => h.role === 'avatar');
+  const hintPrompt = `Le personnage vient de dire en darija : "${lastAvatarTurn.ar}" (${lastAvatarTurn.fr}).
+Propose UNE phrase simple en darija qu'un apprenant débutant pourrait répondre dans ce contexte (${currentScenario.desc}).
+Réponds UNIQUEMENT en JSON : {"darija_ar":"...","darija_latin":"...","french":"..."}`;
+
+  try{
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        messages: [{role:"user", content: hintPrompt}]
+      })
+    });
+    const data = await response.json();
+    const raw = data.content.map(b => b.text || '').join('').trim();
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+    document.getElementById('text-input').value = parsed.darija_latin;
+    status.textContent = `💡 Suggestion : ${parsed.french}`;
+  }catch(err){
+    status.textContent = "Impossible de générer une suggestion";
+  }
+};
+</script>
+</body>
+</html>

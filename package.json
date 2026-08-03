@@ -1,0 +1,15 @@
+{
+  "name": "tkellem-darija-backend",
+  "version": "1.0.0",
+  "description": "Backend pour l'app d'apprentissage du Darija Tkellem — protège les clés API et sert le prototype",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
