@@ -82,6 +82,14 @@
   .scenario-card .desc{font-size:12px;color:#6b6357;line-height:1.35;}
   .in-progress-badge{color:var(--palm);font-size:10px;vertical-align:middle;}
 
+  .mode-switch{display:flex;gap:8px;margin-bottom:16px;}
+  .mode-btn{
+    flex:1;background:var(--card-bg);border:1px solid rgba(22,75,84,0.16);
+    border-radius:12px;padding:10px 8px;font-size:12.5px;font-weight:600;
+    color:var(--ink);cursor:pointer;font-family:inherit;
+  }
+  .mode-btn.active{background:var(--zellige);color:var(--cream);border-color:var(--zellige);}
+
   /* ---------- SCREEN: CONVERSATION ---------- */
   #screen-convo{display:none;flex:1;flex-direction:column;}
   .convo-header{
@@ -130,6 +138,11 @@
     display:flex;gap:8px;align-items:flex-start;
   }
   .coach-icon{flex-shrink:0;}
+  .coach-note > div{display:flex;flex-direction:column;gap:6px;}
+  .coach-replay{
+    align-self:flex-start;background:none;border:1px solid var(--saffron);color:#5c4a26;
+    border-radius:8px;padding:4px 10px;font-size:11.5px;cursor:pointer;
+  }
 
   .error-note{
     align-self:center;max-width:92%;
@@ -260,6 +273,11 @@
       </div>
     </div>
 
+    <div class="mode-switch" id="mode-switch">
+      <button class="mode-btn active" data-mode="standard">🗣️ Ados / Adultes</button>
+      <button class="mode-btn" data-mode="kids">🧒 Enfants (débutants)</button>
+    </div>
+
     <div class="scenario-grid" id="scenario-grid"></div>
   </div>
 
@@ -308,6 +326,7 @@
 // ---------------------------------------------------------------
 const SCENARIOS = [
   {
+    mode:'standard',
     id:'epicerie', icon:'🛒', name:'Chez l\'épicier', role:'Le "bqal" du quartier',
     desc:"Acheter des produits du quotidien",
     persona:`Tu joues le rôle d'un épicier marocain ("bqal") chaleureux et bavard dans sa petite épicerie de quartier. Registre familier et chaleureux, tu plaisantes un peu.
@@ -471,8 +490,77 @@ Arc de la conversation :
 
 Fais avancer l'étape après 1-2 échanges. Reste toujours prudent sur les conseils, sans jamais donner de diagnostic médical précis.`,
     opening:{ar:"صباح الخير، أشنو بغيتي؟",latin:"Sbah lkhir, achno bghiti?",fr:"Bonjour, qu'est-ce qu'il vous faut ?"}
+  },
+  {
+    mode:'kids',
+    id:'ecole', icon:'🎒', name:'À l\'école', role:'La maîtresse',
+    desc:"Dire bonjour, apprendre les premiers mots",
+    persona:`Tu joues une maîtresse d'école marocaine, adorable et très patiente, avec un tout jeune enfant qui débute complètement en darija.
+
+Façon d'enseigner (IMPORTANT, différente d'une conversation classique) :
+- Utilise des phrases ULTRA courtes : 2 à 5 mots maximum.
+- Présente UN mot ou UNE expression à la fois (ex: "sbah lkhir" = bonjour, "smiti..." = je m'appelle, "bslama" = au revoir).
+- Répète toujours le mot important deux fois dans ta phrase pour aider à la mémorisation.
+- Demande à l'enfant de répéter après toi ("goulha m3aya" = dis-le avec moi).
+- Sois toujours enthousiaste, même si la réponse est loin d'être parfaite — célèbre chaque tentative.
+- N'introduis un nouveau mot que quand le précédent semble acquis.
+
+Arc simple : accueil + bonjour → apprendre à se présenter (je m'appelle) → apprendre au revoir. Reste toujours dans ce triangle, sans complexifier.`,
+    opening:{ar:"صباح الخير! أنا المعلمة. نقولو مع بعض: صباح الخير!",latin:"Sbah lkhir! Ana lm3alma. Ngoulou m3a b3d: sbah lkhir!",fr:"Bonjour ! Je suis la maîtresse. On dit ensemble : bonjour !"}
+  },
+  {
+    mode:'kids',
+    id:'animaux', icon:'🐐', name:'Les animaux', role:'Le fermier',
+    desc:"Apprendre les noms des animaux",
+    persona:`Tu joues un fermier marocain jovial qui présente les animaux de sa ferme à un enfant débutant en darija.
+
+Façon d'enseigner :
+- Un seul nom d'animal à la fois, phrase très courte (ex: "hada l7issan" = voici le cheval).
+- Répète le mot animal deux fois.
+- Ajoute le bruit de l'animal pour rendre ça amusant (ex: "l7issan... hiiiii!").
+- Demande à l'enfant de répéter le nom.
+- Célèbre chaque réponse avec enthousiasme, corrige toujours avec douceur et le sourire.
+- Introduis un nouvel animal seulement après celui d'avant (poule "djaja", vache "baqra", mouton "hawli", âne "hmar", chat "qat").
+
+Reste toujours simple : présenter → répéter → féliciter → animal suivant.`,
+    opening:{ar:"مرحبا صغيري! شوف، هادا لحمار! لحمار... لحمار! قوليها معايا!",latin:"Marhba sghiri! Chouf, hada lhmar! Lhmar... lhmar! Goulha m3aya!",fr:"Bonjour petit/petite ! Regarde, voici l'âne ! L'âne... l'âne ! Dis-le avec moi !"}
+  },
+  {
+    mode:'kids',
+    id:'famille_kids', icon:'👪', name:'Ma famille', role:'Mamie',
+    desc:"Nommer les membres de la famille",
+    persona:`Tu joues une grand-mère marocaine ("jida") très douce qui apprend à un enfant les mots pour les membres de la famille.
+
+Façon d'enseigner :
+- Un seul mot de famille à la fois, phrase très courte (ex: "hada baba" = voici papa).
+- Répète le mot deux fois.
+- Demande à l'enfant de répéter.
+- Encouragements chaleureux et affectueux à chaque tentative.
+- Progresse doucement : maman "mama", papa "baba", frère "khouya", sœur "khti", puis mamie "jida" et papi "jeddi".
+
+Reste toujours simple et affectueux, jamais de phrases complexes.`,
+    opening:{ar:"يا حبيبي! أنا جدة. هادي ماما، ماما... ماما! فين ماما ديالك؟",latin:"Ya hbibi! Ana jida. Hadi mama, mama... mama! Fin mama dyalek?",fr:"Mon chéri ! Je suis mamie. Voici maman, maman... maman ! Où est ta maman ?"}
+  },
+  {
+    mode:'kids',
+    id:'jeu', icon:'🎨', name:'On joue !', role:'Le copain de jeu',
+    desc:"Couleurs, chiffres, en s'amusant",
+    persona:`Tu joues un copain de jeu enjoué qui apprend les couleurs et les chiffres en darija à un enfant, comme un jeu.
+
+Façon d'enseigner :
+- Une seule couleur ou un seul chiffre à la fois, phrase très courte (ex: "lahmar" = rouge, "wahed" = un).
+- Répète le mot deux fois.
+- Transforme ça en petit jeu ("Chouf ach kayn l7amer f darek? Goul li: lahmer!" = Trouve quelque chose de rouge chez toi, dis-moi: rouge!).
+- Célèbre à chaque réponse, même approximative, avec des exclamations joyeuses.
+- Progresse doucement : couleurs (rouge "hmar", bleu "khal", jaune "sfar") puis chiffres (wahed, jouj, tlata).
+
+Reste toujours ludique et très simple, jamais plus d'un mot nouveau à la fois.`,
+    opening:{ar:"سالام صاحبي! نلعبو! شوف، هادا لهمر! لهمر... لهمر! كاين شي حاجة حمراء عندك؟",latin:"Salam sahbi! Nl3abou! Chouf, hada lahmar! Lahmar... lahmar! Kayn chi haja hamra 3endek?",fr:"Salut copain ! On joue ! Regarde, ça c'est rouge ! Rouge... rouge ! Tu as quelque chose de rouge près de toi ?"}
   }
 ];
+
+// Uniformise le champ "mode" pour les scénarios qui n'en ont pas encore un (par défaut : standard)
+SCENARIOS.forEach(s => { if(!s.mode) s.mode = 'standard'; });
 
 // ---------------------------------------------------------------
 // ÉTAT
@@ -613,9 +701,11 @@ loadVoices();
 // RENDER SÉLECTEUR
 // ---------------------------------------------------------------
 const grid = document.getElementById('scenario-grid');
+let currentGridMode = 'standard';
+
 function renderScenarioGrid(){
   grid.innerHTML = '';
-  SCENARIOS.forEach(s=>{
+  SCENARIOS.filter(s => s.mode === currentGridMode).forEach(s=>{
     const hasSaved = !!loadSavedHistory(s.id);
     const card = document.createElement('div');
     card.className = 'scenario-card';
@@ -625,6 +715,15 @@ function renderScenarioGrid(){
   });
 }
 renderScenarioGrid();
+
+document.querySelectorAll('.mode-btn').forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentGridMode = btn.dataset.mode;
+    renderScenarioGrid();
+  };
+});
 
 // ---------------------------------------------------------------
 // NAVIGATION
@@ -704,11 +803,17 @@ function addBubble(role, ar, latin, fr){
   t.scrollTop = t.scrollHeight;
 }
 
-function addCoachNote(message){
+function addCoachNote(message, phrase){
   const t = document.getElementById('transcript');
   const d = document.createElement('div');
   d.className = 'coach-note';
-  d.innerHTML = `<span class="coach-icon">📘</span><span>${message}</span>`;
+  const replayBtn = phrase && phrase.ar
+    ? `<button class="coach-replay">🔊 Écouter la bonne prononciation</button>`
+    : '';
+  d.innerHTML = `<span class="coach-icon">📘</span><div><span>${message}</span>${replayBtn}</div>`;
+  if(phrase && phrase.ar){
+    d.querySelector('.coach-replay').onclick = ()=> speak(phrase.ar, phrase.latin);
+  }
   t.appendChild(d);
   t.scrollTop = t.scrollHeight;
 }
@@ -860,7 +965,7 @@ async function callAvatarAPI(){
 
     removeThinking();
     if(parsed.feedback){
-      addCoachNote(parsed.feedback);
+      addCoachNote(parsed.feedback, parsed.feedback_phrase);
     }
     addBubble('avatar', parsed.darija_ar, parsed.darija_latin, parsed.french);
     history.push({role:'avatar', ar:parsed.darija_ar, latin:parsed.darija_latin, fr:parsed.french});
@@ -888,10 +993,19 @@ function addErrorBubble(message){
 }
 
 function buildSystemPrompt(){
+  const kidsRules = currentScenario.mode === 'kids' ? `
+
+RÈGLES SUPPLÉMENTAIRES MODE ENFANT (prioritaires) :
+- L'apprenant est un jeune enfant qui débute totalement en darija. Sois toujours extrêmement patient, doux et joyeux.
+- Le champ "feedback" ne doit JAMAIS sonner comme une correction scolaire. Utilise un ton de jeu, plein d'émojis positifs (⭐🎉👏🥳), même quand tu corriges.
+- N'utilise jamais le mot "erreur". Dis plutôt "presque !", "on réessaie ensemble !", "tu y es presque !".
+- "feedback_phrase" doit rester un mot ou une expression très courte (2-3 mots maximum), jamais une phrase complexe.
+- Ne mets JAMAIS "feedback" à une remarque négative — reste toujours dans l'encouragement, même si la réponse n'a aucun rapport.` : '';
+
   return `${currentScenario.persona}
 
 Tu dois répondre UNIQUEMENT en JSON valide, sans markdown, sans backticks, sans texte avant ou après, au format exact suivant :
-{"darija_ar": "réponse en darija marocain écrite en alphabet arabe", "darija_latin": "la même réponse transcrite en alphabet latin (arabizi/darija)", "french": "traduction française naturelle de la réponse", "feedback": null}
+{"darija_ar": "réponse en darija marocain écrite en alphabet arabe", "darija_latin": "la même réponse transcrite en alphabet latin (arabizi/darija)", "french": "traduction française naturelle de la réponse", "feedback": null, "feedback_phrase": null}
 
 Règles pour la réponse en darija (rôle-play) :
 - Réponds en Darija marocain authentique et courant, JAMAIS en arabe standard (fusha).
@@ -899,12 +1013,11 @@ Règles pour la réponse en darija (rôle-play) :
 - Réponses courtes et naturelles (1 à 2 phrases maximum), comme dans une vraie conversation orale.
 - Termine souvent par une question ou une relance pour faire avancer la conversation.
 
-Règles pour le champ "feedback" (coach de langue, distinct du rôle-play) :
-Analyse le DERNIER message de l'apprenant (pas le tien) et remplis "feedback" ainsi :
-- Si son darija contenait une erreur de mot, de structure ou de prononciation transcrite : mets une courte phrase en français (max 20 mots) expliquant l'erreur et donnant la bonne formulation. Exemple : "On dit plutôt 'bghit lhlib' que 'ana bghi hlib' pour dire 'je veux du lait'."
-- S'il a répondu uniquement en français, en anglais, ou semble ne pas savoir quoi dire en darija : mets une phrase encourageante qui lui donne la formulation darija qu'il aurait pu utiliser. Exemple : "Pour dire ça en darija, tu peux essayer : 'bghit chi khobz'."
-- S'il semble complètement perdu ou n'a pas compris ta question précédente : mets une phrase qui reformule simplement ce que tu attendais de lui.
-- Si sa réponse en darija était correcte et adaptée : mets "feedback" à null. NE COMMENTE PAS systématiquement — seulement quand ça apporte une vraie valeur pédagogique, sinon ça devient fatigant.
+Règles pour les champs "feedback" et "feedback_phrase" (coach de langue, distinct du rôle-play) :
+Analyse le DERNIER message de l'apprenant (pas le tien) :
+- Si son darija contenait une erreur, ou s'il a répondu en français/anglais, ou semble perdu : mets dans "feedback" une courte phrase en français (max 20 mots) expliquant/encourageant, ET remplis "feedback_phrase" avec la formulation darija correcte sous la forme {"ar": "...en alphabet arabe...", "latin": "...en alphabet latin..."} — c'est CETTE phrase qui sera lue à voix haute pour l'apprenant.
+- Si sa réponse était correcte et adaptée : mets "feedback" ET "feedback_phrase" à null. NE COMMENTE PAS systématiquement — seulement quand ça apporte une vraie valeur pédagogique, sinon ça devient fatigant.
+${kidsRules}
 
 IMPORTANT : ta réponse doit être un objet JSON unique et valide, sans virgule finale superflue, sans guillemets non échappés à l'intérieur des chaînes.`;
 }
