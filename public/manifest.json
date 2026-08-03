@@ -1,0 +1,14 @@
+{
+  "name": "Tkellem — Apprends le Darija",
+  "short_name": "Tkellem",
+  "description": "Apprends le darija marocain en conversation vocale avec un avatar, selon différentes mises en situation.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F3ECD9",
+  "theme_color": "#164B54",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
