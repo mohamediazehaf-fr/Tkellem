@@ -80,6 +80,7 @@
   .scenario-card .icon{font-size:26px;}
   .scenario-card .name{font-family:'Cairo',sans-serif;font-weight:700;font-size:15px;}
   .scenario-card .desc{font-size:12px;color:#6b6357;line-height:1.35;}
+  .in-progress-badge{color:var(--palm);font-size:10px;vertical-align:middle;}
 
   /* ---------- SCREEN: CONVERSATION ---------- */
   #screen-convo{display:none;flex:1;flex-direction:column;}
@@ -189,6 +190,22 @@
   }
   .note{font-size:11px;color:#9a9280;text-align:center;max-width:280px;}
 
+  .restart-btn{
+    background:rgba(255,255,255,0.15);border:none;color:var(--cream);
+    border-radius:8px;padding:6px 10px;font-size:15px;cursor:pointer;flex-shrink:0;
+  }
+
+  .action-row{display:flex;gap:8px;width:100%;}
+  .action-row .hint-btn{flex:1;}
+
+  .translate-panel{
+    width:100%;background:rgba(44,122,140,0.08);border:1px dashed var(--zellige-light);
+    border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;
+  }
+  #translate-result{font-size:13px;color:var(--ink);line-height:1.5;}
+  #translate-result .t-ar{font-size:16px;direction:rtl;font-weight:600;}
+  #translate-result .t-latin{font-style:italic;color:var(--zellige-light);font-size:12.5px;}
+
   .voice-panel{
     background:var(--card-bg);border:1px solid rgba(22,75,84,0.14);
     border-radius:14px;padding:12px 14px;margin-bottom:18px;
@@ -255,6 +272,7 @@
         <div class="name" id="convo-name">—</div>
         <div class="role" id="convo-role">—</div>
       </div>
+      <button class="restart-btn" id="restart-btn" title="Recommencer cette conversation">🔄</button>
     </div>
     <div id="transcript"></div>
     <div class="control-bar">
@@ -263,7 +281,17 @@
         <div class="mic-ring"></div>
         <button class="mic-btn" id="mic-btn">🎙️</button>
       </div>
-      <button class="hint-btn" id="hint-btn">💡 Une idée de réponse ?</button>
+      <div class="action-row">
+        <button class="hint-btn" id="hint-btn">💡 Une idée de réponse ?</button>
+        <button class="hint-btn" id="translate-btn">🔤 Comment dire ça ?</button>
+      </div>
+      <div class="translate-panel" id="translate-panel" style="display:none;">
+        <div class="text-fallback">
+          <input type="text" id="translate-input" placeholder="Écris une phrase en français...">
+          <button id="translate-send-btn">Traduire</button>
+        </div>
+        <div id="translate-result"></div>
+      </div>
       <div class="text-fallback">
         <input type="text" id="text-input" placeholder="Ou écris ta réponse ici...">
         <button id="send-btn">Envoyer</button>
@@ -368,6 +396,81 @@ Arc de la conversation :
 
 Fais avancer l'étape après 1-2 échanges, dans un ton toujours affectueux.`,
     opening:{ar:"واه شحال هاد الوقت ما تشافينا! كيداير راسك؟",latin:"Waah chhal had lwaqt ma tchafina! Kidayer rassek?",fr:"Waouh, ça fait si longtemps qu'on ne s'est pas vus ! Comment vas-tu ?"}
+  },
+  {
+    id:'docteur', icon:'🩺', name:'Chez le docteur', role:'Médecin généraliste',
+    desc:"Décrire des symptômes, consultation",
+    persona:`Tu joues un médecin généraliste marocain, bienveillant et rassurant, à l'écoute. Registre professionnel mais chaleureux.
+
+Arc de la conversation :
+1. Accueil, tu demandes ce qui n'va pas ("achno 3endek", "fin 3endek lwej3a")
+2. Le patient décrit ses symptômes — tu poses des questions de suivi (depuis quand, où précisément, intensité)
+3. Tu donnes un avis simple et rassurant (rien de grave, ou tu recommandes un traitement/repos)
+4. Tu prescris ou conseilles (médicament simple, repos, boire beaucoup d'eau...) et expliques la posologie simplement
+5. Salutations de fin, tu souhaites un bon rétablissement ("bra sri3a" = bon rétablissement)
+
+Fais avancer l'étape après 1-2 échanges. Reste toujours rassurant, jamais alarmant.`,
+    opening:{ar:"صباح الخير، أشنو عندك اليوم؟",latin:"Sbah lkhir, achno 3endek lyoum?",fr:"Bonjour, qu'est-ce qui vous amène aujourd'hui ?"}
+  },
+  {
+    id:'amie', icon:'☕', name:'Entre amis', role:'Une amie proche',
+    desc:"Discuter au café, papoter",
+    persona:`Tu joues une amie proche de l'apprenant, autour d'un café ou d'un thé. Registre très familier, complice, plein de vie.
+
+Arc de la conversation :
+1. Salutation enjouée, tu demandes des nouvelles générales ("ach khbarek", "kifach nti/ta")
+2. Tu papotes de sujets du quotidien (travail, famille, un événement récent, les derniers potins/ragots légers)
+3. Tu partages une anecdote personnelle ou une opinion sur un sujet léger
+4. Tu proposes de faire quelque chose ensemble bientôt (sortir, se revoir, un projet)
+5. Salutations chaleureuses de fin, "à bientôt"
+
+Fais avancer l'étape après 1-2 échanges. Ton ton doit être vivant, spontané, comme une vraie amie.`,
+    opening:{ar:"أهلا خويتي! شحال هادي ما تلاقينا، أشنو خبارك؟",latin:"Ahlan khouiti! Chhal hadi ma tlaqina, achno khbarek?",fr:"Salut ma belle ! Ça fait un moment qu'on s'est pas vues, quelles nouvelles ?"}
+  },
+  {
+    id:'coiffeur', icon:'💇', name:'Chez le coiffeur', role:'Coiffeur/coiffeuse',
+    desc:"Demander une coupe, discuter",
+    persona:`Tu joues un coiffeur (ou coiffeuse) marocain dans son salon, bavard et sociable comme c'est souvent le cas. Registre familier, décontracté.
+
+Arc de la conversation :
+1. Accueil, tu demandes ce que le client souhaite comme coupe/coiffure
+2. Tu précises les détails (longueur, style) et fais un peu la conversation pendant que tu "travailles"
+3. Tu proposes éventuellement un soin ou service supplémentaire (barbe, shampoing...)
+4. Tu annonces le prix à la fin
+5. Paiement et salutations, tu invites à revenir
+
+Fais avancer l'étape après 1-2 échanges.`,
+    opening:{ar:"أهلا بيك! أشنو بغيتي نصاوبلك اليوم؟",latin:"Ahlan bik! Achno bghiti nsawablek lyoum?",fr:"Bienvenue ! Qu'est-ce que je te fais aujourd'hui ?"}
+  },
+  {
+    id:'restaurant', icon:'🍽️', name:'Au restaurant', role:'Serveur',
+    desc:"Commander un plat, demander l'addition",
+    persona:`Tu joues un serveur dans un restaurant marocain, professionnel et avenant. Registre poli, service-orienté.
+
+Arc de la conversation :
+1. Accueil, tu proposes une table et demandes ce que le client souhaite boire/commander
+2. Le client commande — tu suggères éventuellement un plat ou une boisson typique en plus
+3. Tu confirmes la commande et indiques le temps d'attente approximatif
+4. Après le repas (simulé), tu demandes si tout était bon et proposes l'addition
+5. Paiement et salutations de fin
+
+Fais avancer l'étape après 1-2 échanges.`,
+    opening:{ar:"مرحبا بيكم، شحال ديال الناس؟ وأشنو غادي تشربو؟",latin:"Marhba bikoum, chhal dyal nnas? Wa achno ghadi tchrbo?",fr:"Bienvenue, vous êtes combien ? Et qu'est-ce que vous prendrez à boire ?"}
+  },
+  {
+    id:'pharmacie', icon:'💊', name:'À la pharmacie', role:'Pharmacien',
+    desc:"Acheter un médicament, demander conseil",
+    persona:`Tu joues un pharmacien marocain, professionnel et pédagogue. Registre poli, informatif.
+
+Arc de la conversation :
+1. Accueil, tu demandes ce dont le client a besoin
+2. Le client décrit son besoin (mal de tête, médicament précis, un conseil) — tu poses une question de clarification si besoin
+3. Tu proposes un produit adapté et expliques rapidement comment l'utiliser (dosage, fréquence)
+4. Tu annonces le prix
+5. Paiement et salutations, tu souhaites une bonne santé
+
+Fais avancer l'étape après 1-2 échanges. Reste toujours prudent sur les conseils, sans jamais donner de diagnostic médical précis.`,
+    opening:{ar:"صباح الخير، أشنو بغيتي؟",latin:"Sbah lkhir, achno bghiti?",fr:"Bonjour, qu'est-ce qu'il vous faut ?"}
   }
 ];
 
@@ -399,6 +502,18 @@ if('speechSynthesis' in window){
 }
 
 let elevenLabsVoiceId = null;
+const avatarAudio = new Audio(); // élément réutilisé pour contourner le blocage autoplay mobile
+let audioUnlocked = false;
+
+function unlockAudioOnce(){
+  if(audioUnlocked) return;
+  audioUnlocked = true;
+  // silence WAV minimal en base64, joué en réponse directe à un geste utilisateur
+  avatarAudio.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
+  avatarAudio.play().catch(()=>{});
+}
+document.addEventListener('click', unlockAudioOnce, { once: true });
+document.addEventListener('touchend', unlockAudioOnce, { once: true });
 
 function speakBrowserFallback(text, latinText){
   if(!('speechSynthesis' in window)) return;
@@ -431,8 +546,8 @@ async function speak(text, latinText){
         }
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
-        const audio = new Audio(url);
-        audio.play();
+        avatarAudio.src = url;
+        avatarAudio.play().catch(err=>console.warn('Lecture audio bloquée :', err));
         return;
       }catch(err){
         console.warn('Voix serveur indisponible, repli sur voix navigateur:', err.message || err);
@@ -469,9 +584,23 @@ async function loadVoices(){
       select.appendChild(opt);
     });
     select.style.display = 'block';
-    select.onchange = ()=>{ elevenLabsVoiceId = select.value; };
+
+    // choix par défaut : le choix mémorisé > une voix "darija/moroccan" détectée > la première de la liste
+    const savedVoiceId = localStorage.getItem('tkellem_voice_id');
+    const darijaVoice = data.voices.find(v => /darija|moroccan|maroc/i.test(v.name));
+    if(savedVoiceId && data.voices.some(v => v.voice_id === savedVoiceId)){
+      select.value = savedVoiceId;
+    } else if(darijaVoice){
+      select.value = darijaVoice.voice_id;
+    }
+
+    select.onchange = ()=>{
+      elevenLabsVoiceId = select.value;
+      localStorage.setItem('tkellem_voice_id', select.value);
+    };
     elevenLabsVoiceId = select.value;
-    status.textContent = '✓ Voix ElevenLabs prête';
+    localStorage.setItem('tkellem_voice_id', select.value);
+    status.textContent = '✓ Voix ' + select.options[select.selectedIndex].textContent + ' prête';
     status.className = 'voice-status connected';
   }catch(err){
     status.textContent = 'Impossible de charger les voix — voix du navigateur utilisée';
@@ -484,37 +613,76 @@ loadVoices();
 // RENDER SÉLECTEUR
 // ---------------------------------------------------------------
 const grid = document.getElementById('scenario-grid');
-SCENARIOS.forEach(s=>{
-  const card = document.createElement('div');
-  card.className = 'scenario-card';
-  card.innerHTML = `<div class="icon">${s.icon}</div><div class="name">${s.name}</div><div class="desc">${s.desc}</div>`;
-  card.onclick = ()=> startScenario(s);
-  grid.appendChild(card);
-});
+function renderScenarioGrid(){
+  grid.innerHTML = '';
+  SCENARIOS.forEach(s=>{
+    const hasSaved = !!loadSavedHistory(s.id);
+    const card = document.createElement('div');
+    card.className = 'scenario-card';
+    card.innerHTML = `<div class="icon">${s.icon}</div><div class="name">${s.name}${hasSaved ? ' <span class="in-progress-badge">●</span>' : ''}</div><div class="desc">${s.desc}</div>`;
+    card.onclick = ()=> startScenario(s);
+    grid.appendChild(card);
+  });
+}
+renderScenarioGrid();
 
 // ---------------------------------------------------------------
 // NAVIGATION
 // ---------------------------------------------------------------
-function startScenario(s){
+function historyKey(scenarioId){ return 'tkellem_history_' + scenarioId; }
+
+function saveHistory(){
+  if(!currentScenario) return;
+  localStorage.setItem(historyKey(currentScenario.id), JSON.stringify(history));
+}
+
+function loadSavedHistory(scenarioId){
+  try{
+    const raw = localStorage.getItem(historyKey(scenarioId));
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){ return null; }
+}
+
+function startScenario(s, forceRestart){
   currentScenario = s;
-  history = [];
   document.getElementById('screen-select').style.display = 'none';
   document.getElementById('screen-convo').style.display = 'flex';
   document.getElementById('convo-icon').textContent = s.icon;
   document.getElementById('convo-name').textContent = s.name;
   document.getElementById('convo-role').textContent = s.role;
   document.getElementById('transcript').innerHTML = '';
-  addBubble('avatar', s.opening.ar, s.opening.latin, s.opening.fr);
-  history.push({role:'avatar', ...s.opening});
-  speak(s.opening.ar, s.opening.latin);
+
+  const saved = forceRestart ? null : loadSavedHistory(s.id);
+  if(saved && saved.length){
+    history = saved;
+    history.forEach(h=>{
+      if(h.role === 'avatar') addBubble('avatar', h.ar, h.latin, h.fr);
+      else addBubble('user', h.ar, '', '');
+    });
+    document.getElementById('status-text').textContent = "Conversation reprise là où tu l'avais laissée";
+  } else {
+    history = [];
+    addBubble('avatar', s.opening.ar, s.opening.latin, s.opening.fr);
+    history.push({role:'avatar', ...s.opening});
+    saveHistory();
+    speak(s.opening.ar, s.opening.latin);
+  }
   setupSpeechRecognition();
 }
 
+document.getElementById('restart-btn').onclick = ()=>{
+  if(!currentScenario) return;
+  if(confirm('Recommencer cette conversation depuis le début ? L\'historique actuel sera effacé.')){
+    localStorage.removeItem(historyKey(currentScenario.id));
+    startScenario(currentScenario, true);
+  }
+};
+
 document.getElementById('back-btn').onclick = ()=>{
   speechSynthesis.cancel();
-  if(recognition) try{recognition.stop();}catch(e){}
   document.getElementById('screen-convo').style.display = 'none';
   document.getElementById('screen-select').style.display = 'block';
+  renderScenarioGrid(); // met à jour les badges "en cours" sur les cartes
 };
 
 // ---------------------------------------------------------------
@@ -668,6 +836,7 @@ function handleUserInput(userText){
   document.getElementById('status-text').textContent = "Appuie sur le micro pour parler";
   addBubble('user', userText, '', '');
   history.push({role:'user', ar:userText, latin:'', fr:''});
+  saveHistory();
   addThinking();
   callAvatarAPI();
 }
@@ -695,6 +864,7 @@ async function callAvatarAPI(){
     }
     addBubble('avatar', parsed.darija_ar, parsed.darija_latin, parsed.french);
     history.push({role:'avatar', ar:parsed.darija_ar, latin:parsed.darija_latin, fr:parsed.french});
+    saveHistory();
     speak(parsed.darija_ar, parsed.darija_latin);
   }catch(err){
     console.error('Erreur callAvatarAPI:', err);
@@ -768,6 +938,45 @@ Réponds UNIQUEMENT en JSON : {"darija_ar":"...","darija_latin":"...","french":"
     status.textContent = "Impossible de générer une suggestion";
   }
 };
+
+// ---------------------------------------------------------------
+// BOUTON "COMMENT DIRE ÇA EN DARIJA ?" — traduction à la demande,
+// indépendante du fil de la conversation (pas ajoutée à l'historique)
+// ---------------------------------------------------------------
+const translatePanel = document.getElementById('translate-panel');
+document.getElementById('translate-btn').onclick = ()=>{
+  translatePanel.style.display = translatePanel.style.display === 'none' ? 'flex' : 'none';
+};
+
+async function runTranslation(){
+  const input = document.getElementById('translate-input');
+  const resultBox = document.getElementById('translate-result');
+  const phrase = input.value.trim();
+  if(!phrase) return;
+  resultBox.textContent = 'Traduction en cours...';
+  const prompt = `Traduis cette phrase française en darija marocain courant (pas en arabe standard) : "${phrase}"
+${currentScenario ? `Contexte de la scène : ${currentScenario.desc}. Adapte le registre en conséquence.` : ''}
+Réponds UNIQUEMENT en JSON : {"darija_ar":"...","darija_latin":"..."}`;
+  try{
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ messages: [{role:'user', content: prompt}] })
+    });
+    const data = await response.json();
+    const raw = data.content.map(b => b.text || '').join('').trim();
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    const parsed = JSON.parse(jsonMatch[0]);
+    resultBox.innerHTML = `<div class="t-ar">${parsed.darija_ar}</div><div class="t-latin">${parsed.darija_latin}</div>`;
+    speak(parsed.darija_ar, parsed.darija_latin);
+  }catch(err){
+    resultBox.textContent = 'Impossible de traduire cette phrase, réessaie.';
+  }
+}
+document.getElementById('translate-send-btn').onclick = runTranslation;
+document.getElementById('translate-input').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') runTranslation();
+});
 </script>
 </body>
 </html>
