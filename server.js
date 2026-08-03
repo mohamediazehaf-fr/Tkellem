@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 
 const app = express();
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({ limit: '8mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -58,6 +58,43 @@ app.get('/api/voices', async (req, res) => {
     res.json(data);
   } catch (err) {
     console.error('Erreur /api/voices:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------------------------------------------------------------
+// Transcription vocale (ElevenLabs Speech-to-Text) — reçoit l'audio
+// enregistré par le téléphone et renvoie le texte transcrit
+// ---------------------------------------------------------------
+app.post('/api/transcribe', async (req, res) => {
+  if (!ELEVENLABS_API_KEY) {
+    return res.status(400).json({ error: "ELEVENLABS_API_KEY n'est pas configurée sur le serveur." });
+  }
+  try {
+    const { audio_base64, mime_type } = req.body;
+    if (!audio_base64) {
+      return res.status(400).json({ error: 'audio_base64 est requis.' });
+    }
+    const buffer = Buffer.from(audio_base64, 'base64');
+    const blob = new Blob([buffer], { type: mime_type || 'audio/webm' });
+    const form = new FormData();
+    form.append('file', blob, 'audio.webm');
+    form.append('model_id', 'scribe_v2');
+    form.append('language_code', 'ar');
+
+    const r = await fetch('https://api.elevenlabs.io/v1/speech-to-text', {
+      method: 'POST',
+      headers: { 'xi-api-key': ELEVENLABS_API_KEY },
+      body: form
+    });
+    const data = await r.json();
+    if (!r.ok) {
+      console.error('Erreur ElevenLabs STT:', data);
+      return res.status(r.status).json(data);
+    }
+    res.json({ text: data.text || '' });
+  } catch (err) {
+    console.error('Erreur /api/transcribe:', err);
     res.status(500).json({ error: err.message });
   }
 });
