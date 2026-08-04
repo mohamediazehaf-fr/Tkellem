@@ -97,6 +97,12 @@
   .auth-link{background:none;border:none;color:var(--zellige-light);font-size:12px;cursor:pointer;text-decoration:underline;padding:0;}
   .account-info{background:var(--card-bg);border-radius:14px;padding:16px;margin-bottom:16px;}
   .logout-btn{background:none;border:1px solid var(--henna);color:var(--henna);border-radius:10px;padding:9px 14px;font-size:13px;cursor:pointer;font-weight:600;}
+  .avatar-picker{display:flex;gap:8px;flex-wrap:wrap;}
+  .avatar-choice{
+    width:42px;height:42px;border-radius:50%;border:2px solid transparent;background:var(--cream);
+    font-size:20px;cursor:pointer;
+  }
+  .avatar-choice.selected{border-color:var(--saffron);background:var(--card-bg);}
   .back-inline{
     background:none;border:none;color:var(--zellige-light);font-size:13px;
     cursor:pointer;padding:0;margin-bottom:14px;font-weight:600;
@@ -115,6 +121,14 @@
   .progress-link{
     display:block;width:100%;background:none;border:1px solid var(--zellige-light);
     color:var(--zellige);border-radius:12px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;
+  }
+  .home-greeting{
+    font-family:'Cairo',sans-serif;font-size:17px;font-weight:700;color:var(--zellige);
+    margin-bottom:16px;display:flex;align-items:center;gap:10px;
+  }
+  .home-greeting .avatar-circle{
+    font-size:26px;background:var(--card-bg);border-radius:50%;width:44px;height:44px;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
   }
 
   .phrase-item{
@@ -363,7 +377,8 @@
   </header>
 
   <!-- SCREEN 0 : accueil / menu principal -->
-  <div id="screen-home">
+  <div id="screen-home" style="display:none;">
+    <div id="home-greeting" class="home-greeting"></div>
     <div class="menu-grid">
       <div class="menu-card" id="menu-guided">
         <div class="menu-icon">🎯</div>
@@ -849,18 +864,54 @@ const SUPABASE_KEY = 'sb_publishable_OqKDiR3Ervps66wbN0aQrw_Lyr7ZDkm';
 const sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 let currentUser = null;
 
+const AVATAR_CHOICES = ['🙂','😎','🧕','👳','🐐','🦁','🌙','⭐','🌵','🍃'];
+let currentProfile = { display_name:null, avatar:'🙂' };
+
 async function initAuth(){
-  if(!sb) return;
+  if(!sb){ applyAuthGate(); return; } // pas de Supabase configuré : on n'impose pas le portail
   const { data } = await sb.auth.getSession();
   currentUser = data.session ? data.session.user : null;
   if(currentUser) await syncFromServer();
-  updatePointsBadge();
+  applyAuthGate();
 
   sb.auth.onAuthStateChange(async (event, session)=>{
     currentUser = session ? session.user : null;
     if(currentUser) await syncFromServer();
-    updatePointsBadge();
+    applyAuthGate();
   });
+}
+
+// Impose l'écran de connexion tant que l'utilisateur n'est pas identifié
+function applyAuthGate(){
+  const headerExtras = document.querySelectorAll('.account-btn, .points-badge');
+  if(sb && !currentUser){
+    headerExtras.forEach(el => el.style.visibility = 'hidden');
+    document.getElementById('back-to-home-5').style.display = 'none';
+    showScreen('screen-account');
+    renderAccount();
+  } else {
+    headerExtras.forEach(el => el.style.visibility = 'visible');
+    document.getElementById('back-to-home-5').style.display = 'inline-block';
+    updatePointsBadge();
+    if(currentUser && !currentProfile.display_name){
+      showScreen('screen-account');
+      renderAccount();
+    } else {
+      renderHomeGreeting();
+      if(document.getElementById('screen-account').style.display !== 'none'){
+        showScreen('screen-home');
+      }
+    }
+  }
+}
+
+function renderHomeGreeting(){
+  const el = document.getElementById('home-greeting');
+  if(currentUser && currentProfile.display_name){
+    el.innerHTML = `<span class="avatar-circle">${currentProfile.avatar || '🙂'}</span> Bonjour ${currentProfile.display_name}, ravi de te retrouver !`;
+  } else {
+    el.innerHTML = '';
+  }
 }
 
 async function syncFromServer(){
@@ -871,6 +922,7 @@ async function syncFromServer(){
       // le serveur devient la référence : on écrase les valeurs locales
       localStorage.setItem('tkellem_points', String(data.points || 0));
       localStorage.setItem('tkellem_completed', JSON.stringify(data.completed || []));
+      currentProfile = { display_name: data.display_name || null, avatar: data.avatar || '🙂' };
     } else {
       // première connexion : on envoie la progression locale existante (mode invité) vers le serveur
       await sb.from('progress').upsert({
@@ -879,18 +931,22 @@ async function syncFromServer(){
         completed: getCompleted(),
         updated_at: new Date().toISOString()
       });
+      currentProfile = { display_name:null, avatar:'🙂' };
     }
   }catch(err){ console.warn('Sync depuis le serveur impossible :', err); }
 }
 
-async function syncToServer(){
+async function syncToServer(extra){
   if(!sb || !currentUser) return;
   try{
     await sb.from('progress').upsert({
       user_id: currentUser.id,
       points: getPoints(),
       completed: getCompleted(),
-      updated_at: new Date().toISOString()
+      display_name: currentProfile.display_name,
+      avatar: currentProfile.avatar,
+      updated_at: new Date().toISOString(),
+      ...(extra || {})
     });
   }catch(err){ console.warn('Sync vers le serveur impossible :', err); }
 }
@@ -906,8 +962,8 @@ async function logIn(email, password){
 async function logOut(){
   await sb.auth.signOut();
   currentUser = null;
-  renderAccount();
-  updatePointsBadge();
+  currentProfile = { display_name:null, avatar:'🙂' };
+  applyAuthGate();
 }
 async function sendPasswordReset(email){
   const { data, error } = await sb.auth.resetPasswordForEmail(email, {
@@ -919,6 +975,10 @@ async function changePassword(newPassword){
   const { data, error } = await sb.auth.updateUser({ password: newPassword });
   return { data, error };
 }
+async function saveProfile(name, avatar){
+  currentProfile = { display_name: name, avatar: avatar };
+  await syncToServer();
+}
 
 function renderAccount(){
   const body = document.getElementById('account-body');
@@ -926,12 +986,54 @@ function renderAccount(){
     body.innerHTML = `<p>Le système de compte n'est pas configuré sur ce serveur pour le moment.</p>`;
     return;
   }
+
+  // Cas 1 : connecté mais profil incomplet (pas encore de nom) → on bloque ici jusqu'à ce que ce soit fait
+  if(currentUser && !currentProfile.display_name){
+    body.innerHTML = `
+      <h2 style="font-family:'Cairo',sans-serif;">Bienvenue ! Une dernière étape 👋</h2>
+      <p style="font-size:13px;color:#6b6357;margin-bottom:14px;">Choisis un prénom et un avatar pour personnaliser ton expérience.</p>
+      <div class="auth-form">
+        <input type="text" id="profile-name-input" placeholder="Ton prénom">
+        <div class="avatar-picker" id="avatar-picker"></div>
+        <button id="save-profile-btn">Commencer l'apprentissage 🚀</button>
+        <div id="profile-msg"></div>
+      </div>`;
+    let chosenAvatar = AVATAR_CHOICES[0];
+    const picker = document.getElementById('avatar-picker');
+    AVATAR_CHOICES.forEach(a=>{
+      const btn = document.createElement('button');
+      btn.className = 'avatar-choice' + (a === chosenAvatar ? ' selected' : '');
+      btn.textContent = a;
+      btn.onclick = ()=>{
+        chosenAvatar = a;
+        picker.querySelectorAll('.avatar-choice').forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');
+      };
+      picker.appendChild(btn);
+    });
+    document.getElementById('save-profile-btn').onclick = async ()=>{
+      const name = document.getElementById('profile-name-input').value.trim();
+      const msg = document.getElementById('profile-msg');
+      if(!name){ msg.className='auth-msg error'; msg.textContent='Choisis un prénom pour continuer.'; return; }
+      await saveProfile(name, chosenAvatar);
+      applyAuthGate();
+    };
+    return;
+  }
+
+  // Cas 2 : connecté, profil complet → gestion du compte
   if(currentUser){
     body.innerHTML = `
       <div class="account-info">
-        <p><strong>Connecté</strong></p>
+        <p style="font-size:26px;">${currentProfile.avatar}</p>
+        <p><strong>${currentProfile.display_name}</strong></p>
         <p style="font-size:13px;color:#6b6357;">${currentUser.email}</p>
         <p style="font-size:12px;color:var(--palm);">✓ Ta progression est synchronisée sur tous tes appareils</p>
+      </div>
+      <div class="auth-form" style="margin-bottom:18px;">
+        <input type="text" id="edit-name-input" placeholder="Prénom" value="${currentProfile.display_name}">
+        <div class="avatar-picker" id="avatar-picker-edit"></div>
+        <button id="save-profile-edit-btn">Mettre à jour le profil</button>
       </div>
       <h3 style="font-family:'Cairo',sans-serif;font-size:15px;">Changer mon mot de passe</h3>
       <div class="auth-form">
@@ -941,6 +1043,26 @@ function renderAccount(){
       </div>
       <button class="logout-btn" style="margin-top:18px;" id="logout-btn-action">Se déconnecter</button>
     `;
+    let chosenAvatarEdit = currentProfile.avatar;
+    const pickerEdit = document.getElementById('avatar-picker-edit');
+    AVATAR_CHOICES.forEach(a=>{
+      const btn = document.createElement('button');
+      btn.className = 'avatar-choice' + (a === chosenAvatarEdit ? ' selected' : '');
+      btn.textContent = a;
+      btn.onclick = ()=>{
+        chosenAvatarEdit = a;
+        pickerEdit.querySelectorAll('.avatar-choice').forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');
+      };
+      pickerEdit.appendChild(btn);
+    });
+    document.getElementById('save-profile-edit-btn').onclick = async ()=>{
+      const name = document.getElementById('edit-name-input').value.trim();
+      if(!name) return;
+      await saveProfile(name, chosenAvatarEdit);
+      renderHomeGreeting();
+      renderAccount();
+    };
     document.getElementById('change-password-btn').onclick = async ()=>{
       const pwd = document.getElementById('new-password-input').value;
       const msg = document.getElementById('account-msg');
@@ -950,61 +1072,62 @@ function renderAccount(){
       msg.textContent = error ? error.message : 'Mot de passe mis à jour ✓';
     };
     document.getElementById('logout-btn-action').onclick = logOut;
-  } else {
-    body.innerHTML = `
-      <div class="auth-tabs">
-        <button class="auth-tab active" data-tab="signup">S'inscrire</button>
-        <button class="auth-tab" data-tab="login">Se connecter</button>
-      </div>
-      <div class="auth-form">
-        <input type="email" id="auth-email" placeholder="Adresse email">
-        <input type="password" id="auth-password" placeholder="Mot de passe (6 caractères min.)">
-        <button id="auth-submit-btn">S'inscrire</button>
-        <button class="auth-link" id="forgot-password-link">Mot de passe oublié ?</button>
-        <div id="auth-msg"></div>
-      </div>
-      <p style="font-size:11.5px;color:#9a9280;margin-top:16px;">Tu peux continuer sans compte — ta progression restera enregistrée sur cet appareil uniquement.</p>
-    `;
-    let mode = 'signup';
-    const submitBtn = document.getElementById('auth-submit-btn');
-    document.querySelectorAll('.auth-tab').forEach(tab=>{
-      tab.onclick = ()=>{
-        document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
-        tab.classList.add('active');
-        mode = tab.dataset.tab;
-        submitBtn.textContent = mode === 'signup' ? "S'inscrire" : 'Se connecter';
-      };
-    });
-    submitBtn.onclick = async ()=>{
-      const email = document.getElementById('auth-email').value.trim();
-      const password = document.getElementById('auth-password').value;
-      const msg = document.getElementById('auth-msg');
-      if(!email || password.length < 6){
-        msg.className = 'auth-msg error'; msg.textContent = 'Email valide + mot de passe (6 caractères min.) requis.';
-        return;
-      }
-      submitBtn.disabled = true;
-      const { data, error } = mode === 'signup' ? await signUp(email, password) : await logIn(email, password);
-      submitBtn.disabled = false;
-      if(error){
-        msg.className = 'auth-msg error'; msg.textContent = error.message;
-      } else if(mode === 'signup' && data.user && !data.session){
-        msg.className = 'auth-msg success'; msg.textContent = 'Compte créé ! Vérifie ta boîte mail pour confirmer ton adresse.';
-      } else {
-        currentUser = data.user;
-        await syncFromServer();
-        showScreen('screen-home');
-      }
-    };
-    document.getElementById('forgot-password-link').onclick = async ()=>{
-      const email = document.getElementById('auth-email').value.trim();
-      const msg = document.getElementById('auth-msg');
-      if(!email){ msg.className='auth-msg error'; msg.textContent='Renseigne ton email d\'abord.'; return; }
-      const { error } = await sendPasswordReset(email);
-      msg.className = error ? 'auth-msg error' : 'auth-msg success';
-      msg.textContent = error ? error.message : 'Email de réinitialisation envoyé ✓';
-    };
+    return;
   }
+
+  // Cas 3 : pas connecté → inscription / connexion
+  body.innerHTML = `
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="signup">S'inscrire</button>
+      <button class="auth-tab" data-tab="login">Se connecter</button>
+    </div>
+    <div class="auth-form">
+      <input type="email" id="auth-email" placeholder="Adresse email">
+      <input type="password" id="auth-password" placeholder="Mot de passe (6 caractères min.)">
+      <button id="auth-submit-btn">S'inscrire</button>
+      <button class="auth-link" id="forgot-password-link">Mot de passe oublié ?</button>
+      <div id="auth-msg"></div>
+    </div>
+  `;
+  let mode = 'signup';
+  const submitBtn = document.getElementById('auth-submit-btn');
+  document.querySelectorAll('.auth-tab').forEach(tab=>{
+    tab.onclick = ()=>{
+      document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      mode = tab.dataset.tab;
+      submitBtn.textContent = mode === 'signup' ? "S'inscrire" : 'Se connecter';
+    };
+  });
+  submitBtn.onclick = async ()=>{
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+    const msg = document.getElementById('auth-msg');
+    if(!email || password.length < 6){
+      msg.className = 'auth-msg error'; msg.textContent = 'Email valide + mot de passe (6 caractères min.) requis.';
+      return;
+    }
+    submitBtn.disabled = true;
+    const { data, error } = mode === 'signup' ? await signUp(email, password) : await logIn(email, password);
+    submitBtn.disabled = false;
+    if(error){
+      msg.className = 'auth-msg error'; msg.textContent = error.message;
+    } else if(mode === 'signup' && data.user && !data.session){
+      msg.className = 'auth-msg success'; msg.textContent = 'Compte créé ! Vérifie ta boîte mail pour confirmer ton adresse, puis reviens te connecter.';
+    } else {
+      currentUser = data.user;
+      await syncFromServer();
+      applyAuthGate();
+    }
+  };
+  document.getElementById('forgot-password-link').onclick = async ()=>{
+    const email = document.getElementById('auth-email').value.trim();
+    const msg = document.getElementById('auth-msg');
+    if(!email){ msg.className='auth-msg error'; msg.textContent='Renseigne ton email d\'abord.'; return; }
+    const { error } = await sendPasswordReset(email);
+    msg.className = error ? 'auth-msg error' : 'auth-msg success';
+    msg.textContent = error ? error.message : 'Email de réinitialisation envoyé ✓';
+  };
 }
 
 initAuth();
