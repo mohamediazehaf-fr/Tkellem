@@ -77,6 +77,16 @@ Playing a phrase used to take 1.5–2.5 s, essentially all of it TTS generation.
 
 **When adding a `speak()` call from a button, pass the button as the third argument.** `setAudioLoading()` swaps its 🔊 for a spinner and disables it during generation — the disable is not cosmetic, a double-click means a second paid generation. Automatic playback passes the bubble's replay button, which `addBubble()` returns for that purpose; calls with no button (quiz correction, translation panel) show nothing because their surrounding UI already reacted.
 
+### Pronunciation practice
+
+Every phrase in the phrasebook carries a 🎤 next to its 🔊. Tap to record (tap again, or wait 6 s, to stop) → `transcribeBlob()` → ElevenLabs STT in arabic → `gradePronunciation()` asks Claude (`task: 'pron'`, Haiku) to compare the transcript against the target and return `{level: 1|2|3, message, tip}`. Level 3 awards `PRON_POINTS` **once per phrase** (key `pron_<catId>_<index>` in `tkellem_completed`, so it can't be farmed) and ends the loop; levels 1–2 offer "réécouter le modèle" and "je réessaie", which is the retry loop the feature is built around. A phrase already nailed shows a green mic.
+
+**What this actually measures is intelligibility to a speech-to-text engine, not phonetics.** There is no phoneme scoring anywhere in the stack. A sloppy attempt that STT still resolves to the right word scores 3, and an isolated word with no sentence context can fail on a good attempt. Worth knowing before trusting a level, and before promising learners more precision than this design can deliver.
+
+The three levels live in `PRON_LEVELS` — wording is deliberately encouraging at every level, including the lowest, matching the kids-mode rules in `buildSystemPrompt()`. Keep it that way: the learner is meant to retry, not to feel judged.
+
+Recording is guarded by a single module-level `pronRecorder`, so two phrases can never record at once. The conversation screen's mic is a separate path (`setupSpeechRecognition()`) — the two share only `transcribeBlob()` and `blobToBase64()`.
+
 ### Client state and persistence
 
 `localStorage` is the working store; on login the Supabase `progress` row **overwrites** local values ([`syncFromServer`](public/index.html#L1331)), and first-ever login pushes guest progress up. `syncToServer()` upserts `{user_id, points, completed, display_name, avatar, avatar_url, updated_at}`. Avatar photos are resized to a 240 px square and uploaded to the storage bucket named `Avatar` at `{user_id}/avatar.jpg` ([here](public/index.html#L1420)).

@@ -230,10 +230,9 @@
   .pron-result.close .pron-head{color:var(--saffron-dark);}
   .pron-result.perfect .pron-head{color:var(--palm-dark);}
   .pron-tip{margin-top:5px;font-size:13.5px;color:#5c4a2a;}
-  .pron-heard{
-    margin-top:6px;font-size:12.5px;color:#7a7266;direction:rtl;text-align:right;
-    font-family:var(--font-arabic);
-  }
+  /* <bdi> isole la transcription arabe (RTL) dans une phrase française (LTR) */
+  .pron-heard{margin-top:6px;font-size:12.5px;color:#7a7266;}
+  .pron-heard bdi{font-family:var(--font-arabic);font-size:14px;}
   .pron-earned{margin-top:6px;font-weight:700;color:var(--palm-dark);}
   .pron-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px;}
   .pron-actions button{
@@ -2440,7 +2439,7 @@ function renderPronVerdict(verdict, heard, phrase, progressKey, feedbackEl, retr
       <div class="pron-head">${emojiImg(lvl.icon,16)} ${lvl.label}</div>
       <div class="pron-msg">${verdict.message}</div>
       ${verdict.tip ? `<div class="pron-tip">👂 ${verdict.tip}</div>` : ''}
-      <div class="pron-heard">Entendu : ${heard}</div>
+      <div class="pron-heard">Entendu : <bdi>${heard}</bdi></div>
       ${earned}
       ${perfect ? '' : `<div class="pron-actions">
         <button class="pron-listen">🔊 Réécouter le modèle</button>
