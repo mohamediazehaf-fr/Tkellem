@@ -1290,9 +1290,9 @@ async function uploadAvatarPhoto(file, statusEl){
     if(statusEl) statusEl.textContent = 'Envoi de la photo...';
     const blob = await resizeImageToSquare(file, 240);
     const path = `${currentUser.id}/avatar.jpg`;
-    const { error: uploadError } = await sb.storage.from('avatars').upload(path, blob, { upsert:true, contentType:'image/jpeg' });
+    const { error: uploadError } = await sb.storage.from('avatar').upload(path, blob, { upsert:true, contentType:'image/jpeg' });
     if(uploadError) throw uploadError;
-    const { data } = sb.storage.from('avatars').getPublicUrl(path);
+    const { data } = sb.storage.from('avatar').getPublicUrl(path);
     currentProfile.avatar_url = data.publicUrl + '?t=' + Date.now(); // évite le cache sur une mise à jour
     await syncToServer();
     if(statusEl) statusEl.textContent = '✓ Photo mise à jour';
