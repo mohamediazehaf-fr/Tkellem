@@ -70,6 +70,12 @@
     gap:12px;
     border-bottom:1px solid rgba(22,75,84,0.12);
   }
+  .brand{
+    display:flex;align-items:center;gap:12px;flex:1;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;
+    transition:transform .1s ease;
+  }
+  .brand:active{transform:scale(0.98);}
   .brand-mark{
     width:38px;height:38px;border-radius:10px;
     background:var(--zellige);
@@ -496,10 +502,12 @@
 <div class="app">
 
   <header class="top">
-    <div class="brand-mark">ت</div>
-    <div style="flex:1;">
-      <h1>Tkellem</h1>
-      <div class="sub">Apprends le Darija en le parlant</div>
+    <div class="brand" id="brand-home" title="Revenir à l'accueil">
+      <div class="brand-mark">ت</div>
+      <div>
+        <h1>Tkellem</h1>
+        <div class="sub">Apprends le Darija en le parlant</div>
+      </div>
     </div>
     <button class="account-btn" id="account-btn-header">👤</button>
     <button class="points-badge" id="points-badge-header">⭐ 0</button>
@@ -1731,6 +1739,18 @@ document.getElementById('back-to-home-2').onclick = ()=> showScreen('screen-home
 document.getElementById('back-to-home-3').onclick = ()=> showScreen('screen-home');
 document.getElementById('back-to-home-4').onclick = ()=> showScreen('screen-home');
 document.getElementById('back-to-home-5').onclick = ()=> showScreen('screen-home');
+
+// Le bandeau du haut (icône + titre) ramène à l'accueil depuis n'importe quel écran
+function goHome(){
+  // le portail de connexion et l'onboarding sont des passages obligés : on n'en sort pas par le bandeau
+  if(sb && (!currentUser || !currentProfile.display_name)) return;
+  if(document.getElementById('screen-onboarding').style.display !== 'none') return;
+  if('speechSynthesis' in window) speechSynthesis.cancel(); // l'avatar parlait peut-être encore
+  avatarAudio.pause();
+  showScreen('screen-home');
+}
+document.getElementById('brand-home').onclick = goHome;
+
 document.getElementById('account-btn-header').onclick = ()=>{ showScreen('screen-account'); renderAccount(); };
 document.getElementById('points-badge-header').onclick = ()=>{ showScreen('screen-progress'); renderProgress(); };
 
