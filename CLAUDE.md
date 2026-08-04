@@ -61,7 +61,17 @@ Four independent call sites hit `/api/chat`, each with its own ad-hoc prompt and
 
 Input: mic button → `MediaRecorder` (webm, 20 s auto-stop) → base64 → `/api/transcribe` → transcript fed into `handleUserInput()` ([setup](public/index.html#L1814)). A text field is always available as a fallback and is the only path when `MediaRecorder` is missing.
 
-Output: [`speak()`](public/index.html#L1574) posts to `/api/speak` and plays the mp3 through **one reused `Audio` element** (`avatarAudio`) — that reuse plus `unlockAudioOnce()` is what defeats mobile autoplay blocking, so don't replace it with fresh `new Audio()` per utterance. The voice is fixed, never user-selectable: [`loadVoices()`](public/index.html#L1608) searches the account for a voice named "Ghizlane" (then any darija/moroccan match) at boot. If that fails, `speakBrowserFallback()` uses `SpeechSynthesis` — reading the Arabic text when an Arabic voice exists, otherwise the latin transliteration.
+Output: [`speak(text, latin, btn)`](public/index.html#L1630) posts to `/api/speak` and plays the mp3 through **one reused `Audio` element** (`avatarAudio`) — that reuse plus `unlockAudioOnce()` is what defeats mobile autoplay blocking, so don't replace it with fresh `new Audio()` per utterance. The voice is fixed, never user-selectable: [`loadVoices()`](public/index.html#L1608) searches the account for a voice named "Ghizlane" (then any darija/moroccan match) at boot. If that fails, `speakBrowserFallback()` uses `SpeechSynthesis` — reading the Arabic text when an Arabic voice exists, otherwise the latin transliteration.
+
+### Audio latency
+
+Playing a phrase used to take 1.5–2.5 s, essentially all of it TTS generation. Three things address it, and they compose:
+
+- **Model.** `ELEVENLABS_TTS_MODEL` in [server.js](server.js), default `eleven_flash_v2_5` (built for real-time; also half the credits per character). `eleven_turbo_v2_5` is the middle ground and `eleven_multilingual_v2` the original, highest-quality, slowest option — one env var, three points on the quality/speed curve. Judge it by ear on arabic: voice quality *is* the product here.
+- **Streaming.** `/api/speak` calls ElevenLabs' `/stream` endpoint and pipes the body through with `Readable.fromWeb()` instead of buffering the whole mp3, so generation and both transfers overlap. Headers are already sent by then, hence the stream `error` handler that just ends the response.
+- **Client cache.** `audioCache` (60 entries, LRU-ish, blob URLs revoked on eviction) keyed by `voiceId|text`. The phrasebook, quiz words, scenario openings and every "Réécouter" replay the *same* strings, so second and later plays are instant and cost nothing. `playAudioUrl()` resets `currentTime` when the same URL is replayed — without that, re-clicking a cached phrase would silently do nothing.
+
+**When adding a `speak()` call from a button, pass the button as the third argument.** `setAudioLoading()` swaps its 🔊 for a spinner and disables it during generation — the disable is not cosmetic, a double-click means a second paid generation. Automatic playback passes the bubble's replay button, which `addBubble()` returns for that purpose; calls with no button (quiz correction, translation panel) show nothing because their surrounding UI already reacted.
 
 ### Client state and persistence
 

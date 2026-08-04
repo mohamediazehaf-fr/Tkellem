@@ -428,6 +428,15 @@
   }
   .mic-wrap.listening .mic-ring{opacity:1;}
   @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* Indicateur de chargement audio : remplace le 🔊 du bouton pendant la
+     génération de la voix, sans décaler le reste du libellé */
+  .audio-spinner{
+    display:inline-block;width:13px;height:13px;vertical-align:-2px;
+    border:2px solid currentColor;border-top-color:transparent;border-radius:50%;
+    animation:spin .7s linear infinite;
+  }
+  .audio-loading{opacity:.7;cursor:progress;}
   .mic-btn{
     position:absolute;inset:5px;border-radius:50%;
     background:var(--henna);color:#fff;border:none;
@@ -1571,9 +1580,63 @@ function speakBrowserFallback(text, latinText){
   speechSynthesis.speak(u);
 }
 
-async function speak(text, latinText){
+// ---------------------------------------------------------------
+// CACHE DES AUDIOS DÉJÀ GÉNÉRÉS — le carnet de phrases, le quiz et les
+// boutons "Réécouter" rejouent toujours les mêmes textes : inutile de
+// les faire régénérer par ElevenLabs (2e écoute instantanée et gratuite)
+// ---------------------------------------------------------------
+const audioCache = new Map(); // "voix|texte" -> objectURL
+const AUDIO_CACHE_MAX = 60;
+
+function cacheAudio(key, url){
+  if(audioCache.size >= AUDIO_CACHE_MAX){
+    const oldest = audioCache.keys().next().value;
+    URL.revokeObjectURL(audioCache.get(oldest));
+    audioCache.delete(oldest);
+  }
+  audioCache.set(key, url);
+}
+
+function playAudioUrl(url){
+  if(avatarAudio.src === url){
+    avatarAudio.currentTime = 0; // même phrase rejouée : on repart du début
+  } else {
+    avatarAudio.src = url;
+  }
+  return avatarAudio.play().catch(err=>console.warn('Lecture audio bloquée :', err));
+}
+
+// ---------------------------------------------------------------
+// INDICATEUR DE CHARGEMENT sur le bouton qui a déclenché l'audio
+// ---------------------------------------------------------------
+const SPINNER_HTML = '<span class="audio-spinner"></span>';
+
+function setAudioLoading(btn, loading){
+  if(!btn) return;
+  if(loading){
+    if(btn.dataset.audioIdle === undefined) btn.dataset.audioIdle = btn.innerHTML;
+    btn.innerHTML = btn.dataset.audioIdle.includes('🔊')
+      ? btn.dataset.audioIdle.replace('🔊', SPINNER_HTML)
+      : SPINNER_HTML;
+    btn.disabled = true; // un double-clic relancerait une génération payante
+    btn.classList.add('audio-loading');
+  } else if(btn.dataset.audioIdle !== undefined){
+    btn.innerHTML = btn.dataset.audioIdle;
+    btn.disabled = false;
+    btn.classList.remove('audio-loading');
+  }
+}
+
+async function speak(text, latinText, btn){
+  setAudioLoading(btn, true);
   try{
     if(elevenLabsVoiceId){
+      const key = elevenLabsVoiceId + '|' + text;
+      const cached = audioCache.get(key);
+      if(cached){
+        await playAudioUrl(cached);
+        return;
+      }
       try{
         const res = await fetch('/api/speak', {
           method:'POST',
@@ -1586,8 +1649,8 @@ async function speak(text, latinText){
         }
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
-        avatarAudio.src = url;
-        avatarAudio.play().catch(err=>console.warn('Lecture audio bloquée :', err));
+        cacheAudio(key, url);
+        await playAudioUrl(url);
         return;
       }catch(err){
         console.warn('Voix serveur indisponible, repli sur voix navigateur:', err.message || err);
@@ -1599,6 +1662,8 @@ async function speak(text, latinText){
     speakBrowserFallback(text, latinText);
   }catch(outerErr){
     console.warn('Synthèse vocale indisponible :', outerErr);
+  }finally{
+    setAudioLoading(btn, false); // quel que soit le chemin, le bouton retrouve son état
   }
 }
 
@@ -1697,10 +1762,10 @@ function startScenario(s, forceRestart){
     document.getElementById('status-text').textContent = "Conversation reprise là où tu l'avais laissée";
   } else {
     history = [];
-    addBubble('avatar', s.opening.ar, s.opening.latin, s.opening.fr);
+    const openingBtn = addBubble('avatar', s.opening.ar, s.opening.latin, s.opening.fr);
     history.push({role:'avatar', ...s.opening});
     saveHistory();
-    speak(s.opening.ar, s.opening.latin);
+    speak(s.opening.ar, s.opening.latin, openingBtn);
   }
   setupSpeechRecognition();
 }
@@ -1770,9 +1835,11 @@ function addBubble(role, ar, latin, fr){
       <div class="fr">${fr}</div>
       <button class="replay">🔊 Réécouter</button>
     </div>`;
-  b.querySelector('.replay').onclick = ()=> speak(ar, latin);
+  const replayBtn = b.querySelector('.replay');
+  replayBtn.onclick = ()=> speak(ar, latin, replayBtn);
   t.appendChild(b);
   t.scrollTop = t.scrollHeight;
+  return replayBtn; // sert aussi d'indicateur de chargement pour la lecture automatique
 }
 
 function addCoachNote(message, phrase){
@@ -1784,7 +1851,8 @@ function addCoachNote(message, phrase){
     : '';
   d.innerHTML = `<span class="coach-icon">📘</span><div><span>${message}</span>${replayBtn}</div>`;
   if(phrase && phrase.ar){
-    d.querySelector('.coach-replay').onclick = ()=> speak(phrase.ar, phrase.latin);
+    const coachBtn = d.querySelector('.coach-replay');
+    coachBtn.onclick = ()=> speak(phrase.ar, phrase.latin, coachBtn);
   }
   t.appendChild(d);
   t.scrollTop = t.scrollHeight;
@@ -1940,10 +2008,10 @@ async function callAvatarAPI(){
     if(parsed.feedback){
       addCoachNote(parsed.feedback, parsed.feedback_phrase);
     }
-    addBubble('avatar', parsed.darija_ar, parsed.darija_latin, parsed.french);
+    const replayBtn = addBubble('avatar', parsed.darija_ar, parsed.darija_latin, parsed.french);
     history.push({role:'avatar', ar:parsed.darija_ar, latin:parsed.darija_latin, fr:parsed.french});
     saveHistory();
-    speak(parsed.darija_ar, parsed.darija_latin);
+    speak(parsed.darija_ar, parsed.darija_latin, replayBtn);
 
     // première fois que cette conversation atteint une longueur significative : on la compte comme "pratiquée"
     const scenarioProgressKey = 'scenario_' + currentScenario.id;
@@ -2110,7 +2178,8 @@ function openPhrasebookCategory(cat){
         <div class="fr">${p.fr}</div>
       </div>
       <button class="listen-btn">🔊</button>`;
-    item.querySelector('.listen-btn').onclick = ()=> speak(p.ar, p.latin);
+    const listenBtn = item.querySelector('.listen-btn');
+    listenBtn.onclick = ()=> speak(p.ar, p.latin, listenBtn);
     list.appendChild(item);
   });
   const doneAlready = isCompleted('phrasebook_' + cat.id);

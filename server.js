@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const { Readable } = require('stream');
 
 const app = express();
 app.use(express.json({ limit: '8mb' }));
@@ -81,6 +82,15 @@ function logUsage(task, model, usage){
     + ` cache_write=${usage.cache_creation_input_tokens || 0}`
     + ` out=${usage.output_tokens}`);
 }
+
+// ---------------------------------------------------------------
+// LATENCE DE LA VOIX (ElevenLabs)
+// multilingual_v2 génère tout le fichier avant de répondre, d'où 1,5 à
+// 2,5 s d'attente. Les modèles "flash" sont conçus pour le temps réel.
+// ELEVENLABS_TTS_MODEL=eleven_multilingual_v2 rétablit l'ancien modèle
+// si la qualité de voix te paraît en baisse.
+// ---------------------------------------------------------------
+const TTS_MODEL = process.env.ELEVENLABS_TTS_MODEL || 'eleven_flash_v2_5';
 
 // ---------------------------------------------------------------
 // Conversation avec l'avatar (Claude)
@@ -182,7 +192,9 @@ app.post('/api/speak', async (req, res) => {
     if (!text || !voice_id) {
       return res.status(400).json({ error: 'text et voice_id sont requis.' });
     }
-    const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice_id}`, {
+    // endpoint /stream : ElevenLabs renvoie l'audio au fur et à mesure qu'il le
+    // génère, au lieu d'attendre le fichier complet
+    const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice_id}/stream`, {
       method: 'POST',
       headers: {
         'xi-api-key': ELEVENLABS_API_KEY,
@@ -191,7 +203,7 @@ app.post('/api/speak', async (req, res) => {
       },
       body: JSON.stringify({
         text,
-        model_id: 'eleven_multilingual_v2',
+        model_id: TTS_MODEL,
         voice_settings: { stability: 0.45, similarity_boost: 0.8 }
       })
     });
@@ -200,9 +212,15 @@ app.post('/api/speak', async (req, res) => {
       console.error('Erreur ElevenLabs:', errText);
       return res.status(r.status).send(errText);
     }
-    const buffer = Buffer.from(await r.arrayBuffer());
+    // on réémet le flux au lieu de le bufferiser : les deux transferts
+    // (ElevenLabs→serveur et serveur→navigateur) se chevauchent
     res.set('Content-Type', 'audio/mpeg');
-    res.send(buffer);
+    const audioStream = Readable.fromWeb(r.body);
+    audioStream.on('error', (err) => {
+      console.error('Erreur flux ElevenLabs:', err); // en-têtes déjà envoyés, on coupe
+      res.end();
+    });
+    audioStream.pipe(res);
   } catch (err) {
     console.error('Erreur /api/speak:', err);
     res.status(500).json({ error: err.message });
