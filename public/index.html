@@ -121,6 +121,20 @@
     font-size:20px;cursor:pointer;
   }
   .avatar-choice.selected{border-color:var(--saffron);background:var(--card-bg);}
+  .photo-upload-row{display:flex;align-items:center;gap:12px;margin-bottom:4px;}
+  .photo-preview{
+    width:60px;height:60px;border-radius:50%;background:var(--cream);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid var(--saffron);
+  }
+  .photo-pick-btn{
+    background:var(--zellige);color:#fff;border:none;border-radius:10px;padding:8px 12px;
+    font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font-body);
+  }
+  .photo-remove-btn{
+    background:none;border:none;color:var(--henna-dark);font-size:11.5px;cursor:pointer;
+    margin-left:8px;text-decoration:underline;font-family:var(--font-body);
+  }
+  .photo-status{font-size:11px;color:#8a8272;margin-top:4px;}
   .back-inline{
     background:none;border:none;color:var(--zellige-light);font-size:13px;
     cursor:pointer;padding:0;margin-bottom:14px;font-weight:600;
@@ -1104,6 +1118,15 @@ function emojiImg(emoji, sizePx){
   return `<img src="${twemojiUrl(emoji)}" alt="${emoji}" style="width:${size}px;height:${size}px;vertical-align:middle;display:inline-block;" loading="lazy" onerror="this.style.display='none';this.insertAdjacentText('afterend','${emoji}');">`;
 }
 
+// Affiche la photo de profil si elle existe, sinon l'emoji choisi
+function avatarHtml(profile, sizePx){
+  const size = sizePx || 24;
+  if(profile && profile.avatar_url){
+    return `<img src="${profile.avatar_url}" alt="avatar" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;vertical-align:middle;display:inline-block;">`;
+  }
+  return emojiImg((profile && profile.avatar) || '🙂', size);
+}
+
 const AVATAR_CHOICES = [
   '🙂','😎','🤠','😊','🥳','🤓','😇','🙃',
   '👨','👩','🧑','👨🏽','👩🏽','👨🏿','👩🏿','👨🏻','👩🏻',
@@ -1111,7 +1134,7 @@ const AVATAR_CHOICES = [
   '🐐','🦁','🐫','🐱','🐶','🦉',
   '🌙','⭐','🌵','🔥','🎨','⚽'
 ];
-let currentProfile = { display_name:null, avatar:'🙂' };
+let currentProfile = { display_name:null, avatar:'🙂', avatar_url:null };
 
 async function initAuth(){
   if(!sb){ applyAuthGate(); return; } // pas de Supabase configuré : on n'impose pas le portail
@@ -1154,7 +1177,7 @@ function applyAuthGate(){
 function renderHomeGreeting(){
   const el = document.getElementById('home-greeting');
   if(currentUser && currentProfile.display_name){
-    el.innerHTML = `<span class="avatar-circle">${emojiImg(currentProfile.avatar || '🙂', 26)}</span> Bonjour ${currentProfile.display_name}, ravi de te retrouver !`;
+    el.innerHTML = `<span class="avatar-circle">${avatarHtml(currentProfile, 26)}</span> Bonjour ${currentProfile.display_name}, ravi de te retrouver !`;
     touchStreak();
     checkNewBadges();
   } else {
@@ -1166,7 +1189,7 @@ function renderHomeGreeting(){
 function updateHeaderAvatar(){
   const btn = document.getElementById('account-btn-header');
   if(currentUser && currentProfile.avatar){
-    btn.innerHTML = emojiImg(currentProfile.avatar, 20);
+    btn.innerHTML = avatarHtml(currentProfile, 20);
   } else {
     btn.textContent = '👤';
   }
@@ -1180,7 +1203,7 @@ async function syncFromServer(){
       // le serveur devient la référence : on écrase les valeurs locales
       localStorage.setItem('tkellem_points', String(data.points || 0));
       localStorage.setItem('tkellem_completed', JSON.stringify(data.completed || []));
-      currentProfile = { display_name: data.display_name || null, avatar: data.avatar || '🙂' };
+      currentProfile = { display_name: data.display_name || null, avatar: data.avatar || '🙂', avatar_url: data.avatar_url || null };
     } else {
       // première connexion : on envoie la progression locale existante (mode invité) vers le serveur
       await sb.from('progress').upsert({
@@ -1189,7 +1212,7 @@ async function syncFromServer(){
         completed: getCompleted(),
         updated_at: new Date().toISOString()
       });
-      currentProfile = { display_name:null, avatar:'🙂' };
+      currentProfile = { display_name:null, avatar:'🙂', avatar_url:null };
     }
   }catch(err){ console.warn('Sync depuis le serveur impossible :', err); }
 }
@@ -1203,6 +1226,7 @@ async function syncToServer(extra){
       completed: getCompleted(),
       display_name: currentProfile.display_name,
       avatar: currentProfile.avatar,
+      avatar_url: currentProfile.avatar_url,
       updated_at: new Date().toISOString(),
       ...(extra || {})
     });
@@ -1234,8 +1258,49 @@ async function changePassword(newPassword){
   return { data, error };
 }
 async function saveProfile(name, avatar){
-  currentProfile = { display_name: name, avatar: avatar };
+  currentProfile = { display_name: name, avatar: avatar, avatar_url: currentProfile.avatar_url || null };
   await syncToServer();
+}
+
+// Redimensionne/recadre une image en carré avant upload, pour rester léger
+function resizeImageToSquare(file, size){
+  return new Promise((resolve, reject)=>{
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = (e)=>{ img.src = e.target.result; };
+    reader.onerror = reject;
+    img.onload = ()=>{
+      const canvas = document.createElement('canvas');
+      canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      const minSide = Math.min(img.width, img.height);
+      const sx = (img.width - minSide) / 2;
+      const sy = (img.height - minSide) / 2;
+      ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+      canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Conversion impossible')), 'image/jpeg', 0.85);
+    };
+    img.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function uploadAvatarPhoto(file, statusEl){
+  if(!sb || !currentUser){ if(statusEl) statusEl.textContent = 'Connecte-toi pour ajouter une photo.'; return; }
+  try{
+    if(statusEl) statusEl.textContent = 'Envoi de la photo...';
+    const blob = await resizeImageToSquare(file, 240);
+    const path = `${currentUser.id}/avatar.jpg`;
+    const { error: uploadError } = await sb.storage.from('avatars').upload(path, blob, { upsert:true, contentType:'image/jpeg' });
+    if(uploadError) throw uploadError;
+    const { data } = sb.storage.from('avatars').getPublicUrl(path);
+    currentProfile.avatar_url = data.publicUrl + '?t=' + Date.now(); // évite le cache sur une mise à jour
+    await syncToServer();
+    if(statusEl) statusEl.textContent = '✓ Photo mise à jour';
+    return currentProfile.avatar_url;
+  }catch(err){
+    console.error('Erreur upload avatar:', err);
+    if(statusEl) statusEl.textContent = "Impossible d'envoyer la photo (" + (err.message||'erreur') + ")";
+  }
 }
 
 function renderAccount(){
@@ -1252,6 +1317,15 @@ function renderAccount(){
       <p style="font-size:13px;color:#6b6357;margin-bottom:14px;">Choisis un prénom et un avatar pour personnaliser ton expérience.</p>
       <div class="auth-form">
         <input type="text" id="profile-name-input" placeholder="Ton prénom">
+        <div class="photo-upload-row">
+          <div class="photo-preview" id="photo-preview-create">${avatarHtml(currentProfile, 60)}</div>
+          <div>
+            <button type="button" class="photo-pick-btn" id="photo-pick-btn-create">📷 Prendre/choisir une photo</button>
+            <input type="file" accept="image/*" id="photo-file-create" style="display:none;">
+            <div id="photo-status-create" class="photo-status"></div>
+          </div>
+        </div>
+        <p style="font-size:11.5px;color:#9a9280;margin:4px 0 2px;">...ou choisis simplement un emoji :</p>
         <div class="avatar-picker" id="avatar-picker"></div>
         <button id="save-profile-btn">Commencer l'apprentissage 🚀</button>
         <div id="profile-msg"></div>
@@ -1269,6 +1343,14 @@ function renderAccount(){
       };
       picker.appendChild(btn);
     });
+    document.getElementById('photo-pick-btn-create').onclick = ()=> document.getElementById('photo-file-create').click();
+    document.getElementById('photo-file-create').onchange = async (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      const statusEl = document.getElementById('photo-status-create');
+      const url = await uploadAvatarPhoto(file, statusEl);
+      if(url) document.getElementById('photo-preview-create').innerHTML = avatarHtml(currentProfile, 60);
+    };
     document.getElementById('save-profile-btn').onclick = async ()=>{
       const name = document.getElementById('profile-name-input').value.trim();
       const msg = document.getElementById('profile-msg');
@@ -1288,13 +1370,23 @@ function renderAccount(){
   if(currentUser){
     body.innerHTML = `
       <div class="account-info">
-        <p style="font-size:26px;">${emojiImg(currentProfile.avatar,32)}</p>
+        <p style="font-size:26px;">${avatarHtml(currentProfile,48)}</p>
         <p><strong>${currentProfile.display_name}</strong></p>
         <p style="font-size:13px;color:#6b6357;">${currentUser.email}</p>
         <p style="font-size:12px;color:var(--palm);">✓ Ta progression est synchronisée sur tous tes appareils</p>
       </div>
       <div class="auth-form" style="margin-bottom:18px;">
         <input type="text" id="edit-name-input" placeholder="Prénom" value="${currentProfile.display_name}">
+        <div class="photo-upload-row">
+          <div class="photo-preview" id="photo-preview-edit">${avatarHtml(currentProfile, 60)}</div>
+          <div>
+            <button type="button" class="photo-pick-btn" id="photo-pick-btn-edit">📷 Prendre/choisir une photo</button>
+            ${currentProfile.avatar_url ? '<button type="button" class="photo-remove-btn" id="photo-remove-btn">✕ Retirer la photo</button>' : ''}
+            <input type="file" accept="image/*" id="photo-file-edit" style="display:none;">
+            <div id="photo-status-edit" class="photo-status"></div>
+          </div>
+        </div>
+        <p style="font-size:11.5px;color:#9a9280;margin:4px 0 2px;">...ou choisis un emoji :</p>
         <div class="avatar-picker" id="avatar-picker-edit"></div>
         <button id="save-profile-edit-btn">Mettre à jour le profil</button>
       </div>
@@ -1306,6 +1398,27 @@ function renderAccount(){
       </div>
       <button class="logout-btn" style="margin-top:18px;" id="logout-btn-action">Se déconnecter</button>
     `;
+    document.getElementById('photo-pick-btn-edit').onclick = ()=> document.getElementById('photo-file-edit').click();
+    document.getElementById('photo-file-edit').onchange = async (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      const statusEl = document.getElementById('photo-status-edit');
+      const url = await uploadAvatarPhoto(file, statusEl);
+      if(url){
+        document.getElementById('photo-preview-edit').innerHTML = avatarHtml(currentProfile, 60);
+        renderHomeGreeting();
+        renderAccount();
+      }
+    };
+    const removeBtn = document.getElementById('photo-remove-btn');
+    if(removeBtn){
+      removeBtn.onclick = async ()=>{
+        currentProfile.avatar_url = null;
+        await syncToServer();
+        renderHomeGreeting();
+        renderAccount();
+      };
+    }
     let chosenAvatarEdit = currentProfile.avatar;
     const pickerEdit = document.getElementById('avatar-picker-edit');
     AVATAR_CHOICES.forEach(a=>{
@@ -2223,7 +2336,9 @@ function updateOnboardingNav(){
 
 function finishOnboarding(){
   localStorage.setItem('tkellem_onboarding_done', '1');
-  applyAuthGate();
+  renderHomeGreeting();
+  updatePointsBadge();
+  showScreen('screen-home');
 }
 
 document.getElementById('onboarding-next-btn').onclick = ()=>{
