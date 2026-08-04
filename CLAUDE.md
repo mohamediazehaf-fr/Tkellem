@@ -8,10 +8,10 @@ The application is **not** at the workspace root — it lives in this directory 
 
 ```
 Tkellem/
-  server.js              # Express API-key proxy (134 lines) — the entire backend
+  server.js              # Express API-key proxy (~230 lines) — the entire backend
   package.json           # express only; node >= 18
   public/
-    index.html           # the entire frontend: HTML + CSS + JS inline (~2340 lines)
+    index.html           # the entire frontend: HTML + CSS + JS inline (~2530 lines)
     index[1].html        # STALE earlier prototype — see Gotchas
     manifest.json        # PWA manifest
     icons/               # 180/192/512 png
@@ -39,29 +39,29 @@ Two files carry the whole app, and the split between them is the key thing to un
 
 | Endpoint | Forwards to | Notes |
 |---|---|---|
-| `POST /api/chat` | Anthropic Messages API | model hardcoded at [server.js:28](server.js#L28), `max_tokens: 1000`; body is `{system, messages}` passed through verbatim |
+| `POST /api/chat` | Anthropic Messages API | body is `{system, messages, task}`; `buildChatPayload()` picks model / `max_tokens` / effort / caching from `TASK_PROFILES` — see Token cost strategy |
 | `GET /api/voices` | ElevenLabs `/v1/voices` | returns `{voices: []}` when the key is unset, so the client can degrade |
 | `POST /api/transcribe` | ElevenLabs speech-to-text | `{audio_base64, mime_type}` → `scribe_v2`, `language_code: 'ar'` → `{text}` |
-| `POST /api/speak` | ElevenLabs text-to-speech | `{text, voice_id}` → `eleven_multilingual_v2` → raw `audio/mpeg` |
+| `POST /api/speak` | ElevenLabs text-to-speech `/stream` | `{text, voice_id}` → `TTS_MODEL` → `audio/mpeg` piped straight through — see Audio latency |
 
-**Supabase is called directly from the browser and bypasses the Node server entirely** ([index.html:1106](public/index.html#L1106) holds the project URL and publishable key inline). Auth, progress sync, and avatar upload never touch `server.js`. So a request either goes through the proxy (Claude, ElevenLabs) or straight to Supabase — never both.
+**Supabase is called directly from the browser and bypasses the Node server entirely** ([index.html:1191](public/index.html#L1191) holds the project URL and publishable key inline). Auth, progress sync, and avatar upload never touch `server.js`. So a request either goes through the proxy (Claude, ElevenLabs) or straight to Supabase — never both.
 
 ### The Claude contract: JSON smuggled through free text
 
-There is no structured-output enforcement. [`buildSystemPrompt()`](public/index.html#L1975) instructs the model to emit *only* a JSON object (`darija_ar`, `darija_latin`, `french`, `feedback`, `feedback_phrase`), and [`callAvatarAPI()`](public/index.html#L1921) recovers it with `raw.match(/\{[\s\S]*\}/)` + `JSON.parse`. **Prompt and parser are coupled** — changing the response shape means editing both, and a malformed reply surfaces as a retry bubble ([`addErrorBubble`](public/index.html#L1961)) rather than a crash.
+There is no structured-output enforcement. [`buildSystemPrompt()`](public/index.html#L2133) instructs the model to emit *only* a JSON object (`darija_ar`, `darija_latin`, `french`, `feedback`, `feedback_phrase`), and [`callAvatarAPI()`](public/index.html#L2078) recovers it with `raw.match(/\{[\s\S]*\}/)` + `JSON.parse`. **Prompt and parser are coupled** — changing the response shape means editing both, and a malformed reply surfaces as a retry bubble ([`addErrorBubble`](public/index.html#L2119)) rather than a crash.
 
 Four independent call sites hit `/api/chat`, each with its own ad-hoc prompt and its own parsing quirk — don't assume one shared helper:
 
-- [`callAvatarAPI()`](public/index.html#L1921) — the role-play turn; the only one that sends `system` and the conversation `history`
-- [hint button](public/index.html#L2008) — one-shot suggestion, strips ` ```json ` fences
-- [`runTranslation()`](public/index.html#L2044) — FR→darija, deliberately **not** appended to `history`
-- [`submitQuizAnswer()`](public/index.html#L2187) — uses Claude as a fuzzy grader for quiz answers
+- [`callAvatarAPI()`](public/index.html#L2078) — the role-play turn; the only one that sends `system` and the conversation `history`
+- [hint button](public/index.html#L2166) — one-shot suggestion, strips ` ```json ` fences
+- [`runTranslation()`](public/index.html#L2203) — FR→darija, deliberately **not** appended to `history`
+- [`submitQuizAnswer()`](public/index.html#L2355) — uses Claude as a fuzzy grader for quiz answers
 
 ### Voice pipeline
 
-Input: mic button → `MediaRecorder` (webm, 20 s auto-stop) → base64 → `/api/transcribe` → transcript fed into `handleUserInput()` ([setup](public/index.html#L1814)). A text field is always available as a fallback and is the only path when `MediaRecorder` is missing.
+Input: mic button → `MediaRecorder` (webm, 20 s auto-stop) → base64 → `/api/transcribe` → transcript fed into `handleUserInput()` ([setup](public/index.html#L1971)). A text field is always available as a fallback and is the only path when `MediaRecorder` is missing.
 
-Output: [`speak(text, latin, btn)`](public/index.html#L1630) posts to `/api/speak` and plays the mp3 through **one reused `Audio` element** (`avatarAudio`) — that reuse plus `unlockAudioOnce()` is what defeats mobile autoplay blocking, so don't replace it with fresh `new Audio()` per utterance. The voice is fixed, never user-selectable: [`loadVoices()`](public/index.html#L1608) searches the account for a voice named "Ghizlane" (then any darija/moroccan match) at boot. If that fails, `speakBrowserFallback()` uses `SpeechSynthesis` — reading the Arabic text when an Arabic voice exists, otherwise the latin transliteration.
+Output: [`speak(text, latin, btn)`](public/index.html#L1719) posts to `/api/speak` and plays the mp3 through **one reused `Audio` element** (`avatarAudio`) — that reuse plus `unlockAudioOnce()` is what defeats mobile autoplay blocking, so don't replace it with fresh `new Audio()` per utterance. The voice is fixed, never user-selectable: [`loadVoices()`](public/index.html#L1762) searches the account for a voice named "Ghizlane" (then any darija/moroccan match) at boot. If that fails, `speakBrowserFallback()` uses `SpeechSynthesis` — reading the Arabic text when an Arabic voice exists, otherwise the latin transliteration.
 
 ### Audio latency
 
@@ -75,15 +75,15 @@ Playing a phrase used to take 1.5–2.5 s, essentially all of it TTS generation.
 
 ### Client state and persistence
 
-`localStorage` is the working store; on login the Supabase `progress` row **overwrites** local values ([`syncFromServer`](public/index.html#L1204)), and first-ever login pushes guest progress up. `syncToServer()` upserts `{user_id, points, completed, display_name, avatar, avatar_url, updated_at}`. Avatar photos are resized to a 240 px square and uploaded to the storage bucket named `Avatar` at `{user_id}/avatar.jpg` ([here](public/index.html#L1293)).
+`localStorage` is the working store; on login the Supabase `progress` row **overwrites** local values ([`syncFromServer`](public/index.html#L1302)), and first-ever login pushes guest progress up. `syncToServer()` upserts `{user_id, points, completed, display_name, avatar, avatar_url, updated_at}`. Avatar photos are resized to a 240 px square and uploaded to the storage bucket named `Avatar` at `{user_id}/avatar.jpg` ([here](public/index.html#L1391)).
 
 Keys: `tkellem_points`, `tkellem_completed` (array of `phrasebook_*` / `scenario_*` / `quiz_perfect` ids), `tkellem_streak`, `tkellem_last_active`, `tkellem_badges_seen`, `tkellem_onboarding_done`, and `tkellem_history_<scenarioId>` (one saved transcript per scenario, which is why cards show a "resume" state).
 
-When Supabase is reachable, [`applyAuthGate()`](public/index.html#L1160) forces the account screen until the user is signed in **and** has a `display_name`; when `window.supabase` failed to load, the whole gate is skipped and the app runs guest-only.
+When Supabase is reachable, [`applyAuthGate()`](public/index.html#L1255) forces the account screen until the user is signed in **and** has a `display_name`; when `window.supabase` failed to load, the whole gate is skipped and the app runs guest-only.
 
 ### Navigation
 
-Single page, eight sibling `<div id="screen-*">` blocks toggled by [`showScreen()`](public/index.html#L1726) against `ALL_SCREENS` — no router, no history API. Adding a screen means adding the div, the id to `ALL_SCREENS`, and its back-button wiring.
+Single page, eight sibling `<div id="screen-*">` blocks toggled by [`showScreen()`](public/index.html#L1880) against `ALL_SCREENS` — no router, no history API. Adding a screen means adding the div, the id to `ALL_SCREENS`, and its back-button wiring.
 
 **Every screen starts hidden, so the page has no body until `applyAuthGate()` picks one.** That makes the boot path load-bearing: `initAuth()` must reach `applyAuthGate({initial:true})` on every route, including when `getSession()` throws (hence the try/catch) and when `window.supabase` never loaded. The `initial` flag exists because the post-boot calls deliberately do *not* move the user — Supabase fires `onAuthStateChange` on token refresh, and without that distinction a refresh mid-conversation would yank them to home. A blank page under the header is the signature of this path failing.
 
@@ -173,19 +173,19 @@ Cap `history` before sending; a scenario arc is 5 steps, so ~20 messages is alre
 
 All learning content is plain `const` arrays near the top of the script block — no CMS, no fetch:
 
-- [`SCENARIOS`](public/index.html#L647) — 15 role-plays as `{mode, id, icon, name, role, desc, persona, opening:{ar,latin,fr}}`. `persona` is the per-scenario system prompt and encodes a numbered conversational arc the model should advance through. `mode` is `'standard'` (11) or `'kids'` (4) and drives the tab filter plus extra gentle-feedback rules in `buildSystemPrompt()`; omitting it is safe — [line 883](public/index.html#L883) defaults it to `'standard'`.
-- [`PHRASEBOOK`](public/index.html#L888) — 6 categories of `{ar, latin, fr}` phrases
-- [`QUIZ_ITEMS`](public/index.html#L961) — 12 emoji→word items (emoji used as illustration to avoid image licensing)
-- [`BADGES`](public/index.html#L1007) — each has a `check(completed, streak)` predicate evaluated against the ids in `tkellem_completed`
-- [`ONBOARDING_SLIDES`](public/index.html#L2310) — shown once, gated by `tkellem_onboarding_done`
+- [`SCENARIOS`](public/index.html#L665) — 15 role-plays as `{mode, id, icon, name, role, desc, persona, opening:{ar,latin,fr}}`. `persona` is the per-scenario system prompt and encodes a numbered conversational arc the model should advance through. `mode` is `'standard'` (11) or `'kids'` (4) and drives the tab filter plus extra gentle-feedback rules in `buildSystemPrompt()`; omitting it is safe — [line 901](public/index.html#L901) defaults it to `'standard'`.
+- [`PHRASEBOOK`](public/index.html#L906) — 10 categories of `{ar, latin, fr}` phrases. Two optional per-category fields: `note` (a construction rule rendered as a highlighted block above the list — used by the number categories so the learner grasps the *system* rather than memorising a list; rendered with `innerHTML`, so it may contain `<strong>` but must stay author-written) and `advanced: true`. **Advanced categories are excluded from `CORE_PHRASEBOOK`**, which is what the guided path's step 1 and the `b_all_phrasebook` badge count — otherwise every content addition would lengthen the guided path and revoke a badge users had already earned. The progress stat tile deliberately counts *all* categories (`phrasebookDoneAll`), so the two numbers differ by design
+- [`QUIZ_ITEMS`](public/index.html#L1046) — 12 emoji→word items (emoji used as illustration to avoid image licensing)
+- [`BADGES`](public/index.html#L1092) — each has a `check(completed, streak)` predicate evaluated against the ids in `tkellem_completed`
+- [`ONBOARDING_SLIDES`](public/index.html#L2481) — shown once, gated by `tkellem_onboarding_done`
 
-The guided path ([`renderProgress(true)`](public/index.html#L2241)) hard-codes a three-step gate: finish every phrasebook category → quiz → free scenarios. Its step conditions read `tkellem_completed` directly, so new content types need matching id prefixes to count.
+The guided path ([`renderProgress(true)`](public/index.html#L2409)) hard-codes a three-step gate: finish every phrasebook category → quiz → free scenarios. Its step conditions read `tkellem_completed` directly, so new content types need matching id prefixes to count.
 
 ## Conventions
 
 - **Everything user-facing is French; comments in the source are French too.** Match that when editing.
 - Darija is always carried as the triple `{ar, latin, fr}` — arabic script, arabizi transliteration, french gloss. Keep all three in sync; the UI and the TTS both depend on it (`speak()` falls back to `latin`).
-- Emoji are rendered as Twemoji `<img>` via [`emojiImg()`](public/index.html#L1122) because native phone rendering is inconsistent — use it instead of inlining an emoji in generated markup.
+- Emoji are rendered as Twemoji `<img>` via [`emojiImg()`](public/index.html#L1207) because native phone rendering is inconsistent — use it instead of inlining an emoji in generated markup.
 - No framework: DOM built with template strings and `document.getElementById`, handlers assigned as `.onclick`. Design tokens are CSS custom properties (`--cream`, `--zellige`, …) in the single `<style>` block.
 
 ## Gotchas

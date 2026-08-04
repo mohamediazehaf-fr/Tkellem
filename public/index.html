@@ -195,6 +195,15 @@
     background:var(--zellige);color:var(--cream);border:none;border-radius:50%;
     width:38px;height:38px;font-size:16px;cursor:pointer;flex-shrink:0;
   }
+  /* Règle de construction affichée en tête de catégorie (les nombres) */
+  .cat-note{
+    display:flex;gap:10px;align-items:flex-start;
+    background:rgba(255,178,56,0.14);border:1px solid rgba(255,178,56,0.45);
+    border-radius:12px;padding:12px 14px;margin-bottom:14px;
+    font-size:14px;line-height:1.5;color:#5c4a2a;
+  }
+  .cat-note strong{color:var(--henna-dark);}
+  .cat-note-icon{flex-shrink:0;font-size:16px;line-height:1.4;}
   .complete-btn{
     width:100%;background:var(--palm);color:#fff;border:none;border-radius:12px;
     padding:12px;font-weight:700;font-size:15px;cursor:pointer;margin-top:10px;
@@ -926,7 +935,10 @@ const PHRASEBOOK = [
     {ar:'ما فهمتش',latin:'Ma fhemtch',fr:"Je n'ai pas compris"},
     {ar:'عاود عافاك',latin:'3awed 3afak',fr:"Répète s'il te plaît"}
   ]},
-  { id:'chiffres', icon:'🔢', name:'Les chiffres', phrases:[
+  { id:'chiffres', icon:'🔢', name:'Les chiffres 1 à 10',
+    note:"Ces dix mots sont la base de tout le système : les nombres jusqu'à 20, les dizaines, les centaines et les milliers se construisent tous à partir d'eux.",
+    phrases:[
+    {ar:'صفر',latin:'Sifr',fr:'Zéro (0)'},
     {ar:'واحد',latin:'Wahed',fr:'Un (1)'},
     {ar:'جوج',latin:'Jouj',fr:'Deux (2)'},
     {ar:'تلاتة',latin:'Tlata',fr:'Trois (3)'},
@@ -937,6 +949,65 @@ const PHRASEBOOK = [
     {ar:'تمنية',latin:'Tmnya',fr:'Huit (8)'},
     {ar:'تسعة',latin:'Tes3a',fr:'Neuf (9)'},
     {ar:'عشرة',latin:'3achra',fr:'Dix (10)'}
+  ]},
+  { id:'chiffres_11_20', icon:'🔟', name:'Les chiffres 11 à 20', advanced:true,
+    note:"<strong>La règle :</strong> de 13 à 19, on reprend le chiffre de base et on ajoute la terminaison <strong>-tach</strong> — tlata → tletach, rab3a → rba3tach, khamsa → khmestach. Seuls 11 et 12 sont irréguliers, et 20 change complètement de forme.",
+    phrases:[
+    {ar:'حضاش',latin:'Hdach',fr:'Onze (11) — irrégulier'},
+    {ar:'طناش',latin:'Tnach',fr:'Douze (12) — irrégulier'},
+    {ar:'تلطاش',latin:'Tletach',fr:'Treize (13) — tlata + tach'},
+    {ar:'ربعطاش',latin:'Rba3tach',fr:'Quatorze (14) — rab3a + tach'},
+    {ar:'خمسطاش',latin:'Khmestach',fr:'Quinze (15) — khamsa + tach'},
+    {ar:'سطاش',latin:'Settach',fr:'Seize (16) — setta + tach'},
+    {ar:'سبعطاش',latin:'Sba3tach',fr:'Dix-sept (17) — seb3a + tach'},
+    {ar:'تمنطاش',latin:'Tmentach',fr:'Dix-huit (18) — tmnya + tach'},
+    {ar:'تسعطاش',latin:'Tsa3tach',fr:'Dix-neuf (19) — tes3a + tach'},
+    {ar:'عشرين',latin:'3achrin',fr:'Vingt (20) — nouvelle forme'}
+  ]},
+  { id:'dizaines', icon:'💯', name:'Les dizaines (20 à 100)', advanced:true,
+    note:"<strong>Deux règles.</strong> 1) Les dizaines prennent la terminaison <strong>-in</strong> sur le chiffre de base : tlata → tlatin, khamsa → khamsin. 2) Entre deux dizaines, on dit l'unité <strong>d'abord</strong>, puis « w » (et), puis la dizaine : 35 se dit « cinq et trente ». Avec ça tu sais dire n'importe quel nombre jusqu'à 99.",
+    phrases:[
+    {ar:'عشرين',latin:'3achrin',fr:'Vingt (20)'},
+    {ar:'تلاتين',latin:'Tlatin',fr:'Trente (30) — tlata + in'},
+    {ar:'ربعين',latin:'Reb3in',fr:'Quarante (40) — rab3a + in'},
+    {ar:'خمسين',latin:'Khamsin',fr:'Cinquante (50) — khamsa + in'},
+    {ar:'ستين',latin:'Settin',fr:'Soixante (60) — setta + in'},
+    {ar:'سبعين',latin:'Seb3in',fr:'Soixante-dix (70) — seb3a + in'},
+    {ar:'تمانين',latin:'Tmanin',fr:'Quatre-vingts (80) — tmnya + in'},
+    {ar:'تسعين',latin:'Tes3in',fr:'Quatre-vingt-dix (90) — tes3a + in'},
+    {ar:'مية',latin:'Mya',fr:'Cent (100)'},
+    {ar:'واحد و عشرين',latin:'Wahed w 3achrin',fr:'Vingt-et-un (21) — « un et vingt »'},
+    {ar:'خمسة و تلاتين',latin:'Khamsa w tlatin',fr:'Trente-cinq (35) — « cinq et trente »'},
+    {ar:'تمنية و ربعين',latin:'Tmnya w reb3in',fr:'Quarante-huit (48) — « huit et quarante »'},
+    {ar:'تسعة و تسعين',latin:'Tes3a w tes3in',fr:'Quatre-vingt-dix-neuf (99) — « neuf et quatre-vingt-dix »'}
+  ]},
+  { id:'centaines', icon:'🧮', name:'Les centaines', advanced:true,
+    note:"<strong>La règle :</strong> à partir de 300, on place une forme raccourcie du chiffre devant <strong>mya</strong> (cent) — tlata → tlet mya. 200 est une forme spéciale à part, myatayn. On rattache ensuite le reste du nombre avec « w » : 350 = « trois-cents et cinquante ».",
+    phrases:[
+    {ar:'مية',latin:'Mya',fr:'Cent (100)'},
+    {ar:'ميتين',latin:'Myatayn',fr:'Deux cents (200) — forme spéciale'},
+    {ar:'تلت مية',latin:'Tlet mya',fr:'Trois cents (300)'},
+    {ar:'ربع مية',latin:'Rbe3 mya',fr:'Quatre cents (400)'},
+    {ar:'خمس مية',latin:'Khems mya',fr:'Cinq cents (500)'},
+    {ar:'ست مية',latin:'Sett mya',fr:'Six cents (600)'},
+    {ar:'سبع مية',latin:'Sbe3 mya',fr:'Sept cents (700)'},
+    {ar:'تمن مية',latin:'Tmen mya',fr:'Huit cents (800)'},
+    {ar:'تسع مية',latin:'Tse3 mya',fr:'Neuf cents (900)'},
+    {ar:'تلت مية و خمسين',latin:'Tlet mya w khamsin',fr:'Trois cent cinquante (350)'},
+    {ar:'خمس مية و ستة و تلاتين',latin:'Khems mya w setta w tlatin',fr:'Cinq cent trente-six (536)'}
+  ]},
+  { id:'grands_nombres', icon:'📈', name:'Mille et au-delà', advanced:true,
+    note:"<strong>Même mécanique, un cran plus haut :</strong> alf (mille), alfayn (deux mille, forme spéciale comme myatayn), puis chiffre + <strong>alaf</strong> (pluriel) de 3 000 à 10 000. Ensuite on réutilise ce qu'on connaît déjà : mya alf = « cent mille ». Un grand nombre s'énonce bloc par bloc, du plus grand au plus petit, chaque bloc relié par « w ».",
+    phrases:[
+    {ar:'ألف',latin:'Alf',fr:'Mille (1 000)'},
+    {ar:'ألفين',latin:'Alfayn',fr:'Deux mille (2 000) — forme spéciale'},
+    {ar:'تلت آلاف',latin:'Tlet alaf',fr:'Trois mille (3 000) — chiffre + alaf'},
+    {ar:'خمس آلاف',latin:'Khems alaf',fr:'Cinq mille (5 000)'},
+    {ar:'عشرة آلاف',latin:'3achra alaf',fr:'Dix mille (10 000)'},
+    {ar:'مية ألف',latin:'Mya alf',fr:'Cent mille (100 000) — mya (cent) + alf (mille)'},
+    {ar:'مليون',latin:'Melyoun',fr:'Un million (1 000 000)'},
+    {ar:'جوج ملايين',latin:'Jouj mlayen',fr:'Deux millions (2 000 000)'},
+    {ar:'ألف و ميتين و ستة و خمسين',latin:'Alf w myatayn w setta w khamsin',fr:'Mille deux cent cinquante-six (1 256)'}
   ]},
   { id:'transports', icon:'🚌', name:'Transports et directions', phrases:[
     {ar:'الطاكسي',latin:'Taxi',fr:'Le taxi'},
@@ -963,6 +1034,11 @@ const PHRASEBOOK = [
     {ar:'اللحم',latin:'Llham',fr:'La viande'}
   ]}
 ];
+
+// Les catégories marquées "advanced" restent accessibles librement, mais ne comptent
+// pas dans le parcours guidé ni dans le badge : sans ça, ajouter du contenu
+// rallongerait l'étape 1 et retirerait un badge déjà gagné aux utilisateurs actuels.
+const CORE_PHRASEBOOK = PHRASEBOOK.filter(c => !c.advanced);
 
 // ---------------------------------------------------------------
 // QUIZ IMAGES-MOTS (emoji utilisés comme illustration, sans droits d'auteur)
@@ -1015,7 +1091,7 @@ function isCompleted(id){ return getCompleted().includes(id); }
 // ---------------------------------------------------------------
 const BADGES = [
   { id:'b_first_words', icon:'🌱', name:'Premier pas', check:c => c.some(x=>x.startsWith('phrasebook_')) },
-  { id:'b_all_phrasebook', icon:'📚', name:'Bilingue en herbe', check:c => PHRASEBOOK.every(cat=>c.includes('phrasebook_'+cat.id)) },
+  { id:'b_all_phrasebook', icon:'📚', name:'Bilingue en herbe', check:c => CORE_PHRASEBOOK.every(cat=>c.includes('phrasebook_'+cat.id)) },
   { id:'b_quiz_perfect', icon:'🎯', name:'Œil de lynx', check:c => c.includes('quiz_perfect') },
   { id:'b_first_convo', icon:'💬', name:'Premier échange', check:c => c.some(x=>x.startsWith('scenario_')) },
   { id:'b_five_convo', icon:'🗣️', name:'Bavard confirmé', check:c => c.filter(x=>x.startsWith('scenario_')).length >= 5 },
@@ -2181,6 +2257,14 @@ function openPhrasebookCategory(cat){
   document.getElementById('phrasebook-cat-title').textContent = cat.icon + ' ' + cat.name;
   const list = document.getElementById('phrasebook-list');
   list.innerHTML = '';
+  // règle de construction, quand la catégorie en a une : l'objectif est de comprendre
+  // le mécanisme, pas d'apprendre une liste par cœur
+  if(cat.note){
+    const note = document.createElement('div');
+    note.className = 'cat-note';
+    note.innerHTML = `<span class="cat-note-icon">💡</span><div>${cat.note}</div>`;
+    list.appendChild(note);
+  }
   cat.phrases.forEach(p=>{
     const item = document.createElement('div');
     item.className = 'phrase-item';
@@ -2326,7 +2410,10 @@ function renderProgress(guidedMode){
   const body = document.getElementById('progress-body');
   const points = getPoints();
   const completed = getCompleted();
-  const phrasebookDone = PHRASEBOOK.filter(c => completed.includes('phrasebook_' + c.id)).length;
+  const phrasebookDone = CORE_PHRASEBOOK.filter(c => completed.includes('phrasebook_' + c.id)).length;
+  // total toutes catégories confondues, y compris les nombres : c'est ce qu'on affiche
+  // dans les statistiques, alors que le parcours guidé ne compte que les catégories de base
+  const phrasebookDoneAll = PHRASEBOOK.filter(c => completed.includes('phrasebook_' + c.id)).length;
   const quizDone = completed.includes('quiz_completed_once');
   const scenariosDone = completed.filter(c => c.startsWith('scenario_')).length;
 
@@ -2334,14 +2421,14 @@ function renderProgress(guidedMode){
   if(points >= 200) level = 'Confirmé 🌟';
   else if(points >= 80) level = 'En progrès 🚀';
 
-  const step1Done = phrasebookDone >= PHRASEBOOK.length;
+  const step1Done = phrasebookDone >= CORE_PHRASEBOOK.length;
   const step2Done = quizDone;
   let guidedHtml = '';
   if(guidedMode){
     guidedHtml = `
       <h2 style="font-family:var(--font-display);margin-top:0;">🎯 Parcours guidé</h2>
       <div class="phrase-item" style="cursor:pointer;" id="guided-step-1">
-        <div class="txt"><div class="ar" style="direction:ltr;">1. Mots de base ${step1Done ? '✓' : ''}</div><div class="fr">${phrasebookDone}/${PHRASEBOOK.length} catégories apprises</div></div>
+        <div class="txt"><div class="ar" style="direction:ltr;">1. Mots de base ${step1Done ? '✓' : ''}</div><div class="fr">${phrasebookDone}/${CORE_PHRASEBOOK.length} catégories apprises</div></div>
         <div>📖</div>
       </div>
       <div class="phrase-item" style="cursor:${step1Done ? 'pointer' : 'not-allowed'};opacity:${step1Done ? '1' : '0.5'};" id="guided-step-2">
@@ -2366,7 +2453,7 @@ function renderProgress(guidedMode){
       <div>Jour${getStreak()>1?'s':''} d'affilée</div>
     </div>
     <div class="progress-stat">
-      <div class="big">${phrasebookDone}/${PHRASEBOOK.length}</div>
+      <div class="big">${phrasebookDoneAll}/${PHRASEBOOK.length}</div>
       <div>Catégories de phrases apprises</div>
     </div>
     <div class="progress-stat">
@@ -2383,7 +2470,7 @@ function renderProgress(guidedMode){
 
   if(guidedMode){
     document.getElementById('guided-step-1').onclick = ()=>{ showScreen('screen-phrasebook'); renderPhrasebookCategories(); };
-    document.getElementById('guided-step-2').onclick = ()=>{ if(phrasebookDone >= PHRASEBOOK.length){ showScreen('screen-quiz'); startQuiz(); } };
+    document.getElementById('guided-step-2').onclick = ()=>{ if(step1Done){ showScreen('screen-quiz'); startQuiz(); } };
     document.getElementById('guided-step-3').onclick = ()=>{ if(step2Done){ showScreen('screen-select'); renderScenarioGrid(); } };
   }
 }
