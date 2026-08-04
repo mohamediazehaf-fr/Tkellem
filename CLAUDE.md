@@ -91,13 +91,30 @@ The system prompt is therefore ~2 400–2 700 chars (~3 100–3 400 in kids mode
 
 Those token figures are extrapolated from character counts — French, arabizi and arabic script tokenize very differently, so confirm with `client.messages.count_tokens` (or `ant messages count-tokens`) before and after any change rather than trusting the estimate.
 
+### Levers 0–3 are implemented — and switchable
+
+All of it lives in one config block at the top of [server.js](server.js) and is driven by environment variables, so reverting is a Render env-var change and a restart — **no code edit, no frontend redeploy**:
+
+| Variable | `=off` disables | Default |
+|---|---|---|
+| `TKELLEM_OPTIMIZE` | **everything** — rebuilds the exact pre-optimisation request (Sonnet 4.6 for all four tasks, `max_tokens: 1000`, no cache, no effort) | on |
+| `TKELLEM_LOG_USAGE` | the `[tokens]` log line (lever 0) | on |
+| `TKELLEM_CACHE` | prompt caching (lever 1) | on |
+| `TKELLEM_EFFORT` | `effort` + explicit `thinking` (lever 2) | on |
+| `TKELLEM_CHEAP_MODELS` | Haiku routing — everything back on Sonnet (lever 3) | on |
+| `TKELLEM_CHAT_EFFORT` | — | `medium` (`low`/`high`/`max` accepted; anything else falls back to `medium`) |
+
+The four client call sites now send a `task` (`chat` / `hint` / `translate` / `quiz`) and **never a model name** — `resolveTask()` maps anything unknown to `chat`, so nothing from the browser can select a model outside `TASK_PROFILES`. Per-task profile: model, `max_tokens`, effort level, and whether caching applies.
+
+Granular switches exist to isolate a quality regression: turn one lever off at a time rather than reaching for `TKELLEM_OPTIMIZE=off`.
+
 ### Step 0 — make spend observable
 
-Log `data.usage` in [server.js](server.js) after each `/api/chat` response: `input_tokens`, `output_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens`. Nothing below is verifiable without it, and `cache_read_input_tokens` stuck at 0 across turns is the one signal that caching is silently not working.
+Every `/api/chat` response logs one line: `[tokens] <task> <model> in= cache_read= cache_write= out=`. This is the measurement instrument for everything else — `cache_read` climbing across a conversation means caching works; stuck at 0 means the prefix changed or is still under the minimum.
 
 ### Lever 1 — prompt caching (biggest win, no quality risk)
 
-Add top-level `cache_control: {type: 'ephemeral'}` to the request body in [server.js](server.js). The API places the breakpoint on the last cacheable block, so system + all prior turns are cached and the next turn re-reads that prefix at ~0.1× instead of full price. Expect the input side of a long conversation to fall by roughly two-thirds. Verify with `cache_read_input_tokens`, not by assumption.
+Top-level `cache_control: {type: 'ephemeral'}` is sent on the `chat` task only. The API places the breakpoint on the last cacheable block, so system + all prior turns are cached and the next turn re-reads that prefix at ~0.1× instead of full price. Expect the input side of a long conversation to fall by roughly two-thirds. Verify with `cache_read_input_tokens`, not by assumption.
 
 Three conditions this depends on — protect them:
 
@@ -109,15 +126,17 @@ Caching does nothing for the hint, translation and quiz calls — those prompts 
 
 ### Lever 2 — effort
 
-`effort` defaults to `high` on Sonnet 4.6. These four tasks are short-form generation and classification, which is exactly the shape Anthropic's guidance puts at `output_config: {effort: 'low'}` with `thinking: {type: 'disabled'}` — set both explicitly. Note thinking is already off (on Sonnet 4.6 an omitted `thinking` field means no thinking), so this is about verbosity and overall spend, not about disabling reasoning.
+`effort` defaults to `high` on Sonnet 4.6. These tasks are short-form generation and classification, which is exactly the shape Anthropic's guidance puts at `output_config: {effort: 'low'}` with `thinking: {type: 'disabled'}`. Thinking was already off (an omitted `thinking` field means no thinking on Sonnet 4.6), so making it explicit changes nothing — the saving comes from `effort`.
 
-Start with the three utility calls where `low` is obviously safe. A/B `low` against `medium` for the role-play turn — that reply *is* the product, so it's the one place to measure quality rather than assume.
+The `chat` task ships at `medium`; A/B it against `low` with `TKELLEM_CHAT_EFFORT` before committing, since that reply *is* the product.
+
+**`effort` and `thinking` are only sent to models in `MODELS_WITH_EFFORT`.** Haiku 4.5 returns a 400 on both — adding a model to a task profile without checking that list is how this breaks.
 
 ### Lever 3 — route cheap tasks to a cheaper model
 
-Grading a one-word quiz answer and translating one sentence do not need Sonnet. `claude-haiku-4-5` is $1/$5 per Mtok against Sonnet's $3/$15 — ~3× cheaper on those paths — and it supports structured outputs (`output_config.format`), which would also remove the regex-and-retry JSON parsing there.
+Grading a one-word quiz answer and translating one sentence do not need Sonnet, so `hint` / `translate` / `quiz` run on `claude-haiku-4-5` ($1/$5 per Mtok against Sonnet's $3/$15, ~3× cheaper on those paths). `chat` stays on Sonnet 4.6.
 
-Implement this as a **server-side allowlist keyed by task**, never a model string from the client: `{task:'quiz'}` → `claude-haiku-4-5`, `{task:'chat'}` → `claude-sonnet-4-6`. A client-supplied `model` field lets anyone with the page open bill the account on the most expensive model available.
+Haiku 4.5 also supports structured outputs (`output_config.format`), which would remove the regex-and-retry JSON parsing on those three paths — not done, worth doing if malformed JSON shows up in the logs.
 
 ### Lever 4 — don't call Claude at all
 

@@ -1924,6 +1924,7 @@ async function callAvatarAPI(){
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
+        task: 'chat', // le serveur choisit modèle/effort/cache d'après ce nom — voir server.js
         system: buildSystemPrompt(),
         messages: history.filter(h=>h.ar).map(h => ({role: h.role === 'avatar' ? 'assistant' : 'user', content: h.ar}))
       })
@@ -2018,6 +2019,7 @@ Réponds UNIQUEMENT en JSON : {"darija_ar":"...","darija_latin":"...","french":"
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
+        task: 'hint',
         messages: [{role:"user", content: hintPrompt}]
       })
     });
@@ -2054,7 +2056,7 @@ Réponds UNIQUEMENT en JSON : {"darija_ar":"...","darija_latin":"..."}`;
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ messages: [{role:'user', content: prompt}] })
+      body: JSON.stringify({ task: 'translate', messages: [{role:'user', content: prompt}] })
     });
     const data = await response.json();
     const raw = data.content.map(b => b.text || '').join('').trim();
@@ -2204,7 +2206,7 @@ Réponds UNIQUEMENT en JSON : {"correct": true ou false, "message": "courte phra
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ messages: [{role:'user', content: prompt}] })
+      body: JSON.stringify({ task: 'quiz', messages: [{role:'user', content: prompt}] })
     });
     const data = await res.json();
     const raw = data.content.map(b => b.text || '').join('').trim();
