@@ -63,8 +63,108 @@
   header.top .sub{font-size:12.5px;color:var(--zellige-light);margin-top:1px;}
 
   /* ---------- SCREEN: SELECTOR ---------- */
-  #screen-select{padding:20px;flex:1;}
+  #screen-home{padding:20px;flex:1;}
+  #screen-select{display:none;padding:20px;flex:1;}
   #screen-select .intro{font-size:14.5px;color:#4c463c;line-height:1.5;margin:6px 0 20px;}
+  #screen-phrasebook, #screen-quiz, #screen-progress{padding:20px;flex:1;}
+
+  .points-badge{
+    background:var(--saffron);color:#4a3512;border:none;border-radius:20px;
+    padding:6px 12px;font-weight:700;font-size:13px;flex-shrink:0;align-self:center;
+  }
+  .account-btn{
+    background:rgba(22,75,84,0.08);border:none;border-radius:50%;width:36px;height:36px;
+    font-size:16px;cursor:pointer;flex-shrink:0;align-self:center;
+  }
+
+  .auth-tabs{display:flex;gap:8px;margin-bottom:16px;}
+  .auth-tab{
+    flex:1;background:none;border:1px solid rgba(22,75,84,0.16);border-radius:10px;
+    padding:8px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;
+  }
+  .auth-tab.active{background:var(--zellige);color:var(--cream);border-color:var(--zellige);}
+  .auth-form{display:flex;flex-direction:column;gap:10px;}
+  .auth-form input{
+    padding:11px 13px;border-radius:10px;border:1px solid rgba(22,75,84,0.2);font-size:14px;
+  }
+  .auth-form button{
+    background:var(--zellige);color:var(--cream);border:none;border-radius:10px;
+    padding:11px;font-weight:700;cursor:pointer;font-size:14px;
+  }
+  .auth-msg{font-size:12.5px;padding:8px 10px;border-radius:8px;}
+  .auth-msg.error{background:rgba(166,56,58,0.10);color:var(--henna);}
+  .auth-msg.success{background:rgba(91,122,90,0.15);color:var(--palm);}
+  .auth-link{background:none;border:none;color:var(--zellige-light);font-size:12px;cursor:pointer;text-decoration:underline;padding:0;}
+  .account-info{background:var(--card-bg);border-radius:14px;padding:16px;margin-bottom:16px;}
+  .logout-btn{background:none;border:1px solid var(--henna);color:var(--henna);border-radius:10px;padding:9px 14px;font-size:13px;cursor:pointer;font-weight:600;}
+  .back-inline{
+    background:none;border:none;color:var(--zellige-light);font-size:13px;
+    cursor:pointer;padding:0;margin-bottom:14px;font-weight:600;
+  }
+
+  .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
+  .menu-card{
+    background:var(--card-bg);border:1px solid rgba(22,75,84,0.14);border-radius:16px;
+    padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:6px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .menu-card:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(22,75,84,0.12);}
+  .menu-icon{font-size:30px;}
+  .menu-title{font-family:'Cairo',sans-serif;font-weight:700;font-size:15px;}
+  .menu-desc{font-size:11.5px;color:#6b6357;line-height:1.35;}
+  .progress-link{
+    display:block;width:100%;background:none;border:1px solid var(--zellige-light);
+    color:var(--zellige);border-radius:12px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;
+  }
+
+  .phrase-item{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    background:var(--card-bg);border:1px solid rgba(22,75,84,0.10);border-radius:12px;
+    padding:12px 14px;margin-bottom:8px;
+  }
+  .phrase-item .txt .ar{font-size:17px;direction:rtl;font-weight:600;}
+  .phrase-item .txt .latin{font-size:12px;font-style:italic;color:var(--zellige-light);margin-top:2px;}
+  .phrase-item .txt .fr{font-size:11.5px;color:#7a7266;margin-top:2px;}
+  .phrase-item .listen-btn{
+    background:var(--zellige);color:var(--cream);border:none;border-radius:50%;
+    width:38px;height:38px;font-size:16px;cursor:pointer;flex-shrink:0;
+  }
+  .complete-btn{
+    width:100%;background:var(--palm);color:#fff;border:none;border-radius:12px;
+    padding:12px;font-weight:700;font-size:13.5px;cursor:pointer;margin-top:10px;
+  }
+
+  .quiz-card{
+    background:var(--card-bg);border-radius:18px;padding:24px 18px;text-align:center;
+  }
+  .quiz-emoji{font-size:64px;margin-bottom:14px;}
+  .quiz-progress{font-size:12px;color:#7a7266;margin-bottom:10px;}
+  .quiz-input-row{display:flex;gap:8px;margin-top:16px;}
+  .quiz-input-row input{
+    flex:1;padding:10px 12px;border-radius:10px;border:1px solid rgba(22,75,84,0.2);font-size:14px;
+  }
+  .quiz-input-row button{
+    background:var(--zellige);color:var(--cream);border:none;border-radius:10px;padding:0 16px;font-weight:600;cursor:pointer;
+  }
+  .quiz-feedback{margin-top:14px;font-size:13.5px;padding:10px;border-radius:10px;}
+  .quiz-feedback.correct{background:rgba(91,122,90,0.15);color:var(--palm);}
+  .quiz-feedback.incorrect{background:rgba(166,56,58,0.10);color:var(--henna);}
+  .quiz-next-btn{
+    margin-top:12px;background:var(--saffron);color:#4a3512;border:none;border-radius:10px;
+    padding:10px 18px;font-weight:700;cursor:pointer;
+  }
+
+  .progress-stat{
+    background:var(--card-bg);border-radius:14px;padding:16px;margin-bottom:12px;text-align:center;
+  }
+  .progress-stat .big{font-family:'Cairo',sans-serif;font-size:32px;font-weight:800;color:var(--zellige);}
+  .badge-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;}
+  .badge-chip{
+    background:var(--card-bg);border:1px solid rgba(22,75,84,0.12);border-radius:10px;
+    padding:8px 4px;text-align:center;font-size:10.5px;
+  }
+  .badge-chip.locked{opacity:0.35;}
+  .badge-chip .b-icon{font-size:20px;display:block;margin-bottom:2px;}
   .scenario-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
   .scenario-card{
     background:var(--card-bg);
@@ -247,20 +347,51 @@
     border:1px solid rgba(22,75,84,0.2);font-size:12.5px;font-family:inherit;
   }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 <div class="app">
 
   <header class="top">
     <div class="brand-mark">ت</div>
-    <div>
+    <div style="flex:1;">
       <h1>Tkellem</h1>
       <div class="sub">Apprends le Darija en le parlant</div>
     </div>
+    <button class="account-btn" id="account-btn-header">👤</button>
+    <button class="points-badge" id="points-badge-header">⭐ 0</button>
   </header>
 
-  <!-- SCREEN 1 : sélection du scénario -->
+  <!-- SCREEN 0 : accueil / menu principal -->
+  <div id="screen-home">
+    <div class="menu-grid">
+      <div class="menu-card" id="menu-guided">
+        <div class="menu-icon">🎯</div>
+        <div class="menu-title">Parcours guidé</div>
+        <div class="menu-desc">Mots de base → quiz → mises en situation, dans l'ordre</div>
+      </div>
+      <div class="menu-card" id="menu-phrasebook">
+        <div class="menu-icon">📖</div>
+        <div class="menu-title">Phrases utiles</div>
+        <div class="menu-desc">Salutations, chiffres, transports, nourriture...</div>
+      </div>
+      <div class="menu-card" id="menu-quiz">
+        <div class="menu-icon">🖼️</div>
+        <div class="menu-title">Quiz images</div>
+        <div class="menu-desc">Devine et prononce ce que tu vois</div>
+      </div>
+      <div class="menu-card" id="menu-scenarios">
+        <div class="menu-icon">🧩</div>
+        <div class="menu-title">Discussions à la carte</div>
+        <div class="menu-desc">Choisis librement une mise en situation</div>
+      </div>
+    </div>
+    <button class="progress-link" id="menu-progress">📊 Voir mon parcours</button>
+  </div>
+
+  <!-- SCREEN 1 : sélection du scénario (mode libre) -->
   <div id="screen-select">
+    <button class="back-inline" id="back-to-home-1">← Accueil</button>
     <p class="intro">Choisis une situation. Un avatar te répond en Darija — écoute, parle, et laisse-toi guider par la conversation.</p>
 
     <div class="voice-panel" id="voice-panel">
@@ -279,6 +410,36 @@
     </div>
 
     <div class="scenario-grid" id="scenario-grid"></div>
+  </div>
+
+  <!-- SCREEN : carnet de phrases -->
+  <div id="screen-phrasebook" style="display:none;">
+    <button class="back-inline" id="back-to-home-2">← Accueil</button>
+    <div id="phrasebook-categories" class="menu-grid"></div>
+    <div id="phrasebook-detail" style="display:none;">
+      <button class="back-inline" id="back-to-categories">← Catégories</button>
+      <h2 id="phrasebook-cat-title" style="font-family:'Cairo',sans-serif;"></h2>
+      <div id="phrasebook-list"></div>
+      <button class="complete-btn" id="phrasebook-complete-btn">✓ J'ai appris ces mots (+10 ⭐)</button>
+    </div>
+  </div>
+
+  <!-- SCREEN : quiz images -->
+  <div id="screen-quiz" style="display:none;">
+    <button class="back-inline" id="back-to-home-3">← Accueil</button>
+    <div id="quiz-body"></div>
+  </div>
+
+  <!-- SCREEN : mon parcours (progression) -->
+  <div id="screen-progress" style="display:none;">
+    <button class="back-inline" id="back-to-home-4">← Accueil</button>
+    <div id="progress-body"></div>
+  </div>
+
+  <!-- SCREEN : compte utilisateur -->
+  <div id="screen-account" style="display:none;">
+    <button class="back-inline" id="back-to-home-5">← Accueil</button>
+    <div id="account-body"></div>
   </div>
 
   <!-- SCREEN 2 : conversation -->
@@ -563,6 +724,292 @@ Reste toujours ludique et très simple, jamais plus d'un mot nouveau à la fois.
 SCENARIOS.forEach(s => { if(!s.mode) s.mode = 'standard'; });
 
 // ---------------------------------------------------------------
+// CARNET DE PHRASES
+// ---------------------------------------------------------------
+const PHRASEBOOK = [
+  { id:'salutations', icon:'👋', name:'Salutations', phrases:[
+    {ar:'سلام',latin:'Salam',fr:'Salut'},
+    {ar:'صباح الخير',latin:'Sbah lkhir',fr:'Bonjour (le matin)'},
+    {ar:'مسا الخير',latin:'Msa lkhir',fr:'Bonsoir'},
+    {ar:'كيف داير',latin:'Kif dayer',fr:'Comment ça va (à un homme)'},
+    {ar:'كيف دايرة',latin:'Kif dayra',fr:'Comment ça va (à une femme)'},
+    {ar:'لاباس، الحمد لله',latin:'Labas, lhamdulah',fr:'Ça va, merci Dieu'},
+    {ar:'بسلامة',latin:'Bslama',fr:'Au revoir'},
+    {ar:'تصبح على خير',latin:'Tsbah 3la khir',fr:'Bonne nuit'}
+  ]},
+  { id:'presentation', icon:'🙋', name:'Se présenter', phrases:[
+    {ar:'سميتي...',latin:'Smiti...',fr:"Je m'appelle..."},
+    {ar:'أسمك أشنو؟',latin:'Asmek achno?',fr:"Comment tu t'appelles ?"},
+    {ar:'منين انت؟',latin:'Mnin nta?',fr:"D'où es-tu ?"},
+    {ar:'أنا من فرنسا',latin:'Ana men fransa',fr:'Je suis de France'},
+    {ar:'شحال ف عمرك؟',latin:'Chhal f 3omrek?',fr:'Quel âge as-tu ?'},
+    {ar:'عندي ... عام',latin:'3andi ... 3am',fr:"J'ai ... ans"},
+    {ar:'فرحت بيك',latin:'Frahte bik',fr:'Ravi de te rencontrer'}
+  ]},
+  { id:'expressions', icon:'💬', name:'Expressions courantes', phrases:[
+    {ar:'عافاك',latin:'3afak',fr:"S'il te plaît"},
+    {ar:'شكرا',latin:'Choukran',fr:'Merci'},
+    {ar:'بلا جميل',latin:'Bla jmil',fr:'De rien'},
+    {ar:'سمح لي',latin:'Smah li',fr:'Excuse-moi / pardon'},
+    {ar:'واخا',latin:'Wakha',fr:"D'accord"},
+    {ar:'إن شاء الله',latin:'Inchallah',fr:'Si Dieu le veut'},
+    {ar:'ماشي مشكل',latin:'Machi mouchkil',fr:'Pas de souci'},
+    {ar:'نعم / لا',latin:'Ih / Lla',fr:'Oui / Non'},
+    {ar:'ما فهمتش',latin:'Ma fhemtch',fr:"Je n'ai pas compris"},
+    {ar:'عاود عافاك',latin:'3awed 3afak',fr:"Répète s'il te plaît"}
+  ]},
+  { id:'chiffres', icon:'🔢', name:'Les chiffres', phrases:[
+    {ar:'واحد',latin:'Wahed',fr:'Un (1)'},
+    {ar:'جوج',latin:'Jouj',fr:'Deux (2)'},
+    {ar:'تلاتة',latin:'Tlata',fr:'Trois (3)'},
+    {ar:'ربعة',latin:"Rab3a",fr:'Quatre (4)'},
+    {ar:'خمسة',latin:'Khamsa',fr:'Cinq (5)'},
+    {ar:'ستة',latin:'Setta',fr:'Six (6)'},
+    {ar:'سبعة',latin:'Seb3a',fr:'Sept (7)'},
+    {ar:'تمنية',latin:'Tmnya',fr:'Huit (8)'},
+    {ar:'تسعة',latin:'Tes3a',fr:'Neuf (9)'},
+    {ar:'عشرة',latin:'3achra',fr:'Dix (10)'}
+  ]},
+  { id:'transports', icon:'🚌', name:'Transports et directions', phrases:[
+    {ar:'الطاكسي',latin:'Taxi',fr:'Le taxi'},
+    {ar:'الطوبيس',latin:'Tobis',fr:'Le bus'},
+    {ar:'الطيارة',latin:'Tyara',fr:"L'avion"},
+    {ar:'الطران',latin:'Tran',fr:'Le train'},
+    {ar:'فين كاين...؟',latin:'Fin kayn...?',fr:'Où se trouve... ?'},
+    {ar:'على اليمين',latin:'3la lymin',fr:'À droite'},
+    {ar:'على الشمال',latin:'3la chmal',fr:'À gauche'},
+    {ar:'نيشان',latin:'Nichan',fr:'Tout droit'},
+    {ar:'قريب',latin:'Qrib',fr:'Proche'},
+    {ar:'بعيد',latin:"B3id",fr:'Loin'}
+  ]},
+  { id:'nourriture', icon:'🍽️', name:'Boissons et nourriture', phrases:[
+    {ar:'الما',latin:'Lma',fr:"L'eau"},
+    {ar:'أتاي',latin:'Atay',fr:'Thé à la menthe'},
+    {ar:'قهوة',latin:'Qahwa',fr:'Café'},
+    {ar:'الخبز',latin:'Lkhobz',fr:'Le pain'},
+    {ar:'الحليب',latin:'Lhlib',fr:'Le lait'},
+    {ar:'الطاجين',latin:'Tajine',fr:'Le tajine'},
+    {ar:'الكسكسو',latin:'Kesksou',fr:'Le couscous'},
+    {ar:'الفاكية',latin:'Lfakya',fr:'Les fruits'},
+    {ar:'الحوت',latin:'Lhout',fr:'Le poisson'},
+    {ar:'اللحم',latin:'Llham',fr:'La viande'}
+  ]}
+];
+
+// ---------------------------------------------------------------
+// QUIZ IMAGES-MOTS (emoji utilisés comme illustration, sans droits d'auteur)
+// ---------------------------------------------------------------
+const QUIZ_ITEMS = [
+  { emoji:'🏍️', latin:'moto', ar:'موطو', fr:'moto' },
+  { emoji:'🚗', latin:'ssiyara', ar:'السيارة', fr:'voiture' },
+  { emoji:'✈️', latin:'tyara', ar:'الطيارة', fr:'avion' },
+  { emoji:'🚌', latin:'tobis', ar:'الطوبيس', fr:'bus' },
+  { emoji:'🚕', latin:'taxi', ar:'الطاكسي', fr:'taxi' },
+  { emoji:'🚆', latin:'tran', ar:'الطران', fr:'train' },
+  { emoji:'🍞', latin:'khobz', ar:'الخبز', fr:'pain' },
+  { emoji:'🍵', latin:'atay', ar:'أتاي', fr:'thé' },
+  { emoji:'☕', latin:'qahwa', ar:'قهوة', fr:'café' },
+  { emoji:'🥛', latin:'hlib', ar:'الحليب', fr:'lait' },
+  { emoji:'🐱', latin:'mouch', ar:'موش', fr:'chat' },
+  { emoji:'🐶', latin:'kelb', ar:'كلب', fr:'chien' }
+];
+
+// ---------------------------------------------------------------
+// SYSTÈME DE POINTS ET PROGRESSION (stocké localement sur l'appareil)
+// ---------------------------------------------------------------
+function getPoints(){ return parseInt(localStorage.getItem('tkellem_points') || '0', 10); }
+function addPoints(n){
+  const total = getPoints() + n;
+  localStorage.setItem('tkellem_points', String(total));
+  updatePointsBadge();
+  syncToServer();
+  return total;
+}
+function updatePointsBadge(){
+  document.getElementById('points-badge-header').textContent = '⭐ ' + getPoints();
+}
+function getCompleted(){
+  try{ return JSON.parse(localStorage.getItem('tkellem_completed') || '[]'); }catch(e){ return []; }
+}
+function markCompleted(id){
+  const list = getCompleted();
+  if(!list.includes(id)){
+    list.push(id);
+    localStorage.setItem('tkellem_completed', JSON.stringify(list));
+    syncToServer();
+  }
+}
+function isCompleted(id){ return getCompleted().includes(id); }
+
+// ---------------------------------------------------------------
+// COMPTE UTILISATEUR (Supabase Auth + synchronisation de la progression)
+// ---------------------------------------------------------------
+const SUPABASE_URL = 'https://sirzvmrlbfsunquxlqwi.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_OqKDiR3Ervps66wbN0aQrw_Lyr7ZDkm';
+const sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+let currentUser = null;
+
+async function initAuth(){
+  if(!sb) return;
+  const { data } = await sb.auth.getSession();
+  currentUser = data.session ? data.session.user : null;
+  if(currentUser) await syncFromServer();
+  updatePointsBadge();
+
+  sb.auth.onAuthStateChange(async (event, session)=>{
+    currentUser = session ? session.user : null;
+    if(currentUser) await syncFromServer();
+    updatePointsBadge();
+  });
+}
+
+async function syncFromServer(){
+  if(!sb || !currentUser) return;
+  try{
+    const { data, error } = await sb.from('progress').select('*').eq('user_id', currentUser.id).maybeSingle();
+    if(data){
+      // le serveur devient la référence : on écrase les valeurs locales
+      localStorage.setItem('tkellem_points', String(data.points || 0));
+      localStorage.setItem('tkellem_completed', JSON.stringify(data.completed || []));
+    } else {
+      // première connexion : on envoie la progression locale existante (mode invité) vers le serveur
+      await sb.from('progress').upsert({
+        user_id: currentUser.id,
+        points: getPoints(),
+        completed: getCompleted(),
+        updated_at: new Date().toISOString()
+      });
+    }
+  }catch(err){ console.warn('Sync depuis le serveur impossible :', err); }
+}
+
+async function syncToServer(){
+  if(!sb || !currentUser) return;
+  try{
+    await sb.from('progress').upsert({
+      user_id: currentUser.id,
+      points: getPoints(),
+      completed: getCompleted(),
+      updated_at: new Date().toISOString()
+    });
+  }catch(err){ console.warn('Sync vers le serveur impossible :', err); }
+}
+
+async function signUp(email, password){
+  const { data, error } = await sb.auth.signUp({ email, password });
+  return { data, error };
+}
+async function logIn(email, password){
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  return { data, error };
+}
+async function logOut(){
+  await sb.auth.signOut();
+  currentUser = null;
+  renderAccount();
+  updatePointsBadge();
+}
+async function sendPasswordReset(email){
+  const { data, error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin
+  });
+  return { data, error };
+}
+async function changePassword(newPassword){
+  const { data, error } = await sb.auth.updateUser({ password: newPassword });
+  return { data, error };
+}
+
+function renderAccount(){
+  const body = document.getElementById('account-body');
+  if(!sb){
+    body.innerHTML = `<p>Le système de compte n'est pas configuré sur ce serveur pour le moment.</p>`;
+    return;
+  }
+  if(currentUser){
+    body.innerHTML = `
+      <div class="account-info">
+        <p><strong>Connecté</strong></p>
+        <p style="font-size:13px;color:#6b6357;">${currentUser.email}</p>
+        <p style="font-size:12px;color:var(--palm);">✓ Ta progression est synchronisée sur tous tes appareils</p>
+      </div>
+      <h3 style="font-family:'Cairo',sans-serif;font-size:15px;">Changer mon mot de passe</h3>
+      <div class="auth-form">
+        <input type="password" id="new-password-input" placeholder="Nouveau mot de passe (6 caractères min.)">
+        <button id="change-password-btn">Mettre à jour le mot de passe</button>
+        <div id="account-msg"></div>
+      </div>
+      <button class="logout-btn" style="margin-top:18px;" id="logout-btn-action">Se déconnecter</button>
+    `;
+    document.getElementById('change-password-btn').onclick = async ()=>{
+      const pwd = document.getElementById('new-password-input').value;
+      const msg = document.getElementById('account-msg');
+      if(pwd.length < 6){ msg.className='auth-msg error'; msg.textContent='6 caractères minimum.'; return; }
+      const { error } = await changePassword(pwd);
+      msg.className = error ? 'auth-msg error' : 'auth-msg success';
+      msg.textContent = error ? error.message : 'Mot de passe mis à jour ✓';
+    };
+    document.getElementById('logout-btn-action').onclick = logOut;
+  } else {
+    body.innerHTML = `
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="signup">S'inscrire</button>
+        <button class="auth-tab" data-tab="login">Se connecter</button>
+      </div>
+      <div class="auth-form">
+        <input type="email" id="auth-email" placeholder="Adresse email">
+        <input type="password" id="auth-password" placeholder="Mot de passe (6 caractères min.)">
+        <button id="auth-submit-btn">S'inscrire</button>
+        <button class="auth-link" id="forgot-password-link">Mot de passe oublié ?</button>
+        <div id="auth-msg"></div>
+      </div>
+      <p style="font-size:11.5px;color:#9a9280;margin-top:16px;">Tu peux continuer sans compte — ta progression restera enregistrée sur cet appareil uniquement.</p>
+    `;
+    let mode = 'signup';
+    const submitBtn = document.getElementById('auth-submit-btn');
+    document.querySelectorAll('.auth-tab').forEach(tab=>{
+      tab.onclick = ()=>{
+        document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
+        tab.classList.add('active');
+        mode = tab.dataset.tab;
+        submitBtn.textContent = mode === 'signup' ? "S'inscrire" : 'Se connecter';
+      };
+    });
+    submitBtn.onclick = async ()=>{
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value;
+      const msg = document.getElementById('auth-msg');
+      if(!email || password.length < 6){
+        msg.className = 'auth-msg error'; msg.textContent = 'Email valide + mot de passe (6 caractères min.) requis.';
+        return;
+      }
+      submitBtn.disabled = true;
+      const { data, error } = mode === 'signup' ? await signUp(email, password) : await logIn(email, password);
+      submitBtn.disabled = false;
+      if(error){
+        msg.className = 'auth-msg error'; msg.textContent = error.message;
+      } else if(mode === 'signup' && data.user && !data.session){
+        msg.className = 'auth-msg success'; msg.textContent = 'Compte créé ! Vérifie ta boîte mail pour confirmer ton adresse.';
+      } else {
+        currentUser = data.user;
+        await syncFromServer();
+        showScreen('screen-home');
+      }
+    };
+    document.getElementById('forgot-password-link').onclick = async ()=>{
+      const email = document.getElementById('auth-email').value.trim();
+      const msg = document.getElementById('auth-msg');
+      if(!email){ msg.className='auth-msg error'; msg.textContent='Renseigne ton email d\'abord.'; return; }
+      const { error } = await sendPasswordReset(email);
+      msg.className = error ? 'auth-msg error' : 'auth-msg success';
+      msg.textContent = error ? error.message : 'Email de réinitialisation envoyé ✓';
+    };
+  }
+}
+
+initAuth();
+
+// ---------------------------------------------------------------
 // ÉTAT
 // ---------------------------------------------------------------
 let currentScenario = null;
@@ -779,10 +1226,33 @@ document.getElementById('restart-btn').onclick = ()=>{
 
 document.getElementById('back-btn').onclick = ()=>{
   speechSynthesis.cancel();
-  document.getElementById('screen-convo').style.display = 'none';
-  document.getElementById('screen-select').style.display = 'block';
+  showScreen('screen-select');
   renderScenarioGrid(); // met à jour les badges "en cours" sur les cartes
 };
+
+// ---------------------------------------------------------------
+// NAVIGATION ENTRE ÉCRANS PRINCIPAUX
+// ---------------------------------------------------------------
+const ALL_SCREENS = ['screen-home','screen-select','screen-convo','screen-phrasebook','screen-quiz','screen-progress','screen-account'];
+function showScreen(id){
+  ALL_SCREENS.forEach(s => document.getElementById(s).style.display = (s === id ? (s === 'screen-convo' ? 'flex' : 'block') : 'none'));
+  if(id === 'screen-home') updatePointsBadge();
+}
+
+document.getElementById('menu-scenarios').onclick = ()=>{ showScreen('screen-select'); renderScenarioGrid(); };
+document.getElementById('menu-phrasebook').onclick = ()=>{ showScreen('screen-phrasebook'); renderPhrasebookCategories(); };
+document.getElementById('menu-quiz').onclick = ()=>{ showScreen('screen-quiz'); startQuiz(); };
+document.getElementById('menu-progress').onclick = ()=>{ showScreen('screen-progress'); renderProgress(); };
+document.getElementById('menu-guided').onclick = ()=>{ showScreen('screen-progress'); renderProgress(true); };
+
+document.getElementById('back-to-home-1').onclick = ()=> showScreen('screen-home');
+document.getElementById('back-to-home-2').onclick = ()=> showScreen('screen-home');
+document.getElementById('back-to-home-3').onclick = ()=> showScreen('screen-home');
+document.getElementById('back-to-home-4').onclick = ()=> showScreen('screen-home');
+document.getElementById('back-to-home-5').onclick = ()=> showScreen('screen-home');
+document.getElementById('account-btn-header').onclick = ()=>{ showScreen('screen-account'); renderAccount(); };
+
+updatePointsBadge();
 
 // ---------------------------------------------------------------
 // TRANSCRIPT UI
@@ -971,6 +1441,13 @@ async function callAvatarAPI(){
     history.push({role:'avatar', ar:parsed.darija_ar, latin:parsed.darija_latin, fr:parsed.french});
     saveHistory();
     speak(parsed.darija_ar, parsed.darija_latin);
+
+    // première fois que cette conversation atteint une longueur significative : on la compte comme "pratiquée"
+    const scenarioProgressKey = 'scenario_' + currentScenario.id;
+    if(history.length >= 6 && !isCompleted(scenarioProgressKey)){
+      markCompleted(scenarioProgressKey);
+      addPoints(15);
+    }
   }catch(err){
     console.error('Erreur callAvatarAPI:', err);
     removeThinking();
@@ -1090,6 +1567,218 @@ document.getElementById('translate-send-btn').onclick = runTranslation;
 document.getElementById('translate-input').addEventListener('keydown', (e)=>{
   if(e.key === 'Enter') runTranslation();
 });
+
+// ---------------------------------------------------------------
+// CARNET DE PHRASES
+// ---------------------------------------------------------------
+let currentPhrasebookCat = null;
+
+function renderPhrasebookCategories(){
+  document.getElementById('phrasebook-detail').style.display = 'none';
+  const grid = document.getElementById('phrasebook-categories');
+  grid.style.display = 'grid';
+  grid.innerHTML = '';
+  PHRASEBOOK.forEach(cat=>{
+    const done = isCompleted('phrasebook_' + cat.id);
+    const card = document.createElement('div');
+    card.className = 'menu-card';
+    card.innerHTML = `<div class="menu-icon">${cat.icon}</div><div class="menu-title">${cat.name}${done ? ' ✓' : ''}</div><div class="menu-desc">${cat.phrases.length} phrases</div>`;
+    card.onclick = ()=> openPhrasebookCategory(cat);
+    grid.appendChild(card);
+  });
+}
+
+function openPhrasebookCategory(cat){
+  currentPhrasebookCat = cat;
+  document.getElementById('phrasebook-categories').style.display = 'none';
+  document.getElementById('phrasebook-detail').style.display = 'block';
+  document.getElementById('phrasebook-cat-title').textContent = cat.icon + ' ' + cat.name;
+  const list = document.getElementById('phrasebook-list');
+  list.innerHTML = '';
+  cat.phrases.forEach(p=>{
+    const item = document.createElement('div');
+    item.className = 'phrase-item';
+    item.innerHTML = `
+      <div class="txt">
+        <div class="ar">${p.ar}</div>
+        <div class="latin">${p.latin}</div>
+        <div class="fr">${p.fr}</div>
+      </div>
+      <button class="listen-btn">🔊</button>`;
+    item.querySelector('.listen-btn').onclick = ()=> speak(p.ar, p.latin);
+    list.appendChild(item);
+  });
+  const doneAlready = isCompleted('phrasebook_' + cat.id);
+  const completeBtn = document.getElementById('phrasebook-complete-btn');
+  completeBtn.textContent = doneAlready ? '✓ Déjà appris' : "✓ J'ai appris ces mots (+10 ⭐)";
+  completeBtn.disabled = doneAlready;
+}
+
+document.getElementById('back-to-categories').onclick = renderPhrasebookCategories;
+document.getElementById('phrasebook-complete-btn').onclick = ()=>{
+  if(!currentPhrasebookCat) return;
+  const key = 'phrasebook_' + currentPhrasebookCat.id;
+  if(!isCompleted(key)){
+    markCompleted(key);
+    addPoints(10);
+  }
+  openPhrasebookCategory(currentPhrasebookCat);
+};
+
+// ---------------------------------------------------------------
+// QUIZ IMAGES-MOTS
+// ---------------------------------------------------------------
+let quizOrder = [];
+let quizIndex = 0;
+let quizScore = 0;
+
+function startQuiz(){
+  quizOrder = [...QUIZ_ITEMS].sort(()=> Math.random() - 0.5).slice(0, 8);
+  quizIndex = 0;
+  quizScore = 0;
+  renderQuizItem();
+}
+
+function renderQuizItem(){
+  const body = document.getElementById('quiz-body');
+  if(quizIndex >= quizOrder.length){
+    const bonus = quizScore === quizOrder.length ? 20 : 0;
+    addPoints(quizScore * 5 + bonus);
+    markCompleted('quiz_completed_once');
+    body.innerHTML = `
+      <div class="quiz-card">
+        <div class="quiz-emoji">🎉</div>
+        <h2 style="font-family:'Cairo',sans-serif;">Quiz terminé !</h2>
+        <p>${quizScore} / ${quizOrder.length} bonnes réponses</p>
+        <p>+${quizScore * 5 + bonus} ⭐ ${bonus ? '(dont un bonus de +20 pour un score parfait !)' : ''}</p>
+        <button class="quiz-next-btn" id="quiz-restart-btn">🔁 Refaire un quiz</button>
+      </div>`;
+    document.getElementById('quiz-restart-btn').onclick = startQuiz;
+    return;
+  }
+  const item = quizOrder[quizIndex];
+  body.innerHTML = `
+    <div class="quiz-progress">Question ${quizIndex + 1} / ${quizOrder.length}</div>
+    <div class="quiz-card">
+      <div class="quiz-emoji">${item.emoji}</div>
+      <p>Comment dit-on ça en darija ?</p>
+      <div class="quiz-input-row">
+        <input type="text" id="quiz-answer-input" placeholder="Écris ta réponse (ou en français)...">
+        <button id="quiz-submit-btn">Valider</button>
+      </div>
+      <div id="quiz-feedback"></div>
+    </div>`;
+  document.getElementById('quiz-submit-btn').onclick = submitQuizAnswer;
+  document.getElementById('quiz-answer-input').addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter') submitQuizAnswer();
+  });
+  document.getElementById('quiz-answer-input').focus();
+}
+
+async function submitQuizAnswer(){
+  const item = quizOrder[quizIndex];
+  const input = document.getElementById('quiz-answer-input');
+  const answer = input.value.trim();
+  const feedback = document.getElementById('quiz-feedback');
+  const submitBtn = document.getElementById('quiz-submit-btn');
+  if(!answer) return;
+  submitBtn.disabled = true;
+  feedback.textContent = 'Vérification...';
+  feedback.className = 'quiz-feedback';
+
+  try{
+    const prompt = `Un apprenant de darija marocain doit deviner le mot darija pour "${item.fr}" (le mot correct est "${item.latin}" en transcription latine, "${item.ar}" en arabe).
+Sa réponse : "${answer}"
+Est-ce que sa réponse est correcte ou suffisamment proche (tolère les variantes d'orthographe et les fautes de frappe mineures, qu'elle soit écrite en latin ou en arabe, ou même juste en français s'il connaît le mot autrement) ?
+Réponds UNIQUEMENT en JSON : {"correct": true ou false, "message": "courte phrase d'encouragement en français, max 15 mots"}`;
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ messages: [{role:'user', content: prompt}] })
+    });
+    const data = await res.json();
+    const raw = data.content.map(b => b.text || '').join('').trim();
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    const parsed = JSON.parse(jsonMatch[0]);
+
+    if(parsed.correct){
+      quizScore++;
+      feedback.className = 'quiz-feedback correct';
+      feedback.textContent = '✓ ' + parsed.message;
+    } else {
+      feedback.className = 'quiz-feedback incorrect';
+      feedback.textContent = `✗ ${parsed.message} — la réponse était "${item.latin}" (${item.ar})`;
+    }
+    speak(item.ar, item.latin);
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'quiz-next-btn';
+    nextBtn.textContent = quizIndex + 1 < quizOrder.length ? 'Suivant →' : 'Voir mon score →';
+    nextBtn.onclick = ()=>{ quizIndex++; renderQuizItem(); };
+    feedback.after(nextBtn);
+  }catch(err){
+    feedback.className = 'quiz-feedback incorrect';
+    feedback.textContent = 'Erreur de vérification, réessaie.';
+    submitBtn.disabled = false;
+  }
+}
+
+// ---------------------------------------------------------------
+// MON PARCOURS (progression et parcours guidé)
+// ---------------------------------------------------------------
+function renderProgress(guidedMode){
+  const body = document.getElementById('progress-body');
+  const points = getPoints();
+  const completed = getCompleted();
+  const phrasebookDone = PHRASEBOOK.filter(c => completed.includes('phrasebook_' + c.id)).length;
+  const quizDone = completed.includes('quiz_completed_once');
+  const scenariosDone = completed.filter(c => c.startsWith('scenario_')).length;
+
+  let level = 'Débutant 🌱';
+  if(points >= 200) level = 'Confirmé 🌟';
+  else if(points >= 80) level = 'En progrès 🚀';
+
+  const step1Done = phrasebookDone >= PHRASEBOOK.length;
+  const step2Done = quizDone;
+  let guidedHtml = '';
+  if(guidedMode){
+    guidedHtml = `
+      <h2 style="font-family:'Cairo',sans-serif;margin-top:0;">🎯 Parcours guidé</h2>
+      <div class="phrase-item" style="cursor:pointer;" id="guided-step-1">
+        <div class="txt"><div class="ar" style="direction:ltr;">1. Mots de base ${step1Done ? '✓' : ''}</div><div class="fr">${phrasebookDone}/${PHRASEBOOK.length} catégories apprises</div></div>
+        <div>📖</div>
+      </div>
+      <div class="phrase-item" style="cursor:${step1Done ? 'pointer' : 'not-allowed'};opacity:${step1Done ? '1' : '0.5'};" id="guided-step-2">
+        <div class="txt"><div class="ar" style="direction:ltr;">2. Quiz images ${step2Done ? '✓' : ''}</div><div class="fr">${step1Done ? 'Teste ce que tu as appris' : "Termine d'abord l'étape 1"}</div></div>
+        <div>🖼️</div>
+      </div>
+      <div class="phrase-item" style="cursor:${step2Done ? 'pointer' : 'not-allowed'};opacity:${step2Done ? '1' : '0.5'};" id="guided-step-3">
+        <div class="txt"><div class="ar" style="direction:ltr;">3. Mises en situation ${scenariosDone > 0 ? '✓' : ''}</div><div class="fr">${step2Done ? 'Mets en pratique dans une conversation' : "Termine d'abord l'étape 2"}</div></div>
+        <div>🧩</div>
+      </div>
+      <hr style="border:none;border-top:1px solid rgba(22,75,84,0.12);margin:18px 0;">`;
+  }
+
+  body.innerHTML = `
+    ${guidedHtml}
+    <div class="progress-stat">
+      <div class="big">${points} ⭐</div>
+      <div>${level}</div>
+    </div>
+    <div class="progress-stat">
+      <div class="big">${phrasebookDone}/${PHRASEBOOK.length}</div>
+      <div>Catégories de phrases apprises</div>
+    </div>
+    <div class="progress-stat">
+      <div class="big">${scenariosDone}</div>
+      <div>Conversations pratiquées</div>
+    </div>`;
+
+  if(guidedMode){
+    document.getElementById('guided-step-1').onclick = ()=>{ showScreen('screen-phrasebook'); renderPhrasebookCategories(); };
+    document.getElementById('guided-step-2').onclick = ()=>{ if(phrasebookDone >= PHRASEBOOK.length){ showScreen('screen-quiz'); startQuiz(); } };
+    document.getElementById('guided-step-3').onclick = ()=>{ if(step2Done){ showScreen('screen-select'); renderScenarioGrid(); } };
+  }
+}
 </script>
 </body>
 </html>
