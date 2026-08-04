@@ -85,6 +85,10 @@ When Supabase is reachable, [`applyAuthGate()`](public/index.html#L1160) forces 
 
 Single page, eight sibling `<div id="screen-*">` blocks toggled by [`showScreen()`](public/index.html#L1726) against `ALL_SCREENS` — no router, no history API. Adding a screen means adding the div, the id to `ALL_SCREENS`, and its back-button wiring.
 
+**Every screen starts hidden, so the page has no body until `applyAuthGate()` picks one.** That makes the boot path load-bearing: `initAuth()` must reach `applyAuthGate({initial:true})` on every route, including when `getSession()` throws (hence the try/catch) and when `window.supabase` never loaded. The `initial` flag exists because the post-boot calls deliberately do *not* move the user — Supabase fires `onAuthStateChange` on token refresh, and without that distinction a refresh mid-conversation would yank them to home. A blank page under the header is the signature of this path failing.
+
+Landing screens: signed in with a `display_name` → home; signed in without one → account (profile creation); not signed in → account (login); no Supabase at all → home as a guest. Note a refresh during onboarding lands on home rather than resuming the slides, and `tkellem_onboarding_done` stays unset.
+
 ## Token cost strategy
 
 Claude is on the critical path for four features and nothing else in the app spends tokens (ElevenLabs and Supabase don't). Measured prompt weights, in characters, straight from the source:
