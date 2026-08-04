@@ -195,6 +195,23 @@
     background:var(--zellige);color:var(--cream);border:none;border-radius:50%;
     width:38px;height:38px;font-size:16px;cursor:pointer;flex-shrink:0;
   }
+  /* Fil d'Ariane : indique en permanence où l'on se trouve dans l'arborescence
+     du carnet, et sert de seul chemin pour remonter d'un niveau */
+  .breadcrumb{
+    display:flex;flex-wrap:wrap;align-items:center;gap:1px;
+    margin:2px 0 14px;
+  }
+  .crumb{
+    display:inline-block;background:none;border:none;
+    padding:5px 6px;border-radius:8px;
+    font-size:13.5px;font-family:inherit;color:var(--zellige-light);
+    cursor:pointer;text-decoration:underline;
+  }
+  .crumb.current{
+    color:var(--zellige);font-weight:700;text-decoration:none;cursor:default;
+  }
+  .crumb-sep{color:var(--zellige-light);opacity:.55;font-size:14px;}
+
   /* Règle de construction affichée en tête de catégorie (les nombres) */
   .cat-note{
     display:flex;gap:10px;align-items:flex-start;
@@ -582,9 +599,9 @@
   <!-- SCREEN : carnet de phrases -->
   <div id="screen-phrasebook" style="display:none;">
     <button class="back-inline" id="back-to-home-2">← Accueil</button>
+    <nav class="breadcrumb" id="phrasebook-breadcrumb"></nav>
     <div id="phrasebook-categories" class="menu-grid"></div>
     <div id="phrasebook-detail" style="display:none;">
-      <button class="back-inline" id="back-to-categories">← Catégories</button>
       <h2 id="phrasebook-cat-title" style="font-family:var(--font-display);"></h2>
       <div id="phrasebook-list"></div>
       <button class="complete-btn" id="phrasebook-complete-btn">✓ J'ai appris ces mots (+10 ⭐)</button>
@@ -935,7 +952,10 @@ const PHRASEBOOK = [
     {ar:'ما فهمتش',latin:'Ma fhemtch',fr:"Je n'ai pas compris"},
     {ar:'عاود عافاك',latin:'3awed 3afak',fr:"Répète s'il te plaît"}
   ]},
-  { id:'chiffres', icon:'🔢', name:'Les chiffres 1 à 10',
+  // Nœud de regroupement : pas de "phrases", donc pas de progression propre — il ne
+  // sert qu'à ranger les paliers de nombres sous une seule carte au premier niveau.
+  { id:'chiffres_groupe', icon:'🔢', name:'Les chiffres', children:[
+  { id:'chiffres', icon:'🔢', name:'1 à 10',
     note:"Ces dix mots sont la base de tout le système : les nombres jusqu'à 20, les dizaines, les centaines et les milliers se construisent tous à partir d'eux.",
     phrases:[
     {ar:'صفر',latin:'Sifr',fr:'Zéro (0)'},
@@ -1008,7 +1028,8 @@ const PHRASEBOOK = [
     {ar:'مليون',latin:'Melyoun',fr:'Un million (1 000 000)'},
     {ar:'جوج ملايين',latin:'Jouj mlayen',fr:'Deux millions (2 000 000)'},
     {ar:'ألف و ميتين و ستة و خمسين',latin:'Alf w myatayn w setta w khamsin',fr:'Mille deux cent cinquante-six (1 256)'}
-  ]},
+  ]}
+  ]}, // fin du groupe "Les chiffres"
   { id:'transports', icon:'🚌', name:'Transports et directions', phrases:[
     {ar:'الطاكسي',latin:'Taxi',fr:'Le taxi'},
     {ar:'الطوبيس',latin:'Tobis',fr:'Le bus'},
@@ -1035,10 +1056,18 @@ const PHRASEBOOK = [
   ]}
 ];
 
-// Les catégories marquées "advanced" restent accessibles librement, mais ne comptent
+// Le carnet est un arbre : un nœud a soit des "phrases" (c'est une feuille), soit des
+// "children" (c'est un groupe). Seules les feuilles portent une progression, sous la
+// clé phrasebook_<id> — un groupe n'est jamais "appris" en tant que tel.
+function phrasebookLeaves(nodes){
+  return nodes.flatMap(n => n.children ? phrasebookLeaves(n.children) : [n]);
+}
+const PHRASEBOOK_LEAVES = phrasebookLeaves(PHRASEBOOK);
+
+// Les feuilles marquées "advanced" restent accessibles librement, mais ne comptent
 // pas dans le parcours guidé ni dans le badge : sans ça, ajouter du contenu
 // rallongerait l'étape 1 et retirerait un badge déjà gagné aux utilisateurs actuels.
-const CORE_PHRASEBOOK = PHRASEBOOK.filter(c => !c.advanced);
+const CORE_PHRASEBOOK = PHRASEBOOK_LEAVES.filter(c => !c.advanced);
 
 // ---------------------------------------------------------------
 // QUIZ IMAGES-MOTS (emoji utilisés comme illustration, sans droits d'auteur)
@@ -2237,20 +2266,65 @@ let currentPhrasebookCat = null;
 
 function renderPhrasebookCategories(){
   document.getElementById('phrasebook-detail').style.display = 'none';
+  renderPhrasebook([]);
+}
+
+// Chemin courant dans l'arbre, du plus général au plus précis. C'est la seule source
+// de vérité de la navigation du carnet : le fil d'Ariane et l'écran affiché en découlent.
+let phrasebookPath = [];
+
+function renderPhrasebook(path){
+  phrasebookPath = path || [];
+  const node = phrasebookPath[phrasebookPath.length - 1] || null;
+  renderPhrasebookBreadcrumb();
+  if(node && node.phrases){
+    renderPhrasebookLeaf(node);
+  } else {
+    renderPhrasebookGrid(node ? node.children : PHRASEBOOK);
+  }
+}
+
+function renderPhrasebookBreadcrumb(){
+  const bc = document.getElementById('phrasebook-breadcrumb');
+  const crumbs = [{ icon:'📖', name:'Phrases utiles' }, ...phrasebookPath];
+  bc.innerHTML = crumbs.map((n, i)=>{
+    const label = `${emojiImg(n.icon, 15)} ${n.name}`;
+    if(i === crumbs.length - 1) return `<span class="crumb current">${label}</span>`;
+    // l'indice i du fil correspond à path.slice(0, i) : le premier fil est la racine
+    return `<button class="crumb" data-depth="${i}">${label}</button><span class="crumb-sep">›</span>`;
+  }).join('');
+  bc.querySelectorAll('.crumb[data-depth]').forEach(btn=>{
+    btn.onclick = ()=> renderPhrasebook(phrasebookPath.slice(0, Number(btn.dataset.depth)));
+  });
+}
+
+function renderPhrasebookGrid(nodes){
+  const parentPath = phrasebookPath.slice(); // figé : les cartes restent valides après navigation
+  document.getElementById('phrasebook-detail').style.display = 'none';
   const grid = document.getElementById('phrasebook-categories');
   grid.style.display = 'grid';
   grid.innerHTML = '';
-  PHRASEBOOK.forEach(cat=>{
-    const done = isCompleted('phrasebook_' + cat.id);
+  nodes.forEach(node=>{
     const card = document.createElement('div');
     card.className = 'menu-card';
-    card.innerHTML = `<div class="menu-icon">${emojiImg(cat.icon,26)}</div><div class="menu-title">${cat.name}${done ? ' ✓' : ''}</div><div class="menu-desc">${cat.phrases.length} phrases</div>`;
-    card.onclick = ()=> openPhrasebookCategory(cat);
+    let title, desc;
+    if(node.children){
+      const leaves = phrasebookLeaves([node]);
+      const done = leaves.filter(l => isCompleted('phrasebook_' + l.id)).length;
+      title = `${node.name}${done === leaves.length ? ' ✓' : ''}`;
+      desc = `${leaves.length} niveaux · ${done}/${leaves.length} appris`;
+    } else {
+      title = `${node.name}${isCompleted('phrasebook_' + node.id) ? ' ✓' : ''}`;
+      desc = `${node.phrases.length} phrases`;
+    }
+    card.innerHTML = `<div class="menu-icon">${emojiImg(node.icon,26)}</div>`
+      + `<div class="menu-title">${title}</div><div class="menu-desc">${desc}</div>`;
+    card.onclick = ()=> renderPhrasebook([...parentPath, node]);
     grid.appendChild(card);
   });
 }
 
-function openPhrasebookCategory(cat){
+function renderPhrasebookLeaf(cat){
   currentPhrasebookCat = cat;
   document.getElementById('phrasebook-categories').style.display = 'none';
   document.getElementById('phrasebook-detail').style.display = 'block';
@@ -2285,7 +2359,6 @@ function openPhrasebookCategory(cat){
   completeBtn.disabled = doneAlready;
 }
 
-document.getElementById('back-to-categories').onclick = renderPhrasebookCategories;
 document.getElementById('phrasebook-complete-btn').onclick = ()=>{
   if(!currentPhrasebookCat) return;
   const key = 'phrasebook_' + currentPhrasebookCat.id;
@@ -2295,7 +2368,7 @@ document.getElementById('phrasebook-complete-btn').onclick = ()=>{
     fireConfetti();
     checkNewBadges();
   }
-  openPhrasebookCategory(currentPhrasebookCat);
+  renderPhrasebook(phrasebookPath); // on reste sur place, le bouton passe à "déjà appris"
 };
 
 // ---------------------------------------------------------------
@@ -2413,7 +2486,7 @@ function renderProgress(guidedMode){
   const phrasebookDone = CORE_PHRASEBOOK.filter(c => completed.includes('phrasebook_' + c.id)).length;
   // total toutes catégories confondues, y compris les nombres : c'est ce qu'on affiche
   // dans les statistiques, alors que le parcours guidé ne compte que les catégories de base
-  const phrasebookDoneAll = PHRASEBOOK.filter(c => completed.includes('phrasebook_' + c.id)).length;
+  const phrasebookDoneAll = PHRASEBOOK_LEAVES.filter(c => completed.includes('phrasebook_' + c.id)).length;
   const quizDone = completed.includes('quiz_completed_once');
   const scenariosDone = completed.filter(c => c.startsWith('scenario_')).length;
 
@@ -2453,7 +2526,7 @@ function renderProgress(guidedMode){
       <div>Jour${getStreak()>1?'s':''} d'affilée</div>
     </div>
     <div class="progress-stat">
-      <div class="big">${phrasebookDoneAll}/${PHRASEBOOK.length}</div>
+      <div class="big">${phrasebookDoneAll}/${PHRASEBOOK_LEAVES.length}</div>
       <div>Catégories de phrases apprises</div>
     </div>
     <div class="progress-stat">
