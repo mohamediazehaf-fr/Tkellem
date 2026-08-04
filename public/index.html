@@ -49,6 +49,18 @@
       radial-gradient(circle at 90% 100%, rgba(22,75,84,0.10), transparent 45%),
       var(--cream);
   }
+  @media (min-width:700px){
+    body{background:var(--cream);}
+    .app{
+      max-width:680px;margin:0 auto;min-height:100vh;
+      box-shadow:0 0 60px rgba(14,79,86,0.10);
+    }
+    .menu-grid, .scenario-grid{grid-template-columns:1fr 1fr 1fr;}
+  }
+  @media (min-width:1000px){
+    .app{max-width:820px;}
+    .menu-grid, .scenario-grid{grid-template-columns:repeat(4,1fr);}
+  }
   header.top{
     padding:22px 20px 14px;
     display:flex;
@@ -196,6 +208,90 @@
   }
   .badge-chip.locked{opacity:0.35;}
   .badge-chip .b-icon{font-size:20px;display:block;margin-bottom:2px;}
+
+  @keyframes points-toast-anim{
+    0%{opacity:0;transform:translate(-50%,10px) scale(0.8);}
+    20%{opacity:1;transform:translate(-50%,-10px) scale(1.05);}
+    80%{opacity:1;transform:translate(-50%,-14px) scale(1);}
+    100%{opacity:0;transform:translate(-50%,-40px) scale(0.95);}
+  }
+  .points-toast{
+    position:fixed;top:70px;left:50%;z-index:9999;
+    background:var(--saffron);color:#4a3512;font-family:var(--font-display);font-weight:800;font-size:16px;
+    padding:8px 18px;border-radius:20px;
+    animation:points-toast-anim 1.6s ease forwards;
+    pointer-events:none;
+  }
+
+  @keyframes confetti-fall{
+    0%{opacity:1;transform:translate(0,0) rotate(0);}
+    100%{opacity:0;transform:translate(var(--x),260px) rotate(var(--rot));}
+  }
+  .confetti-container{position:fixed;inset:0;z-index:9998;pointer-events:none;overflow:hidden;}
+  .confetti-piece{
+    position:absolute;top:30%;width:9px;height:14px;border-radius:2px;
+    animation:confetti-fall 1.1s ease-out forwards;
+  }
+
+  @keyframes badge-pop-in{
+    0%{opacity:0;transform:scale(0.7) translateY(20px);}
+    60%{transform:scale(1.05) translateY(-4px);}
+    100%{opacity:1;transform:scale(1) translateY(0);}
+  }
+  @keyframes badge-icon-bounce{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-8px);}
+  }
+  .badge-unlock-overlay{
+    position:fixed;inset:0;background:rgba(33,32,28,0.55);z-index:10000;
+    display:flex;align-items:center;justify-content:center;padding:20px;
+  }
+  .badge-unlock-card{
+    background:var(--card-bg);border-radius:24px;padding:32px 26px;text-align:center;max-width:300px;
+    animation:badge-pop-in 0.4s cubic-bezier(.34,1.56,.64,1) forwards;
+    border-bottom:6px solid var(--saffron-dark);
+  }
+  .badge-unlock-icon{margin-bottom:10px;animation:badge-icon-bounce 1s ease-in-out infinite;}
+  .badge-unlock-icon img{width:56px;height:56px;}
+  .badge-unlock-title{font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--saffron-dark);text-transform:uppercase;letter-spacing:.5px;}
+  .badge-unlock-name{font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--zellige);margin:6px 0 18px;}
+  .badge-unlock-btn{
+    background:var(--zellige);color:#fff;border:none;border-radius:14px;padding:11px 22px;
+    font-family:var(--font-display);font-weight:700;font-size:14px;cursor:pointer;
+  }
+
+  @keyframes gentle-shake{
+    0%,100%{transform:translateX(0);} 25%{transform:translateX(-4px);} 75%{transform:translateX(4px);}
+  }
+  .shake{animation:gentle-shake 0.3s ease;}
+  @keyframes pop-success{
+    0%{transform:scale(1);} 40%{transform:scale(1.15);} 100%{transform:scale(1);}
+  }
+  .pop-success{animation:pop-success 0.35s ease;}
+
+  #screen-onboarding{padding:24px 20px;flex:1;display:flex;flex-direction:column;}
+  .onboarding-slide{
+    display:none;flex:1;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;animation:badge-pop-in 0.35s ease forwards;
+  }
+  .onboarding-slide.active{display:flex;}
+  .onboarding-slide .ob-icon{
+    width:110px;height:110px;border-radius:50%;background:var(--card-bg);
+    display:flex;align-items:center;justify-content:center;margin-bottom:24px;
+    border-bottom:6px solid var(--saffron-dark);
+  }
+  .onboarding-slide .ob-icon img{width:56px;height:56px;}
+  .onboarding-slide h2{font-family:var(--font-display);font-size:22px;color:var(--zellige);margin:0 0 12px;}
+  .onboarding-slide p{font-size:14.5px;color:#5c5648;line-height:1.55;max-width:280px;}
+  .onboarding-dots{display:flex;justify-content:center;gap:8px;margin:20px 0;}
+  .onboarding-dot{width:8px;height:8px;border-radius:50%;background:#ECE2CE;transition:background .2s,width .2s;}
+  .onboarding-dot.active{background:var(--saffron-dark);width:22px;border-radius:6px;}
+  .onboarding-nav{display:flex;justify-content:space-between;align-items:center;}
+  .onboarding-skip{background:none;border:none;color:#9a9280;font-size:13px;cursor:pointer;font-weight:600;}
+  .onboarding-next{
+    background:var(--zellige);color:#fff;border:none;border-radius:14px;padding:12px 24px;
+    font-family:var(--font-display);font-weight:700;font-size:14.5px;cursor:pointer;
+  }
   .scenario-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
   .scenario-card{
     background:var(--card-bg);
@@ -399,22 +495,22 @@
     <div id="home-greeting" class="home-greeting"></div>
     <div class="menu-grid">
       <div class="menu-card" id="menu-guided">
-        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/svg/1f3af.svg" alt="🎯" style="width:26px;height:26px;"></div>
+        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f3af.svg" alt="🎯" style="width:26px;height:26px;"></div>
         <div class="menu-title">Parcours guidé</div>
         <div class="menu-desc">Mots de base → quiz → mises en situation, dans l'ordre</div>
       </div>
       <div class="menu-card" id="menu-phrasebook">
-        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/svg/1f4d6.svg" alt="📖" style="width:26px;height:26px;"></div>
+        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f4d6.svg" alt="📖" style="width:26px;height:26px;"></div>
         <div class="menu-title">Phrases utiles</div>
         <div class="menu-desc">Salutations, chiffres, transports, nourriture...</div>
       </div>
       <div class="menu-card" id="menu-quiz">
-        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/svg/1f5bc.svg" alt="🖼️" style="width:26px;height:26px;"></div>
+        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f5bc.svg" alt="🖼️" style="width:26px;height:26px;"></div>
         <div class="menu-title">Quiz images</div>
         <div class="menu-desc">Devine et prononce ce que tu vois</div>
       </div>
       <div class="menu-card" id="menu-scenarios">
-        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/svg/1f9e9.svg" alt="🧩" style="width:26px;height:26px;"></div>
+        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f9e9.svg" alt="🧩" style="width:26px;height:26px;"></div>
         <div class="menu-title">Discussions à la carte</div>
         <div class="menu-desc">Choisis librement une mise en situation</div>
       </div>
@@ -467,6 +563,16 @@
   <div id="screen-progress" style="display:none;">
     <button class="back-inline" id="back-to-home-4">← Accueil</button>
     <div id="progress-body"></div>
+  </div>
+
+  <!-- SCREEN : onboarding immersif (première utilisation) -->
+  <div id="screen-onboarding" style="display:none;">
+    <div id="onboarding-slides"></div>
+    <div class="onboarding-dots" id="onboarding-dots"></div>
+    <div class="onboarding-nav">
+      <button class="onboarding-skip" id="onboarding-skip-btn">Passer</button>
+      <button class="onboarding-next" id="onboarding-next-btn">Suivant →</button>
+    </div>
   </div>
 
   <!-- SCREEN : compte utilisateur -->
@@ -856,6 +962,7 @@ function addPoints(n){
   localStorage.setItem('tkellem_points', String(total));
   updatePointsBadge();
   syncToServer();
+  showPointsToast(n);
   return total;
 }
 function updatePointsBadge(){
@@ -875,6 +982,105 @@ function markCompleted(id){
 function isCompleted(id){ return getCompleted().includes(id); }
 
 // ---------------------------------------------------------------
+// BADGES (succès débloqués selon la progression)
+// ---------------------------------------------------------------
+const BADGES = [
+  { id:'b_first_words', icon:'🌱', name:'Premier pas', check:c => c.some(x=>x.startsWith('phrasebook_')) },
+  { id:'b_all_phrasebook', icon:'📚', name:'Bilingue en herbe', check:c => PHRASEBOOK.every(cat=>c.includes('phrasebook_'+cat.id)) },
+  { id:'b_quiz_perfect', icon:'🎯', name:'Œil de lynx', check:c => c.includes('quiz_perfect') },
+  { id:'b_first_convo', icon:'💬', name:'Premier échange', check:c => c.some(x=>x.startsWith('scenario_')) },
+  { id:'b_five_convo', icon:'🗣️', name:'Bavard confirmé', check:c => c.filter(x=>x.startsWith('scenario_')).length >= 5 },
+  { id:'b_streak3', icon:'🔥', name:'Série de 3 jours', check:(c,streak) => streak >= 3 },
+];
+
+function getUnlockedBadges(){
+  const completed = getCompleted();
+  const streak = getStreak();
+  return BADGES.filter(b => b.check(completed, streak));
+}
+
+// ---------------------------------------------------------------
+// STREAK (jours consécutifs d'activité)
+// ---------------------------------------------------------------
+function touchStreak(){
+  const today = new Date().toISOString().slice(0,10);
+  const last = localStorage.getItem('tkellem_last_active');
+  let streak = parseInt(localStorage.getItem('tkellem_streak') || '0', 10);
+  if(last === today) return streak; // déjà compté aujourd'hui
+  if(last){
+    const diffDays = Math.round((new Date(today) - new Date(last)) / 86400000);
+    streak = diffDays === 1 ? streak + 1 : 1;
+  } else {
+    streak = 1;
+  }
+  localStorage.setItem('tkellem_last_active', today);
+  localStorage.setItem('tkellem_streak', String(streak));
+  return streak;
+}
+function getStreak(){ return parseInt(localStorage.getItem('tkellem_streak') || '0', 10); }
+
+// ---------------------------------------------------------------
+// NOTIFICATIONS ANIMÉES (toast de points, confettis, badge débloqué)
+// ---------------------------------------------------------------
+function showPointsToast(n){
+  const toast = document.createElement('div');
+  toast.className = 'points-toast';
+  toast.textContent = '+' + n + ' ⭐';
+  document.body.appendChild(toast);
+  setTimeout(()=> toast.remove(), 1600);
+}
+
+function fireConfetti(){
+  const colors = ['#FFB238','#F1633D','#2FBE8F','#0E4F56'];
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  for(let i=0;i<24;i++){
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = (45 + Math.random()*10) + '%';
+    piece.style.background = colors[i % colors.length];
+    piece.style.animationDelay = (Math.random()*0.15) + 's';
+    piece.style.setProperty('--x', (Math.random()*220 - 110) + 'px');
+    piece.style.setProperty('--rot', (Math.random()*520 - 260) + 'deg');
+    container.appendChild(piece);
+  }
+  document.body.appendChild(container);
+  setTimeout(()=> container.remove(), 1400);
+}
+
+function showBadgeUnlock(badge){
+  const modal = document.createElement('div');
+  modal.className = 'badge-unlock-overlay';
+  modal.innerHTML = `
+    <div class="badge-unlock-card">
+      <div class="badge-unlock-icon">${emojiImg(badge.icon, 56)}</div>
+      <div class="badge-unlock-title">Nouveau badge !</div>
+      <div class="badge-unlock-name">${badge.name}</div>
+      <button class="badge-unlock-btn">Continuer 🚀</button>
+    </div>`;
+  document.body.appendChild(modal);
+  fireConfetti();
+  modal.querySelector('.badge-unlock-btn').onclick = ()=> modal.remove();
+  setTimeout(()=>{ if(document.body.contains(modal)) modal.remove(); }, 4000);
+}
+
+function checkNewBadges(){
+  const seen = JSON.parse(localStorage.getItem('tkellem_badges_seen') || '[]');
+  const nowUnlocked = getUnlockedBadges();
+  const newOnes = nowUnlocked.filter(b => !seen.includes(b.id));
+  if(newOnes.length){
+    localStorage.setItem('tkellem_badges_seen', JSON.stringify(nowUnlocked.map(b=>b.id)));
+    showBadgeUnlock(newOnes[0]);
+  }
+}
+
+const ENCOURAGEMENTS = [
+  "Continue comme ça ! 💪","Tu progresses vraiment bien ! 🌟","Impressionnant ! 🎉",
+  "Ton darija s'améliore ! 🚀","Bravo, encore un peu ! 👏","Tu es sur une bonne lancée ! 🔥"
+];
+function randomEncouragement(){ return ENCOURAGEMENTS[Math.floor(Math.random()*ENCOURAGEMENTS.length)]; }
+
+// ---------------------------------------------------------------
 // COMPTE UTILISATEUR (Supabase Auth + synchronisation de la progression)
 // ---------------------------------------------------------------
 const SUPABASE_URL = 'https://sirzvmrlbfsunquxlqwi.supabase.co';
@@ -891,7 +1097,7 @@ function twemojiUrl(emoji){
     .map(c => c.codePointAt(0).toString(16))
     .filter(cp => cp !== 'fe0f')
     .join('-');
-  return `https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/svg/${codepoints}.svg`;
+  return `https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/${codepoints}.svg`;
 }
 function emojiImg(emoji, sizePx){
   const size = sizePx || 24;
@@ -899,9 +1105,11 @@ function emojiImg(emoji, sizePx){
 }
 
 const AVATAR_CHOICES = [
-  '🙂','😎','🤠','🧕','👳','👦','👧','🧑‍🦱',
-  '🐐','🦁','🐫','🐱','🐶','🦉','🐢',
-  '🌙','⭐','🌵','🍃','🌺','🔥','🎨','⚽'
+  '🙂','😎','🤠','😊','🥳','🤓','😇','🙃',
+  '👨','👩','🧑','👨🏽','👩🏽','👨🏿','👩🏿','👨🏻','👩🏻',
+  '🧕','👳','👲','🧔','👴','👵','👶','🧑‍🦱',
+  '🐐','🦁','🐫','🐱','🐶','🦉',
+  '🌙','⭐','🌵','🔥','🎨','⚽'
 ];
 let currentProfile = { display_name:null, avatar:'🙂' };
 
@@ -947,8 +1155,20 @@ function renderHomeGreeting(){
   const el = document.getElementById('home-greeting');
   if(currentUser && currentProfile.display_name){
     el.innerHTML = `<span class="avatar-circle">${emojiImg(currentProfile.avatar || '🙂', 26)}</span> Bonjour ${currentProfile.display_name}, ravi de te retrouver !`;
+    touchStreak();
+    checkNewBadges();
   } else {
     el.innerHTML = '';
+  }
+  updateHeaderAvatar();
+}
+
+function updateHeaderAvatar(){
+  const btn = document.getElementById('account-btn-header');
+  if(currentUser && currentProfile.avatar){
+    btn.innerHTML = emojiImg(currentProfile.avatar, 20);
+  } else {
+    btn.textContent = '👤';
   }
 }
 
@@ -1054,7 +1274,12 @@ function renderAccount(){
       const msg = document.getElementById('profile-msg');
       if(!name){ msg.className='auth-msg error'; msg.textContent='Choisis un prénom pour continuer.'; return; }
       await saveProfile(name, chosenAvatar);
-      applyAuthGate();
+      if(!localStorage.getItem('tkellem_onboarding_done')){
+        showScreen('screen-onboarding');
+        startOnboarding();
+      } else {
+        applyAuthGate();
+      }
     };
     return;
   }
@@ -1394,9 +1619,9 @@ document.getElementById('back-btn').onclick = ()=>{
 // ---------------------------------------------------------------
 // NAVIGATION ENTRE ÉCRANS PRINCIPAUX
 // ---------------------------------------------------------------
-const ALL_SCREENS = ['screen-home','screen-select','screen-convo','screen-phrasebook','screen-quiz','screen-progress','screen-account'];
+const ALL_SCREENS = ['screen-home','screen-select','screen-convo','screen-phrasebook','screen-quiz','screen-progress','screen-account','screen-onboarding'];
 function showScreen(id){
-  ALL_SCREENS.forEach(s => document.getElementById(s).style.display = (s === id ? (s === 'screen-convo' ? 'flex' : 'block') : 'none'));
+  ALL_SCREENS.forEach(s => document.getElementById(s).style.display = (s === id ? ((s === 'screen-convo' || s === 'screen-onboarding') ? 'flex' : 'block') : 'none'));
   if(id === 'screen-home') updatePointsBadge();
 }
 
@@ -1608,6 +1833,7 @@ async function callAvatarAPI(){
     if(history.length >= 6 && !isCompleted(scenarioProgressKey)){
       markCompleted(scenarioProgressKey);
       addPoints(15);
+      checkNewBadges();
     }
   }catch(err){
     console.error('Erreur callAvatarAPI:', err);
@@ -1782,6 +2008,8 @@ document.getElementById('phrasebook-complete-btn').onclick = ()=>{
   if(!isCompleted(key)){
     markCompleted(key);
     addPoints(10);
+    fireConfetti();
+    checkNewBadges();
   }
   openPhrasebookCategory(currentPhrasebookCat);
 };
@@ -1804,14 +2032,18 @@ function renderQuizItem(){
   const body = document.getElementById('quiz-body');
   if(quizIndex >= quizOrder.length){
     const bonus = quizScore === quizOrder.length ? 20 : 0;
+    if(bonus) markCompleted('quiz_perfect');
     addPoints(quizScore * 5 + bonus);
     markCompleted('quiz_completed_once');
+    checkNewBadges();
+    fireConfetti();
     body.innerHTML = `
       <div class="quiz-card">
-        <div class="quiz-emoji">🎉</div>
+        <div class="quiz-emoji">${emojiImg('🎉',56)}</div>
         <h2 style="font-family:var(--font-display);">Quiz terminé !</h2>
         <p>${quizScore} / ${quizOrder.length} bonnes réponses</p>
         <p>+${quizScore * 5 + bonus} ⭐ ${bonus ? '(dont un bonus de +20 pour un score parfait !)' : ''}</p>
+        <p style="color:var(--zellige);font-weight:700;">${randomEncouragement()}</p>
         <button class="quiz-next-btn" id="quiz-restart-btn">🔁 Refaire un quiz</button>
       </div>`;
     document.getElementById('quiz-restart-btn').onclick = startQuiz;
@@ -1821,7 +2053,7 @@ function renderQuizItem(){
   body.innerHTML = `
     <div class="quiz-progress">Question ${quizIndex + 1} / ${quizOrder.length}</div>
     <div class="quiz-card">
-      <div class="quiz-emoji">${emojiImg(item.emoji,56)}</div>
+      <div class="quiz-emoji" id="quiz-emoji-el">${emojiImg(item.emoji,56)}</div>
       <p>Comment dit-on ça en darija ?</p>
       <div class="quiz-input-row">
         <input type="text" id="quiz-answer-input" placeholder="Écris ta réponse (ou en français)...">
@@ -1842,6 +2074,7 @@ async function submitQuizAnswer(){
   const answer = input.value.trim();
   const feedback = document.getElementById('quiz-feedback');
   const submitBtn = document.getElementById('quiz-submit-btn');
+  const emojiEl = document.getElementById('quiz-emoji-el');
   if(!answer) return;
   submitBtn.disabled = true;
   feedback.textContent = 'Vérification...';
@@ -1866,9 +2099,12 @@ Réponds UNIQUEMENT en JSON : {"correct": true ou false, "message": "courte phra
       quizScore++;
       feedback.className = 'quiz-feedback correct';
       feedback.textContent = '✓ ' + parsed.message;
+      emojiEl.classList.add('pop-success');
+      fireConfetti();
     } else {
       feedback.className = 'quiz-feedback incorrect';
       feedback.textContent = `✗ ${parsed.message} — la réponse était "${item.latin}" (${item.ar})`;
+      emojiEl.classList.add('shake');
     }
     speak(item.ar, item.latin);
     const nextBtn = document.createElement('button');
@@ -1926,12 +2162,23 @@ function renderProgress(guidedMode){
       <div>${level}</div>
     </div>
     <div class="progress-stat">
+      <div class="big">${getStreak()} 🔥</div>
+      <div>Jour${getStreak()>1?'s':''} d'affilée</div>
+    </div>
+    <div class="progress-stat">
       <div class="big">${phrasebookDone}/${PHRASEBOOK.length}</div>
       <div>Catégories de phrases apprises</div>
     </div>
     <div class="progress-stat">
       <div class="big">${scenariosDone}</div>
       <div>Conversations pratiquées</div>
+    </div>
+    <h3 style="font-family:var(--font-display);font-size:15px;color:var(--zellige);margin-top:20px;">🏅 Badges</h3>
+    <div class="badge-grid">
+      ${BADGES.map(b=>{
+        const unlocked = getUnlockedBadges().some(u=>u.id===b.id);
+        return `<div class="badge-chip ${unlocked?'':'locked'}"><span class="b-icon">${emojiImg(b.icon,20)}</span>${b.name}</div>`;
+      }).join('')}
     </div>`;
 
   if(guidedMode){
@@ -1940,6 +2187,55 @@ function renderProgress(guidedMode){
     document.getElementById('guided-step-3').onclick = ()=>{ if(step2Done){ showScreen('screen-select'); renderScenarioGrid(); } };
   }
 }
+
+// ---------------------------------------------------------------
+// ONBOARDING IMMERSIF (première utilisation uniquement)
+// ---------------------------------------------------------------
+const ONBOARDING_SLIDES = [
+  { icon:'👋', title:'Bienvenue sur Tkellem !', text:"Apprends le darija marocain en le parlant vraiment, pas en le lisant sur des fiches." },
+  { icon:'🎭', title:'Mets-toi en situation', text:"Discute avec un avatar qui joue l'épicier, le taxi, un ami... comme dans la vraie vie, à l'oral." },
+  { icon:'📖', title:'Apprends à ton rythme', text:"Le carnet de phrases et les quiz images t'aident à construire ton vocabulaire avant de te lancer." },
+  { icon:'🏅', title:'Progresse et gagne des badges', text:"Chaque catégorie apprise, chaque quiz réussi te fait gagner des points et débloquer des badges." },
+  { icon:'🚀', title:'Prêt à te lancer ?', text:"On commence par où tu veux : un scénario, une catégorie de phrases, ou le parcours guidé." }
+];
+let onboardingIndex = 0;
+
+function startOnboarding(){
+  onboardingIndex = 0;
+  const slidesEl = document.getElementById('onboarding-slides');
+  slidesEl.innerHTML = ONBOARDING_SLIDES.map((s,i)=>`
+    <div class="onboarding-slide${i===0?' active':''}" data-index="${i}">
+      <div class="ob-icon">${emojiImg(s.icon,56)}</div>
+      <h2>${s.title}</h2>
+      <p>${s.text}</p>
+    </div>`).join('');
+  const dotsEl = document.getElementById('onboarding-dots');
+  dotsEl.innerHTML = ONBOARDING_SLIDES.map((_,i)=>`<div class="onboarding-dot${i===0?' active':''}"></div>`).join('');
+  updateOnboardingNav();
+}
+
+function updateOnboardingNav(){
+  document.querySelectorAll('.onboarding-slide').forEach((el,i)=> el.classList.toggle('active', i===onboardingIndex));
+  document.querySelectorAll('.onboarding-dot').forEach((el,i)=> el.classList.toggle('active', i===onboardingIndex));
+  const nextBtn = document.getElementById('onboarding-next-btn');
+  nextBtn.textContent = onboardingIndex === ONBOARDING_SLIDES.length - 1 ? "C'est parti ! 🚀" : 'Suivant →';
+}
+
+function finishOnboarding(){
+  localStorage.setItem('tkellem_onboarding_done', '1');
+  applyAuthGate();
+}
+
+document.getElementById('onboarding-next-btn').onclick = ()=>{
+  if(onboardingIndex < ONBOARDING_SLIDES.length - 1){
+    onboardingIndex++;
+    updateOnboardingNav();
+  } else {
+    finishOnboarding();
+  }
+};
+document.getElementById('onboarding-skip-btn').onclick = finishOnboarding;
+
 </script>
 </body>
 </html>
