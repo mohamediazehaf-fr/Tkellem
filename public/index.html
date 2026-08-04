@@ -185,6 +185,7 @@
 
   .phrase-item{
     display:flex;align-items:center;justify-content:space-between;gap:10px;
+    flex-wrap:wrap; /* laisse le retour de prononciation passer en pleine largeur */
     background:var(--card-bg);border:1px solid rgba(22,75,84,0.10);border-radius:12px;
     padding:12px 14px;margin-bottom:8px;
   }
@@ -194,6 +195,51 @@
   .phrase-item .listen-btn{
     background:var(--zellige);color:var(--cream);border:none;border-radius:50%;
     width:38px;height:38px;font-size:16px;cursor:pointer;flex-shrink:0;
+  }
+  .item-actions{display:flex;gap:8px;flex-shrink:0;}
+
+  /* ---------- EXERCICE DE PRONONCIATION ---------- */
+  .practice-btn{
+    background:var(--henna);color:#fff;border:none;border-radius:50%;
+    width:38px;height:38px;font-size:16px;cursor:pointer;flex-shrink:0;
+    transition:transform .1s ease;
+  }
+  .practice-btn:active{transform:scale(0.92);}
+  .practice-btn:disabled{opacity:.6;cursor:progress;}
+  .practice-btn.done{background:var(--palm);}       /* déjà réussi sur ce mot */
+  .practice-btn.recording{
+    background:#d92b2b;animation:pulse-rec 1s ease-in-out infinite;
+  }
+  @keyframes pulse-rec{
+    0%,100%{box-shadow:0 0 0 0 rgba(217,43,43,0.55);}
+    50%{box-shadow:0 0 0 9px rgba(217,43,43,0);}
+  }
+  .pron-feedback{flex-basis:100%;}
+  .pron-hint{
+    margin-top:10px;font-size:13.5px;color:var(--henna-dark);font-weight:600;
+  }
+  .pron-result{
+    margin-top:10px;border-radius:12px;padding:11px 13px;font-size:14px;line-height:1.45;
+    border:1px solid transparent;
+  }
+  .pron-result.weak{background:rgba(241,99,61,0.10);border-color:rgba(241,99,61,0.35);}
+  .pron-result.close{background:rgba(255,178,56,0.16);border-color:rgba(255,178,56,0.5);}
+  .pron-result.perfect{background:rgba(47,190,143,0.15);border-color:rgba(47,190,143,0.5);}
+  .pron-head{font-weight:700;margin-bottom:3px;}
+  .pron-result.weak .pron-head{color:var(--henna-dark);}
+  .pron-result.close .pron-head{color:var(--saffron-dark);}
+  .pron-result.perfect .pron-head{color:var(--palm-dark);}
+  .pron-tip{margin-top:5px;font-size:13.5px;color:#5c4a2a;}
+  .pron-heard{
+    margin-top:6px;font-size:12.5px;color:#7a7266;direction:rtl;text-align:right;
+    font-family:var(--font-arabic);
+  }
+  .pron-earned{margin-top:6px;font-weight:700;color:var(--palm-dark);}
+  .pron-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px;}
+  .pron-actions button{
+    background:none;border:1px solid var(--zellige-light);color:var(--zellige);
+    border-radius:10px;padding:7px 11px;font-size:13.5px;font-family:inherit;
+    font-weight:600;cursor:pointer;
   }
   /* Fil d'Ariane : indique en permanence où l'on se trouve dans l'arborescence
      du carnet, et sert de seul chemin pour remonter d'un niveau */
@@ -2048,23 +2094,33 @@ function stopRecording(){
   }
 }
 
+// Transcription d'un enregistrement — partagée par la conversation et l'exercice
+// de prononciation, pour n'avoir qu'un seul endroit qui parle à /api/transcribe
+async function transcribeBlob(blob){
+  const base64 = await blobToBase64(blob);
+  const res = await fetch('/api/transcribe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ audio_base64: base64, mime_type: blob.type })
+  });
+  const data = await res.json();
+  if(!res.ok){
+    throw new Error(data.error?.message || data.error || 'Transcription impossible.');
+  }
+  return (data.text || '').trim();
+}
+
 async function sendRecordedAudio(){
   const status = document.getElementById('status-text');
   status.textContent = "Transcription en cours...";
   try{
     const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
-    const base64 = await blobToBase64(blob);
-    const res = await fetch('/api/transcribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ audio_base64: base64, mime_type: blob.type })
-    });
-    const data = await res.json();
-    if(!res.ok || !data.text){
-      throw new Error(data.error?.message || data.error || 'Aucun texte reconnu, réessaie en parlant un peu plus fort/lentement.');
+    const text = await transcribeBlob(blob);
+    if(!text){
+      throw new Error('Aucun texte reconnu, réessaie en parlant un peu plus fort/lentement.');
     }
     status.textContent = "Appuie sur le micro pour parler";
-    handleUserInput(data.text.trim());
+    handleUserInput(text);
   }catch(err){
     console.error('Erreur transcription:', err);
     status.textContent = "⚠ " + err.message;
@@ -2262,6 +2318,142 @@ document.getElementById('translate-input').addEventListener('keydown', (e)=>{
 // ---------------------------------------------------------------
 // CARNET DE PHRASES
 // ---------------------------------------------------------------
+// ---------------------------------------------------------------
+// EXERCICE DE PRONONCIATION
+// L'apprenant enregistre sa voix, ElevenLabs la transcrit en arabe, et Claude compare
+// la transcription à la phrase cible. Limite assumée : on mesure l'intelligibilité pour
+// un moteur de reconnaissance, pas la phonétique fine — un mot compris passe, un mot
+// déformé au point d'être méconnaissable ne passe pas.
+// ---------------------------------------------------------------
+const PRON_LEVELS = {
+  1: { icon:'🔁', label:'On le refait ensemble',        cls:'weak' },
+  2: { icon:'✨', label:'Tu y es presque !',            cls:'close' },
+  3: { icon:'🎉', label:"Parfait, c'est exactement ça !", cls:'perfect' }
+};
+const PRON_POINTS = 5;
+let pronRecorder = null; // un seul enregistrement à la fois dans toute l'application
+
+function setPracticeState(btn, state){
+  btn.classList.toggle('recording', state === 'recording');
+  btn.disabled = state === 'grading';
+  if(state === 'grading') btn.innerHTML = SPINNER_HTML;
+  else if(state === 'recording') btn.textContent = '⏹';
+  else btn.textContent = '🎤';
+}
+
+function showPronNote(feedbackEl, cls, text){
+  feedbackEl.innerHTML = `<div class="pron-result ${cls}"><div class="pron-msg">${text}</div></div>`;
+}
+
+async function practicePronunciation(phrase, progressKey, feedbackEl, btn, retry){
+  if(pronRecorder){
+    // deuxième appui sur le même bouton = j'ai fini de parler
+    if(pronRecorder.btn === btn && pronRecorder.rec.state === 'recording') pronRecorder.rec.stop();
+    return;
+  }
+  if(!navigator.mediaDevices || !window.MediaRecorder){
+    showPronNote(feedbackEl, 'weak', "Ton navigateur ne permet pas d'enregistrer. Essaie avec Chrome.");
+    return;
+  }
+  let stream;
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({ audio:true });
+  }catch(err){
+    showPronNote(feedbackEl, 'weak', err.name === 'NotAllowedError'
+      ? "Micro refusé — autorise l'accès au micro pour t'exercer."
+      : "Impossible d'accéder au micro sur cet appareil.");
+    return;
+  }
+  const chunks = [];
+  const mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : '';
+  const rec = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+  pronRecorder = { rec, btn };
+  // filet de sécurité : un mot ou une courte phrase, 6 s suffisent largement
+  const autoStop = setTimeout(()=>{ if(rec.state === 'recording') rec.stop(); }, 6000);
+
+  rec.ondataavailable = (e)=> chunks.push(e.data);
+  rec.onstop = async ()=>{
+    clearTimeout(autoStop);
+    stream.getTracks().forEach(t=>t.stop());
+    pronRecorder = null;
+    setPracticeState(btn, 'grading');
+    feedbackEl.innerHTML = `<div class="pron-hint">J'écoute ta prononciation…</div>`;
+    try{
+      const heard = await transcribeBlob(new Blob(chunks, { type: rec.mimeType || 'audio/webm' }));
+      if(!heard) throw new Error("Je n'ai rien entendu — rapproche-toi du micro et parle un peu plus fort.");
+      renderPronVerdict(await gradePronunciation(phrase, heard), heard, phrase, progressKey, feedbackEl, retry);
+    }catch(err){
+      console.warn('Exercice de prononciation :', err);
+      showPronNote(feedbackEl, 'weak', err.message);
+    }finally{
+      setPracticeState(btn, 'idle');
+    }
+  };
+  rec.start();
+  setPracticeState(btn, 'recording');
+  feedbackEl.innerHTML = `<div class="pron-hint">🎙️ Je t'écoute… appuie à nouveau quand tu as fini</div>`;
+}
+
+async function gradePronunciation(phrase, heard){
+  const prompt = `Un apprenant francophone s'exerce à prononcer du darija marocain à voix haute.
+Phrase à prononcer : "${phrase.ar}" (transcription latine : "${phrase.latin}", sens : "${phrase.fr}").
+Ce que la reconnaissance vocale a transcrit de sa tentative : "${heard}"
+
+Évalue à quel point sa tentative correspond à la phrase cible :
+- niveau 3 : c'est bien la phrase cible, même avec une orthographe arabe différente ou une variante très proche à l'oreille
+- niveau 2 : reconnaissable mais déformé (un son ou une syllabe manqués, un mot voisin)
+- niveau 1 : ça ne correspond pas à la phrase cible
+
+Réponds UNIQUEMENT en JSON : {"level":1, "message":"une phrase courte en français, 20 mots maximum, toujours encourageante et jamais dévalorisante", "tip":"aux niveaux 1 et 2 : le son précis à corriger, 15 mots maximum ; au niveau 3 : null"}`;
+
+  const res = await fetch('/api/chat', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ task:'pron', messages:[{role:'user', content: prompt}] })
+  });
+  const data = await res.json();
+  const raw = (data.content || []).map(b => b.text || '').join('').trim();
+  const match = raw.match(/\{[\s\S]*\}/);
+  if(!match) throw new Error('Correction indisponible pour le moment, réessaie.');
+  const parsed = JSON.parse(match[0]);
+  return {
+    level: [1,2,3].includes(parsed.level) ? parsed.level : 1,
+    message: parsed.message || '',
+    tip: parsed.tip || null
+  };
+}
+
+function renderPronVerdict(verdict, heard, phrase, progressKey, feedbackEl, retry){
+  const lvl = PRON_LEVELS[verdict.level];
+  const perfect = verdict.level === 3;
+  // le point n'est accordé qu'une fois par phrase : on s'exerce, on ne farme pas
+  let earned = '';
+  if(perfect && !isCompleted(progressKey)){
+    markCompleted(progressKey);
+    addPoints(PRON_POINTS);
+    fireConfetti();
+    checkNewBadges();
+    earned = `<div class="pron-earned">+${PRON_POINTS} ⭐</div>`;
+  }
+  feedbackEl.innerHTML = `
+    <div class="pron-result ${lvl.cls}">
+      <div class="pron-head">${emojiImg(lvl.icon,16)} ${lvl.label}</div>
+      <div class="pron-msg">${verdict.message}</div>
+      ${verdict.tip ? `<div class="pron-tip">👂 ${verdict.tip}</div>` : ''}
+      <div class="pron-heard">Entendu : ${heard}</div>
+      ${earned}
+      ${perfect ? '' : `<div class="pron-actions">
+        <button class="pron-listen">🔊 Réécouter le modèle</button>
+        <button class="pron-retry">🎤 Je réessaie</button>
+      </div>`}
+    </div>`;
+  if(!perfect){
+    const listenBtn = feedbackEl.querySelector('.pron-listen');
+    listenBtn.onclick = ()=> speak(phrase.ar, phrase.latin, listenBtn);
+    feedbackEl.querySelector('.pron-retry').onclick = retry;
+  }
+}
+
 let currentPhrasebookCat = null;
 
 function renderPhrasebookCategories(){
@@ -2339,18 +2531,32 @@ function renderPhrasebookLeaf(cat){
     note.innerHTML = `<span class="cat-note-icon">💡</span><div>${cat.note}</div>`;
     list.appendChild(note);
   }
-  cat.phrases.forEach(p=>{
+  cat.phrases.forEach((p, i)=>{
     const item = document.createElement('div');
     item.className = 'phrase-item';
+    const progressKey = `pron_${cat.id}_${i}`;
     item.innerHTML = `
       <div class="txt">
         <div class="ar">${p.ar}</div>
         <div class="latin">${p.latin}</div>
         <div class="fr">${p.fr}</div>
       </div>
-      <button class="listen-btn">🔊</button>`;
+      <div class="item-actions">
+        <button class="listen-btn" title="Écouter">🔊</button>
+        <button class="practice-btn" title="M'exercer à le prononcer">🎤</button>
+      </div>
+      <div class="pron-feedback"></div>`;
     const listenBtn = item.querySelector('.listen-btn');
     listenBtn.onclick = ()=> speak(p.ar, p.latin, listenBtn);
+
+    const practiceBtn = item.querySelector('.practice-btn');
+    const feedbackEl = item.querySelector('.pron-feedback');
+    if(isCompleted(progressKey)){
+      practiceBtn.classList.add('done');
+      practiceBtn.title = 'Déjà bien prononcé — tu peux réessayer';
+    }
+    const startPractice = ()=> practicePronunciation(p, progressKey, feedbackEl, practiceBtn, startPractice);
+    practiceBtn.onclick = startPractice;
     list.appendChild(item);
   });
   const doneAlready = isCompleted('phrasebook_' + cat.id);

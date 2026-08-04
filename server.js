@@ -38,7 +38,8 @@ const TASK_PROFILES = {
   chat:      { model: BASELINE_MODEL,     maxTokens: 1000, effort: CHAT_EFFORT, cache: true  },
   hint:      { model: 'claude-haiku-4-5', maxTokens: 300,  effort: 'low',       cache: false },
   translate: { model: 'claude-haiku-4-5', maxTokens: 300,  effort: 'low',       cache: false },
-  quiz:      { model: 'claude-haiku-4-5', maxTokens: 200,  effort: 'low',       cache: false }
+  quiz:      { model: 'claude-haiku-4-5', maxTokens: 200,  effort: 'low',       cache: false },
+  pron:      { model: 'claude-haiku-4-5', maxTokens: 250,  effort: 'low',       cache: false }
 };
 
 // Sonnet 4.6 accepte thinking + effort ; Haiku 4.5 renvoie une erreur 400 si on les

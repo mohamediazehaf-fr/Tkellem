@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository layout
 
-The application is **not** at the workspace root — it lives in this directory (`Tkellem/`), which is also the git repo root (remote `github.com/mohamediazehaf-fr/Tkellem`, current branch `feature/add_home_link`). Run every command from `Tkellem/`.
+The application is **not** at the workspace root — it lives in this directory (`Tkellem/`), which is also the git repo root (remote `github.com/mohamediazehaf-fr/Tkellem`, work happens directly on `main`). Run every command from `Tkellem/`.
 
 ```
 Tkellem/
@@ -29,7 +29,11 @@ node server.js            # or: npm start  → http://localhost:3000
 
 There is **no build step, no bundler, no test suite, and no linter**. `npm start` is the only script. Verify changes by loading the app in a browser (Chrome recommended) — `localhost` counts as a secure context, so the microphone works without HTTPS.
 
-Deployment is push-to-deploy: commit to GitHub → Render rebuilds (`npm install` / `node server.js`) with the two API keys set as environment variables. The free tier sleeps after 15 min of inactivity, so the first request after idling takes several seconds.
+Deployment is push-to-deploy and needs nothing in the repo — no `render.yaml`, no CI workflow. Render's own **Auto-Deploy** (service → Settings → Build & Deploy, on by default for a GitHub-connected service) watches the configured branch, here `main`, and rebuilds (`npm install` / `node server.js`) on every push, with the API keys supplied as environment variables. A failed build leaves the previous version serving, so a broken push degrades to "no update" rather than an outage.
+
+**Every push to `main` therefore reaches real users within minutes.** There is no test suite and no staging service, so the browser check above is the only gate — run it before pushing, not after.
+
+The free tier sleeps after 15 min of inactivity, so the first request after idling takes several seconds.
 
 ## Architecture
 
