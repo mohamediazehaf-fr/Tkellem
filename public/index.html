@@ -91,10 +91,13 @@
   .points-badge{
     background:var(--saffron);color:#4a3512;border:none;border-radius:20px;
     padding:6px 12px;font-weight:700;font-size:14.5px;flex-shrink:0;align-self:center;
+    cursor:pointer;transition:transform .1s ease;
   }
+  .points-badge:active{transform:scale(0.92);}
   .account-btn{
     background:rgba(22,75,84,0.08);border:none;border-radius:50%;width:36px;height:36px;
     font-size:16px;cursor:pointer;flex-shrink:0;align-self:center;
+    padding:0;display:flex;align-items:center;justify-content:center;overflow:hidden;
   }
 
   .auth-tabs{display:flex;gap:8px;margin-bottom:16px;}
@@ -486,10 +489,6 @@
     padding:0 14px;font-weight:600;cursor:pointer;font-size:14px;
   }
   .voice-row button:disabled{background:#b6ada0;cursor:wait;}
-  #voice-select{
-    margin-top:8px;width:100%;padding:8px 10px;border-radius:8px;
-    border:1px solid rgba(22,75,84,0.2);font-size:14px;font-family:inherit;
-  }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
@@ -516,22 +515,22 @@
         <div class="menu-desc">Mots de base → quiz → mises en situation, dans l'ordre</div>
       </div>
       <div class="menu-card" id="menu-phrasebook">
-        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f4d6.svg" alt="📖" style="width:26px;height:26px;"></div>
+        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f5e3.svg" alt="🗣️" style="width:26px;height:26px;"></div>
         <div class="menu-title">Phrases utiles</div>
         <div class="menu-desc">Salutations, chiffres, transports, nourriture...</div>
       </div>
       <div class="menu-card" id="menu-quiz">
-        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f5bc.svg" alt="🖼️" style="width:26px;height:26px;"></div>
+        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f9e0.svg" alt="🧠" style="width:26px;height:26px;"></div>
         <div class="menu-title">Quiz images</div>
         <div class="menu-desc">Devine et prononce ce que tu vois</div>
       </div>
       <div class="menu-card" id="menu-scenarios">
-        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f9e9.svg" alt="🧩" style="width:26px;height:26px;"></div>
+        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f3ac.svg" alt="🎬" style="width:26px;height:26px;"></div>
         <div class="menu-title">Discussions à la carte</div>
         <div class="menu-desc">Choisis librement une mise en situation</div>
       </div>
     </div>
-    <button class="progress-link" id="menu-progress">📊 Voir mon parcours</button>
+    <button class="progress-link" id="menu-progress"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f6e3.svg" alt="🛣️" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"> Voir mon parcours</button>
   </div>
 
   <!-- SCREEN 1 : sélection du scénario (mode libre) -->
@@ -542,10 +541,7 @@
     <div class="voice-panel" id="voice-panel">
       <div class="voice-panel-head">
         <span>🔊 Voix de l'avatar</span>
-        <span class="voice-status" id="voice-status">Chargement des voix...</span>
-      </div>
-      <div class="voice-panel-body" id="voice-panel-body">
-        <select id="voice-select" style="display:none;"></select>
+        <span class="voice-status" id="voice-status">Chargement de la voix...</span>
       </div>
     </div>
 
@@ -1124,9 +1120,9 @@ function emojiImg(emoji, sizePx){
 function avatarHtml(profile, sizePx){
   const size = sizePx || 24;
   if(profile && profile.avatar_url){
-    return `<img src="${profile.avatar_url}" alt="avatar" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;vertical-align:middle;display:inline-block;">`;
+    return `<img src="${profile.avatar_url}" alt="avatar" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;object-position:center;vertical-align:middle;display:block;">`;
   }
-  return emojiImg((profile && profile.avatar) || '🙂', size);
+  return emojiImg((profile && profile.avatar) || '🙂', Math.round(size * 0.65));
 }
 
 const AVATAR_CHOICES = [
@@ -1179,7 +1175,7 @@ function applyAuthGate(){
 function renderHomeGreeting(){
   const el = document.getElementById('home-greeting');
   if(currentUser && currentProfile.display_name){
-    el.innerHTML = `<span class="avatar-circle">${avatarHtml(currentProfile, 26)}</span> Bonjour ${currentProfile.display_name}, ravi de te retrouver !`;
+    el.innerHTML = `<span class="avatar-circle">${avatarHtml(currentProfile, 44)}</span> Bonjour ${currentProfile.display_name}, ravi de te retrouver !`;
     touchStreak();
     checkNewBadges();
   } else {
@@ -1191,7 +1187,7 @@ function renderHomeGreeting(){
 function updateHeaderAvatar(){
   const btn = document.getElementById('account-btn-header');
   if(currentUser && currentProfile.avatar){
-    btn.innerHTML = avatarHtml(currentProfile, 20);
+    btn.innerHTML = avatarHtml(currentProfile, 36);
   } else {
     btn.textContent = '👤';
   }
@@ -1603,7 +1599,6 @@ async function speak(text, latinText){
 // ---------------------------------------------------------------
 async function loadVoices(){
   const status = document.getElementById('voice-status');
-  const select = document.getElementById('voice-select');
   try{
     const res = await fetch('/api/voices');
     const data = await res.json();
@@ -1612,34 +1607,19 @@ async function loadVoices(){
       status.className = 'voice-status error';
       return;
     }
-    select.innerHTML = '';
-    data.voices.forEach(v=>{
-      const opt = document.createElement('option');
-      opt.value = v.voice_id;
-      opt.textContent = v.name;
-      select.appendChild(opt);
-    });
-    select.style.display = 'block';
-
-    // choix par défaut : le choix mémorisé > une voix "darija/moroccan" détectée > la première de la liste
-    const savedVoiceId = localStorage.getItem('tkellem_voice_id');
-    const darijaVoice = data.voices.find(v => /darija|moroccan|maroc/i.test(v.name));
-    if(savedVoiceId && data.voices.some(v => v.voice_id === savedVoiceId)){
-      select.value = savedVoiceId;
-    } else if(darijaVoice){
-      select.value = darijaVoice.voice_id;
+    // Voix figée : on cherche uniquement "Ghizlane" (ou une voix darija/marocaine à défaut), jamais de choix utilisateur
+    const ghizlaneVoice = data.voices.find(v => /ghizlane/i.test(v.name))
+      || data.voices.find(v => /darija|moroccan|maroc/i.test(v.name));
+    if(!ghizlaneVoice){
+      status.textContent = 'Voix Ghizlane introuvable sur ce compte — voix du navigateur utilisée';
+      status.className = 'voice-status error';
+      return;
     }
-
-    select.onchange = ()=>{
-      elevenLabsVoiceId = select.value;
-      localStorage.setItem('tkellem_voice_id', select.value);
-    };
-    elevenLabsVoiceId = select.value;
-    localStorage.setItem('tkellem_voice_id', select.value);
-    status.textContent = '✓ Voix ' + select.options[select.selectedIndex].textContent + ' prête';
+    elevenLabsVoiceId = ghizlaneVoice.voice_id;
+    status.textContent = '✓ Voix Ghizlane prête';
     status.className = 'voice-status connected';
   }catch(err){
-    status.textContent = 'Impossible de charger les voix — voix du navigateur utilisée';
+    status.textContent = 'Impossible de charger la voix — voix du navigateur utilisée';
     status.className = 'voice-status error';
   }
 }
@@ -1752,6 +1732,7 @@ document.getElementById('back-to-home-3').onclick = ()=> showScreen('screen-home
 document.getElementById('back-to-home-4').onclick = ()=> showScreen('screen-home');
 document.getElementById('back-to-home-5').onclick = ()=> showScreen('screen-home');
 document.getElementById('account-btn-header').onclick = ()=>{ showScreen('screen-account'); renderAccount(); };
+document.getElementById('points-badge-header').onclick = ()=>{ showScreen('screen-progress'); renderProgress(); };
 
 updatePointsBadge();
 
