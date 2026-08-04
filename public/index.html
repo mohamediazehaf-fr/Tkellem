@@ -1152,21 +1152,32 @@ const AVATAR_CHOICES = [
 let currentProfile = { display_name:null, avatar:'🙂', avatar_url:null };
 
 async function initAuth(){
-  if(!sb){ applyAuthGate(); return; } // pas de Supabase configuré : on n'impose pas le portail
-  const { data } = await sb.auth.getSession();
-  currentUser = data.session ? data.session.user : null;
+  // {initial:true} = on arrive sur la page (ou on l'actualise) : aucun écran n'est
+  // encore affiché, il faut donc en imposer un.
+  if(!sb){ applyAuthGate({ initial:true }); return; } // pas de Supabase configuré : on n'impose pas le portail
+  let session = null;
+  try{
+    const { data } = await sb.auth.getSession();
+    session = data.session;
+  }catch(err){
+    // sans ce filet, une erreur ici laisserait la page sans aucun écran affiché
+    console.warn('Session Supabase illisible, on repart déconnecté :', err);
+  }
+  currentUser = session ? session.user : null;
   if(currentUser) await syncFromServer();
-  applyAuthGate();
+  applyAuthGate({ initial:true });
 
   sb.auth.onAuthStateChange(async (event, session)=>{
     currentUser = session ? session.user : null;
     if(currentUser) await syncFromServer();
-    applyAuthGate();
+    applyAuthGate(); // pas 'initial' : un simple rafraîchissement de session ne doit
+                     // pas ramener l'utilisateur à l'accueil en pleine conversation
   });
 }
 
 // Impose l'écran de connexion tant que l'utilisateur n'est pas identifié
-function applyAuthGate(){
+function applyAuthGate(opts){
+  const initial = !!(opts && opts.initial);
   const headerExtras = document.querySelectorAll('.account-btn, .points-badge');
   if(sb && !currentUser){
     headerExtras.forEach(el => el.style.visibility = 'hidden');
@@ -1182,7 +1193,9 @@ function applyAuthGate(){
       renderAccount();
     } else {
       renderHomeGreeting();
-      if(document.getElementById('screen-account').style.display !== 'none'){
+      // au démarrage on atterrit sur l'accueil ; ensuite on ne déplace l'utilisateur
+      // que s'il est sur l'écran de compte (il vient de se connecter)
+      if(initial || document.getElementById('screen-account').style.display !== 'none'){
         showScreen('screen-home');
       }
     }
