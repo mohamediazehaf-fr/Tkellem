@@ -12,24 +12,30 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Tkellem">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --zellige:#164B54;
-    --zellige-light:#2C7A8C;
-    --saffron:#E3A23B;
-    --henna:#A6383B;
-    --cream:#F3ECD9;
-    --ink:#242019;
-    --palm:#5B7A5A;
-    --card-bg:#FFFDF8;
+    --zellige:#0E4F56;
+    --zellige-light:#186E77;
+    --saffron:#FFB238;
+    --saffron-dark:#B87A0F;
+    --henna:#F1633D;
+    --henna-dark:#A8391E;
+    --cream:#FFF6E9;
+    --ink:#21201C;
+    --palm:#2FBE8F;
+    --palm-dark:#1D7D5D;
+    --card-bg:#FFFFFF;
+    --font-display:'Baloo 2',sans-serif;
+    --font-body:'Nunito','IBM Plex Sans Arabic',sans-serif;
+    --font-arabic:'Cairo',sans-serif;
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
     background:var(--cream);
     color:var(--ink);
-    font-family:'IBM Plex Sans Arabic','Inter',sans-serif;
+    font-family:var(--font-body);
     min-height:100vh;
   }
   .app{
@@ -39,7 +45,7 @@
     display:flex;
     flex-direction:column;
     background:
-      radial-gradient(circle at 10% 0%, rgba(227,162,59,0.12), transparent 40%),
+      radial-gradient(circle at 10% 0%, rgba(255,178,56,0.15), transparent 40%),
       radial-gradient(circle at 90% 100%, rgba(22,75,84,0.10), transparent 45%),
       var(--cream);
   }
@@ -54,11 +60,11 @@
     width:38px;height:38px;border-radius:10px;
     background:var(--zellige);
     display:flex;align-items:center;justify-content:center;
-    color:var(--cream);font-family:'Cairo',sans-serif;font-weight:800;font-size:18px;
+    color:var(--cream);font-family:var(--font-arabic);font-weight:800;font-size:18px;
     flex-shrink:0;
   }
   header.top h1{
-    font-family:'Cairo',sans-serif;font-weight:800;font-size:20px;margin:0;letter-spacing:.2px;
+    font-family:var(--font-display);font-weight:800;font-size:20px;margin:0;letter-spacing:.2px;
   }
   header.top .sub{font-size:12.5px;color:var(--zellige-light);margin-top:1px;}
 
@@ -92,11 +98,11 @@
     padding:11px;font-weight:700;cursor:pointer;font-size:14px;
   }
   .auth-msg{font-size:12.5px;padding:8px 10px;border-radius:8px;}
-  .auth-msg.error{background:rgba(166,56,58,0.10);color:var(--henna);}
-  .auth-msg.success{background:rgba(91,122,90,0.15);color:var(--palm);}
+  .auth-msg.error{background:rgba(241,99,61,0.12);color:var(--henna-dark);}
+  .auth-msg.success{background:rgba(47,190,143,0.15);color:var(--palm-dark);}
   .auth-link{background:none;border:none;color:var(--zellige-light);font-size:12px;cursor:pointer;text-decoration:underline;padding:0;}
   .account-info{background:var(--card-bg);border-radius:14px;padding:16px;margin-bottom:16px;}
-  .logout-btn{background:none;border:1px solid var(--henna);color:var(--henna);border-radius:10px;padding:9px 14px;font-size:13px;cursor:pointer;font-weight:600;}
+  .logout-btn{background:none;border:1px solid var(--henna);color:var(--henna-dark);border-radius:10px;padding:9px 14px;font-size:13px;cursor:pointer;font-weight:600;}
   .avatar-picker{display:flex;gap:8px;flex-wrap:wrap;}
   .avatar-choice{
     width:42px;height:42px;border-radius:50%;border:2px solid transparent;background:var(--cream);
@@ -108,22 +114,31 @@
     cursor:pointer;padding:0;margin-bottom:14px;font-weight:600;
   }
 
-  .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
+  .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
   .menu-card{
-    background:var(--card-bg);border:1px solid rgba(22,75,84,0.14);border-radius:16px;
-    padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:6px;
-    transition:transform .15s ease, box-shadow .15s ease;
+    background:var(--card-bg);border:none;border-radius:20px;
+    border-bottom:6px solid var(--zellige);
+    padding:18px 14px 15px;cursor:pointer;display:flex;flex-direction:column;gap:6px;
+    transition:transform .08s ease, border-bottom-width .08s ease;
   }
-  .menu-card:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(22,75,84,0.12);}
-  .menu-icon{font-size:30px;}
-  .menu-title{font-family:'Cairo',sans-serif;font-weight:700;font-size:15px;}
+  .menu-card:active{transform:translateY(4px);border-bottom-width:2px;}
+  .menu-card:nth-child(1){border-bottom-color:var(--saffron-dark);}
+  .menu-card:nth-child(2){border-bottom-color:var(--henna-dark);}
+  .menu-card:nth-child(3){border-bottom-color:var(--palm-dark);}
+  .menu-card:nth-child(4){border-bottom-color:var(--zellige);}
+  .menu-icon{font-size:30px;width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;}
+  .menu-card:nth-child(1) .menu-icon{background:#FFE9C2;}
+  .menu-card:nth-child(2) .menu-icon{background:#FBD9CD;}
+  .menu-card:nth-child(3) .menu-icon{background:#CFEFE2;}
+  .menu-card:nth-child(4) .menu-icon{background:#D6E8EA;}
+  .menu-title{font-family:var(--font-display);font-weight:700;font-size:15px;}
   .menu-desc{font-size:11.5px;color:#6b6357;line-height:1.35;}
   .progress-link{
     display:block;width:100%;background:none;border:1px solid var(--zellige-light);
     color:var(--zellige);border-radius:12px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;
   }
   .home-greeting{
-    font-family:'Cairo',sans-serif;font-size:17px;font-weight:700;color:var(--zellige);
+    font-family:var(--font-display);font-size:17px;font-weight:700;color:var(--zellige);
     margin-bottom:16px;display:flex;align-items:center;gap:10px;
   }
   .home-greeting .avatar-circle{
@@ -136,7 +151,7 @@
     background:var(--card-bg);border:1px solid rgba(22,75,84,0.10);border-radius:12px;
     padding:12px 14px;margin-bottom:8px;
   }
-  .phrase-item .txt .ar{font-size:17px;direction:rtl;font-weight:600;}
+  .phrase-item .txt .ar{font-size:17px;direction:rtl;font-weight:600;font-family:var(--font-arabic);}
   .phrase-item .txt .latin{font-size:12px;font-style:italic;color:var(--zellige-light);margin-top:2px;}
   .phrase-item .txt .fr{font-size:11.5px;color:#7a7266;margin-top:2px;}
   .phrase-item .listen-btn{
@@ -149,29 +164,31 @@
   }
 
   .quiz-card{
-    background:var(--card-bg);border-radius:18px;padding:24px 18px;text-align:center;
+    background:var(--card-bg);border-radius:22px;padding:26px 18px;text-align:center;
+    border-bottom:6px solid var(--saffron-dark);
   }
-  .quiz-emoji{font-size:64px;margin-bottom:14px;}
+  .quiz-emoji{font-size:56px;margin-bottom:14px;width:88px;height:88px;border-radius:50%;background:#FFE9C2;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
   .quiz-progress{font-size:12px;color:#7a7266;margin-bottom:10px;}
   .quiz-input-row{display:flex;gap:8px;margin-top:16px;}
   .quiz-input-row input{
-    flex:1;padding:10px 12px;border-radius:10px;border:1px solid rgba(22,75,84,0.2);font-size:14px;
+    flex:1;padding:11px 13px;border-radius:14px;border:2px solid #ECE2CE;font-size:14px;font-family:var(--font-body);
   }
   .quiz-input-row button{
-    background:var(--zellige);color:var(--cream);border:none;border-radius:10px;padding:0 16px;font-weight:600;cursor:pointer;
+    background:var(--zellige);color:#fff;border:none;border-radius:14px;padding:0 18px;font-weight:700;font-family:var(--font-display);cursor:pointer;
   }
   .quiz-feedback{margin-top:14px;font-size:13.5px;padding:10px;border-radius:10px;}
-  .quiz-feedback.correct{background:rgba(91,122,90,0.15);color:var(--palm);}
-  .quiz-feedback.incorrect{background:rgba(166,56,58,0.10);color:var(--henna);}
+  .quiz-feedback.correct{background:rgba(47,190,143,0.15);color:var(--palm-dark);}
+  .quiz-feedback.incorrect{background:rgba(241,99,61,0.12);color:var(--henna-dark);}
   .quiz-next-btn{
-    margin-top:12px;background:var(--saffron);color:#4a3512;border:none;border-radius:10px;
-    padding:10px 18px;font-weight:700;cursor:pointer;
+    margin-top:12px;background:var(--saffron);color:#4a3512;border:none;border-radius:14px;
+    padding:10px 18px;font-weight:700;font-family:var(--font-display);cursor:pointer;
   }
 
   .progress-stat{
-    background:var(--card-bg);border-radius:14px;padding:16px;margin-bottom:12px;text-align:center;
+    background:var(--card-bg);border-radius:16px;padding:16px;margin-bottom:12px;text-align:center;
+    border-bottom:5px solid var(--zellige);
   }
-  .progress-stat .big{font-family:'Cairo',sans-serif;font-size:32px;font-weight:800;color:var(--zellige);}
+  .progress-stat .big{font-family:var(--font-display);font-size:32px;font-weight:800;color:var(--zellige);}
   .badge-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;}
   .badge-chip{
     background:var(--card-bg);border:1px solid rgba(22,75,84,0.12);border-radius:10px;
@@ -179,22 +196,23 @@
   }
   .badge-chip.locked{opacity:0.35;}
   .badge-chip .b-icon{font-size:20px;display:block;margin-bottom:2px;}
-  .scenario-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .scenario-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
   .scenario-card{
     background:var(--card-bg);
-    border:1px solid rgba(22,75,84,0.14);
-    border-radius:16px;
-    padding:16px 14px;
+    border:none;
+    border-bottom:6px solid var(--zellige-light);
+    border-radius:20px;
+    padding:16px 14px 13px;
     cursor:pointer;
     text-align:left;
-    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    transition:transform .08s ease, border-bottom-width .08s ease;
     display:flex;flex-direction:column;gap:8px;
   }
-  .scenario-card:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(22,75,84,0.12);border-color:var(--saffron);}
-  .scenario-card .icon{font-size:26px;}
-  .scenario-card .name{font-family:'Cairo',sans-serif;font-weight:700;font-size:15px;}
+  .scenario-card:active{transform:translateY(4px);border-bottom-width:2px;}
+  .scenario-card .icon{font-size:26px;width:42px;height:42px;border-radius:12px;background:#D6E8EA;display:flex;align-items:center;justify-content:center;}
+  .scenario-card .name{font-family:var(--font-display);font-weight:700;font-size:15px;}
   .scenario-card .desc{font-size:12px;color:#6b6357;line-height:1.35;}
-  .in-progress-badge{color:var(--palm);font-size:10px;vertical-align:middle;}
+  .in-progress-badge{color:var(--palm-dark);font-size:10px;vertical-align:middle;}
 
   .mode-switch{display:flex;gap:8px;margin-bottom:16px;}
   .mode-btn{
@@ -215,7 +233,7 @@
     background:none;border:none;color:var(--cream);font-size:20px;cursor:pointer;padding:4px 8px 4px 0;
   }
   .convo-header .titles{flex:1;}
-  .convo-header .name{font-family:'Cairo',sans-serif;font-weight:700;font-size:15.5px;}
+  .convo-header .name{font-family:var(--font-display);font-weight:700;font-size:15.5px;}
   .convo-header .role{font-size:12px;opacity:.8;}
   .convo-header .icon{font-size:24px;}
 
@@ -230,7 +248,7 @@
     border:1px solid rgba(22,75,84,0.10);
   }
   .bubble.user .card{background:var(--zellige);color:var(--cream);border-color:var(--zellige);}
-  .bubble .ar{font-size:17px;direction:rtl;font-weight:600;line-height:1.5;}
+  .bubble .ar{font-size:17px;direction:rtl;font-weight:600;line-height:1.5;font-family:var(--font-arabic);}
   .bubble .latin{font-size:12.5px;font-style:italic;opacity:.75;margin-top:4px;}
   .bubble .fr{font-size:12px;opacity:.65;margin-top:5px;border-top:1px dashed rgba(0,0,0,0.15);padding-top:5px;}
   .bubble.user .fr{border-top-color:rgba(255,255,255,0.25);}
@@ -244,7 +262,7 @@
 
   .coach-note{
     align-self:center;max-width:90%;
-    background:rgba(227,162,59,0.14);
+    background:rgba(255,178,56,0.16);
     border:1px dashed var(--saffron);
     border-radius:12px;
     padding:9px 13px;
@@ -260,11 +278,11 @@
 
   .error-note{
     align-self:center;max-width:92%;
-    background:rgba(166,56,58,0.10);
+    background:rgba(241,99,61,0.12);
     border:1px solid var(--henna);
     border-radius:12px;
     padding:10px 13px;
-    font-size:12.5px;line-height:1.4;color:var(--henna);
+    font-size:12.5px;line-height:1.4;color:var(--henna-dark);
     display:flex;flex-direction:column;gap:8px;align-items:flex-start;
   }
   .error-note .retry-btn{
@@ -312,7 +330,7 @@
     padding:0 16px;font-weight:600;cursor:pointer;font-size:14px;
   }
   .hint-btn{
-    background:none;border:1px solid var(--saffron);color:var(--henna);
+    background:none;border:1px solid var(--saffron);color:var(--henna-dark);
     border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer;
   }
   .note{font-size:11px;color:#9a9280;text-align:center;max-width:280px;}
@@ -330,7 +348,7 @@
     border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;
   }
   #translate-result{font-size:13px;color:var(--ink);line-height:1.5;}
-  #translate-result .t-ar{font-size:16px;direction:rtl;font-weight:600;}
+  #translate-result .t-ar{font-size:16px;direction:rtl;font-weight:600;font-family:var(--font-arabic);}
   #translate-result .t-latin{font-style:italic;color:var(--zellige-light);font-size:12.5px;}
 
   .voice-panel{
@@ -339,13 +357,13 @@
   }
   .voice-panel-head{
     display:flex;justify-content:space-between;align-items:center;
-    font-family:'Cairo',sans-serif;font-weight:700;font-size:13.5px;
+    font-family:var(--font-display);font-weight:700;font-size:13.5px;
   }
-  .voice-status{font-family:'Inter',sans-serif;font-weight:500;font-size:11.5px;color:var(--palm);}
+  .voice-status{font-family:'Inter',sans-serif;font-weight:500;font-size:11.5px;color:var(--palm-dark);}
   .voice-status.connected{color:var(--zellige);}
-  .voice-status.error{color:var(--henna);font-weight:700;}
+  .voice-status.error{color:var(--henna-dark);font-weight:700;}
   .voice-hint{font-size:11.5px;color:#7a7266;margin:8px 0 8px;line-height:1.4;}
-  .voice-hint a{color:var(--henna);text-decoration:none;font-weight:600;}
+  .voice-hint a{color:var(--henna-dark);text-decoration:none;font-weight:600;}
   .voice-row{display:flex;gap:8px;}
   .voice-row input{
     flex:1;padding:8px 10px;border-radius:8px;border:1px solid rgba(22,75,84,0.2);
@@ -381,22 +399,22 @@
     <div id="home-greeting" class="home-greeting"></div>
     <div class="menu-grid">
       <div class="menu-card" id="menu-guided">
-        <div class="menu-icon">🎯</div>
+        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/svg/1f3af.svg" alt="🎯" style="width:26px;height:26px;"></div>
         <div class="menu-title">Parcours guidé</div>
         <div class="menu-desc">Mots de base → quiz → mises en situation, dans l'ordre</div>
       </div>
       <div class="menu-card" id="menu-phrasebook">
-        <div class="menu-icon">📖</div>
+        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/svg/1f4d6.svg" alt="📖" style="width:26px;height:26px;"></div>
         <div class="menu-title">Phrases utiles</div>
         <div class="menu-desc">Salutations, chiffres, transports, nourriture...</div>
       </div>
       <div class="menu-card" id="menu-quiz">
-        <div class="menu-icon">🖼️</div>
+        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/svg/1f5bc.svg" alt="🖼️" style="width:26px;height:26px;"></div>
         <div class="menu-title">Quiz images</div>
         <div class="menu-desc">Devine et prononce ce que tu vois</div>
       </div>
       <div class="menu-card" id="menu-scenarios">
-        <div class="menu-icon">🧩</div>
+        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/svg/1f9e9.svg" alt="🧩" style="width:26px;height:26px;"></div>
         <div class="menu-title">Discussions à la carte</div>
         <div class="menu-desc">Choisis librement une mise en situation</div>
       </div>
@@ -433,7 +451,7 @@
     <div id="phrasebook-categories" class="menu-grid"></div>
     <div id="phrasebook-detail" style="display:none;">
       <button class="back-inline" id="back-to-categories">← Catégories</button>
-      <h2 id="phrasebook-cat-title" style="font-family:'Cairo',sans-serif;"></h2>
+      <h2 id="phrasebook-cat-title" style="font-family:var(--font-display);"></h2>
       <div id="phrasebook-list"></div>
       <button class="complete-btn" id="phrasebook-complete-btn">✓ J'ai appris ces mots (+10 ⭐)</button>
     </div>
@@ -841,7 +859,7 @@ function addPoints(n){
   return total;
 }
 function updatePointsBadge(){
-  document.getElementById('points-badge-header').textContent = '⭐ ' + getPoints();
+  document.getElementById('points-badge-header').innerHTML = emojiImg('⭐',15) + ' ' + getPoints();
 }
 function getCompleted(){
   try{ return JSON.parse(localStorage.getItem('tkellem_completed') || '[]'); }catch(e){ return []; }
@@ -864,7 +882,27 @@ const SUPABASE_KEY = 'sb_publishable_OqKDiR3Ervps66wbN0aQrw_Lyr7ZDkm';
 const sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 let currentUser = null;
 
-const AVATAR_CHOICES = ['🙂','😎','🧕','👳','🐐','🦁','🌙','⭐','🌵','🍃'];
+// ---------------------------------------------------------------
+// ICÔNES EMOJI COHÉRENTES (Twemoji, open source) — remplace le rendu
+// natif du téléphone, très inégal selon les appareils
+// ---------------------------------------------------------------
+function twemojiUrl(emoji){
+  const codepoints = [...emoji]
+    .map(c => c.codePointAt(0).toString(16))
+    .filter(cp => cp !== 'fe0f')
+    .join('-');
+  return `https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/svg/${codepoints}.svg`;
+}
+function emojiImg(emoji, sizePx){
+  const size = sizePx || 24;
+  return `<img src="${twemojiUrl(emoji)}" alt="${emoji}" style="width:${size}px;height:${size}px;vertical-align:middle;display:inline-block;" loading="lazy" onerror="this.style.display='none';this.insertAdjacentText('afterend','${emoji}');">`;
+}
+
+const AVATAR_CHOICES = [
+  '🙂','😎','🤠','🧕','👳','👦','👧','🧑‍🦱',
+  '🐐','🦁','🐫','🐱','🐶','🦉','🐢',
+  '🌙','⭐','🌵','🍃','🌺','🔥','🎨','⚽'
+];
 let currentProfile = { display_name:null, avatar:'🙂' };
 
 async function initAuth(){
@@ -908,7 +946,7 @@ function applyAuthGate(){
 function renderHomeGreeting(){
   const el = document.getElementById('home-greeting');
   if(currentUser && currentProfile.display_name){
-    el.innerHTML = `<span class="avatar-circle">${currentProfile.avatar || '🙂'}</span> Bonjour ${currentProfile.display_name}, ravi de te retrouver !`;
+    el.innerHTML = `<span class="avatar-circle">${emojiImg(currentProfile.avatar || '🙂', 26)}</span> Bonjour ${currentProfile.display_name}, ravi de te retrouver !`;
   } else {
     el.innerHTML = '';
   }
@@ -990,7 +1028,7 @@ function renderAccount(){
   // Cas 1 : connecté mais profil incomplet (pas encore de nom) → on bloque ici jusqu'à ce que ce soit fait
   if(currentUser && !currentProfile.display_name){
     body.innerHTML = `
-      <h2 style="font-family:'Cairo',sans-serif;">Bienvenue ! Une dernière étape 👋</h2>
+      <h2 style="font-family:var(--font-display);">Bienvenue ! Une dernière étape 👋</h2>
       <p style="font-size:13px;color:#6b6357;margin-bottom:14px;">Choisis un prénom et un avatar pour personnaliser ton expérience.</p>
       <div class="auth-form">
         <input type="text" id="profile-name-input" placeholder="Ton prénom">
@@ -1003,7 +1041,7 @@ function renderAccount(){
     AVATAR_CHOICES.forEach(a=>{
       const btn = document.createElement('button');
       btn.className = 'avatar-choice' + (a === chosenAvatar ? ' selected' : '');
-      btn.textContent = a;
+      btn.innerHTML = emojiImg(a,22);
       btn.onclick = ()=>{
         chosenAvatar = a;
         picker.querySelectorAll('.avatar-choice').forEach(b=>b.classList.remove('selected'));
@@ -1025,7 +1063,7 @@ function renderAccount(){
   if(currentUser){
     body.innerHTML = `
       <div class="account-info">
-        <p style="font-size:26px;">${currentProfile.avatar}</p>
+        <p style="font-size:26px;">${emojiImg(currentProfile.avatar,32)}</p>
         <p><strong>${currentProfile.display_name}</strong></p>
         <p style="font-size:13px;color:#6b6357;">${currentUser.email}</p>
         <p style="font-size:12px;color:var(--palm);">✓ Ta progression est synchronisée sur tous tes appareils</p>
@@ -1035,7 +1073,7 @@ function renderAccount(){
         <div class="avatar-picker" id="avatar-picker-edit"></div>
         <button id="save-profile-edit-btn">Mettre à jour le profil</button>
       </div>
-      <h3 style="font-family:'Cairo',sans-serif;font-size:15px;">Changer mon mot de passe</h3>
+      <h3 style="font-family:var(--font-display);font-size:15px;">Changer mon mot de passe</h3>
       <div class="auth-form">
         <input type="password" id="new-password-input" placeholder="Nouveau mot de passe (6 caractères min.)">
         <button id="change-password-btn">Mettre à jour le mot de passe</button>
@@ -1048,7 +1086,7 @@ function renderAccount(){
     AVATAR_CHOICES.forEach(a=>{
       const btn = document.createElement('button');
       btn.className = 'avatar-choice' + (a === chosenAvatarEdit ? ' selected' : '');
-      btn.textContent = a;
+      btn.innerHTML = emojiImg(a,22);
       btn.onclick = ()=>{
         chosenAvatarEdit = a;
         pickerEdit.querySelectorAll('.avatar-choice').forEach(b=>b.classList.remove('selected'));
@@ -1279,7 +1317,7 @@ function renderScenarioGrid(){
     const hasSaved = !!loadSavedHistory(s.id);
     const card = document.createElement('div');
     card.className = 'scenario-card';
-    card.innerHTML = `<div class="icon">${s.icon}</div><div class="name">${s.name}${hasSaved ? ' <span class="in-progress-badge">●</span>' : ''}</div><div class="desc">${s.desc}</div>`;
+    card.innerHTML = `<div class="icon">${emojiImg(s.icon,26)}</div><div class="name">${s.name}${hasSaved ? ' <span class="in-progress-badge">●</span>' : ''}</div><div class="desc">${s.desc}</div>`;
     card.onclick = ()=> startScenario(s);
     grid.appendChild(card);
   });
@@ -1705,7 +1743,7 @@ function renderPhrasebookCategories(){
     const done = isCompleted('phrasebook_' + cat.id);
     const card = document.createElement('div');
     card.className = 'menu-card';
-    card.innerHTML = `<div class="menu-icon">${cat.icon}</div><div class="menu-title">${cat.name}${done ? ' ✓' : ''}</div><div class="menu-desc">${cat.phrases.length} phrases</div>`;
+    card.innerHTML = `<div class="menu-icon">${emojiImg(cat.icon,26)}</div><div class="menu-title">${cat.name}${done ? ' ✓' : ''}</div><div class="menu-desc">${cat.phrases.length} phrases</div>`;
     card.onclick = ()=> openPhrasebookCategory(cat);
     grid.appendChild(card);
   });
@@ -1771,7 +1809,7 @@ function renderQuizItem(){
     body.innerHTML = `
       <div class="quiz-card">
         <div class="quiz-emoji">🎉</div>
-        <h2 style="font-family:'Cairo',sans-serif;">Quiz terminé !</h2>
+        <h2 style="font-family:var(--font-display);">Quiz terminé !</h2>
         <p>${quizScore} / ${quizOrder.length} bonnes réponses</p>
         <p>+${quizScore * 5 + bonus} ⭐ ${bonus ? '(dont un bonus de +20 pour un score parfait !)' : ''}</p>
         <button class="quiz-next-btn" id="quiz-restart-btn">🔁 Refaire un quiz</button>
@@ -1783,7 +1821,7 @@ function renderQuizItem(){
   body.innerHTML = `
     <div class="quiz-progress">Question ${quizIndex + 1} / ${quizOrder.length}</div>
     <div class="quiz-card">
-      <div class="quiz-emoji">${item.emoji}</div>
+      <div class="quiz-emoji">${emojiImg(item.emoji,56)}</div>
       <p>Comment dit-on ça en darija ?</p>
       <div class="quiz-input-row">
         <input type="text" id="quiz-answer-input" placeholder="Écris ta réponse (ou en français)...">
@@ -1865,7 +1903,7 @@ function renderProgress(guidedMode){
   let guidedHtml = '';
   if(guidedMode){
     guidedHtml = `
-      <h2 style="font-family:'Cairo',sans-serif;margin-top:0;">🎯 Parcours guidé</h2>
+      <h2 style="font-family:var(--font-display);margin-top:0;">🎯 Parcours guidé</h2>
       <div class="phrase-item" style="cursor:pointer;" id="guided-step-1">
         <div class="txt"><div class="ar" style="direction:ltr;">1. Mots de base ${step1Done ? '✓' : ''}</div><div class="fr">${phrasebookDone}/${PHRASEBOOK.length} catégories apprises</div></div>
         <div>📖</div>
