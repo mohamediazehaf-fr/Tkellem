@@ -86,6 +86,51 @@ create index if not exists duels_challenger_idx on public.duels (challenger_id, 
 create index if not exists duels_opponent_idx   on public.duels (opponent_id,   created_at desc);
 
 
+-- ------------------------------------------------------------
+-- 3. Amis
+-- Une ligne par demande, dans le sens demandeur → destinataire. Le pseudo est
+-- recopié pour pouvoir afficher une liste d'amis sans lire la table des autres.
+-- ------------------------------------------------------------
+create table if not exists public.friendships (
+  id               uuid primary key default gen_random_uuid(),
+  requester_id     uuid not null references auth.users(id) on delete cascade,
+  requester_pseudo text not null,
+  addressee_id     uuid not null references auth.users(id) on delete cascade,
+  addressee_pseudo text not null,
+  status           text not null default 'pending' check (status in ('pending','accepted')),
+  created_at       timestamptz not null default now(),
+  unique (requester_id, addressee_id)
+);
+
+alter table public.friendships enable row level security;
+
+-- Lecture : uniquement les liens qui te concernent.
+drop policy if exists "friendships_read" on public.friendships;
+create policy "friendships_read" on public.friendships
+  for select to authenticated
+  using (auth.uid() = requester_id or auth.uid() = addressee_id);
+
+-- Envoi d'une demande : seulement en ton propre nom.
+drop policy if exists "friendships_insert_own" on public.friendships;
+create policy "friendships_insert_own" on public.friendships
+  for insert to authenticated with check (auth.uid() = requester_id);
+
+-- Acceptation : réservée au destinataire.
+drop policy if exists "friendships_accept" on public.friendships;
+create policy "friendships_accept" on public.friendships
+  for update to authenticated
+  using (auth.uid() = addressee_id) with check (auth.uid() = addressee_id);
+
+-- Refus ou retrait : les deux côtés peuvent supprimer le lien.
+drop policy if exists "friendships_delete" on public.friendships;
+create policy "friendships_delete" on public.friendships
+  for delete to authenticated
+  using (auth.uid() = requester_id or auth.uid() = addressee_id);
+
+create index if not exists friendships_requester_idx on public.friendships (requester_id, status);
+create index if not exists friendships_addressee_idx on public.friendships (addressee_id, status);
+
+
 -- ============================================================
 -- DEUX LIMITES À CONNAÎTRE, elles sont assumées et pas accidentelles
 --

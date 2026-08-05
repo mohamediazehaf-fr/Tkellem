@@ -224,6 +224,14 @@
     font-size:10.5px;font-weight:700;color:var(--muted);
     transition:color .15s ease;
   }
+  /* Compteur de sollicitations : demandes d'amis reçues + défis à jouer */
+  .tab-ico{position:relative;display:grid;place-items:center;}
+  .tab-badge{
+    position:absolute;top:-4px;right:-8px;min-width:17px;height:17px;padding:0 4px;
+    border-radius:999px;background:var(--henna);color:#fff;
+    font-size:10.5px;font-weight:800;line-height:17px;text-align:center;
+    box-shadow:0 0 0 2px var(--card-bg);
+  }
   .tab.on{color:var(--zellige);}
   .tab.on::after{
     content:'';width:5px;height:5px;border-radius:50%;background:var(--saffron);
@@ -272,6 +280,31 @@
   .rank-name{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .rank-score{font-family:var(--font-display);font-weight:800;color:var(--zellige);}
   .rank-time{font-size:12px;color:#8a8272;margin-left:6px;}
+  /* Amis : une ligne par personne, l'action à droite */
+  .friend-row{
+    display:flex;align-items:center;gap:10px;background:var(--card-bg);
+    border:1.5px solid var(--line);border-radius:var(--r-md);
+    padding:10px 12px;margin-bottom:7px;
+  }
+  .friend-row.pending{border-color:var(--saffron);background:rgba(255,178,56,.10);}
+  .friend-name{flex:1;min-width:0;font-weight:700;font-size:14.5px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .friend-sub{font-size:12px;color:var(--muted);font-weight:600;}
+  .mini-btn{
+    background:var(--zellige);color:var(--cream);border:none;border-radius:var(--r-sm);
+    padding:8px 11px;font-family:var(--font-display);font-weight:800;font-size:12.5px;
+    cursor:pointer;flex:none;box-shadow:0 3px 0 var(--zellige-deep);
+    transition:transform .07s ease,box-shadow .07s ease;
+  }
+  .mini-btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--zellige-deep);}
+  .mini-btn.ghost{
+    background:none;color:var(--muted);box-shadow:none;border:1.5px solid var(--line);
+  }
+  .mini-btn.ghost:active{transform:none;}
+  .mini-btn.hen{background:var(--henna);box-shadow:0 3px 0 var(--henna-dark);color:#fff;}
+  .mini-btn.hen:active{box-shadow:0 1px 0 var(--henna-dark);}
+  .mini-btn:disabled{opacity:.5;box-shadow:none;cursor:default;}
+  .rank-add{margin-left:6px;}
   .pseudo-row{display:flex;gap:8px;margin-top:8px;}
   .pseudo-row input{
     flex:1;min-width:0;padding:10px 12px;border-radius:10px;
@@ -1157,7 +1190,9 @@
 <nav class="tabbar" id="tabbar" aria-label="Navigation principale">
   <button class="tab" data-tab="home"><svg class="ic-lg"><use href="#s-book"/></svg>Apprendre</button>
   <button class="tab" data-tab="progress"><svg class="ic-lg"><use href="#s-flag"/></svg>Parcours</button>
-  <button class="tab" data-tab="games"><svg class="ic-lg"><use href="#s-bolt"/></svg>Défis</button>
+  <button class="tab" data-tab="games">
+    <span class="tab-ico"><svg class="ic-lg"><use href="#s-bolt"/></svg><span class="tab-badge" id="tab-badge-games" hidden></span></span>Défis
+  </button>
   <button class="tab" data-tab="account"><svg class="ic-lg"><use href="#s-user"/></svg>Compte</button>
 </nav>
 
@@ -1801,6 +1836,7 @@ async function initAuth(){
   if(currentUser) await syncFromServer();
   applyAuthGate({ initial:true });
   checkPendingDuelLink();
+  loadFriends().then(refreshSocialBadge); // la pastille de notifications dès l'ouverture
 
   sb.auth.onAuthStateChange(async (event, session)=>{
     currentUser = session ? session.user : null;
@@ -1808,6 +1844,7 @@ async function initAuth(){
     applyAuthGate(); // pas 'initial' : un simple rafraîchissement de session ne doit
                      // pas ramener l'utilisateur à l'accueil en pleine conversation
     checkPendingDuelLink(); // le lien peut avoir été ouvert avant de se connecter
+    loadFriends().then(refreshSocialBadge);
   });
 }
 
@@ -3645,6 +3682,7 @@ async function finishBlitz(){
   blitz = null;
   if(duel) await settleDuel(duel, score, timeMs, extra);
   else await submitScore(score, timeMs, extra);
+  refreshSocialBadge(); // le défi joué ne doit plus compter comme en attente
 }
 
 // ---------------------------------------------------------------
@@ -3725,12 +3763,36 @@ async function loadLeaderboard(){
       el.innerHTML = `<div class="result-label">Personne n'a encore joué. À toi l'honneur.</div>`;
       return;
     }
-    el.innerHTML = data.map((r, i)=>`
-      <div class="rank-row ${r.user_id === currentUser.id ? 'me' : ''}">
+    el.innerHTML = data.map((r, i)=>{
+      const isMe = r.user_id === currentUser.id;
+      // l'action dépend du lien déjà existant : on ne propose jamais deux fois la même chose
+      let action = '';
+      if(!isMe){
+        const rel = relationWith(r.user_id);
+        if(rel === 'friend') action = `<button class="mini-btn hen rank-add" data-rank-challenge="${r.user_id}" data-pseudo="${r.pseudo}">Défier</button>`;
+        else if(rel === 'outgoing') action = `<button class="mini-btn ghost rank-add" disabled>Demandé</button>`;
+        else if(rel === 'incoming') action = `<button class="mini-btn rank-add" data-rank-accept="${r.user_id}">Accepter</button>`;
+        else action = `<button class="mini-btn ghost rank-add" data-rank-add="${r.user_id}" data-pseudo="${r.pseudo}">+ Ami</button>`;
+      }
+      return `
+      <div class="rank-row ${isMe ? 'me' : ''}">
         <div class="rank-pos">${i + 1}</div>
         <div class="rank-name">${r.pseudo}</div>
         <div><span class="rank-score">${r.best_score}/${BLITZ_QUESTIONS}</span><span class="rank-time">${(r.best_time_ms/1000).toFixed(1)} s</span></div>
-      </div>`).join('');
+        ${action}
+      </div>`;
+    }).join('');
+
+    el.querySelectorAll('[data-rank-add]').forEach(b=>{
+      b.onclick = ()=> sendFriendRequest(b.dataset.rankAdd, b.dataset.pseudo);
+    });
+    el.querySelectorAll('[data-rank-accept]').forEach(b=>{
+      const pending = social.incoming.find(f => f.id === b.dataset.rankAccept);
+      b.onclick = ()=> pending && respondFriendRequest(pending.row.id, true);
+    });
+    el.querySelectorAll('[data-rank-challenge]').forEach(b=>{
+      b.onclick = ()=> challengeFriend({ id:b.dataset.rankChallenge, pseudo:b.dataset.pseudo });
+    });
   }catch(err){
     console.warn('Classement indisponible :', err);
     el.innerHTML = `<div class="result-label">Classement indisponible — la table n'existe peut-être pas encore côté Supabase (voir supabase.sql).</div>`;
@@ -3835,6 +3897,165 @@ function renderDuelOutcome(d, container, failed){
       </div>
       <div class="duel-verdict">${verdict}</div>
     </div>`;
+}
+
+// ---------------------------------------------------------------
+// AMIS
+// Une demande va dans un sens (requester → addressee) et devient 'accepted'
+// quand le destinataire l'accepte. Le pseudo est recopié dans la ligne : ça évite
+// d'avoir à lire la fiche des autres pour afficher une liste.
+// ---------------------------------------------------------------
+let social = { friends:[], incoming:[], outgoing:[] };
+
+async function loadFriends(){
+  social = { friends:[], incoming:[], outgoing:[] };
+  if(!sb || !currentUser) return social;
+  try{
+    const { data, error } = await sb.from('friendships').select('*')
+      .or(`requester_id.eq.${currentUser.id},addressee_id.eq.${currentUser.id}`);
+    if(error) throw error;
+    (data || []).forEach(f=>{
+      const iAmRequester = f.requester_id === currentUser.id;
+      const other = {
+        id: iAmRequester ? f.addressee_id : f.requester_id,
+        pseudo: iAmRequester ? f.addressee_pseudo : f.requester_pseudo,
+        row: f
+      };
+      if(f.status === 'accepted') social.friends.push(other);
+      else if(iAmRequester) social.outgoing.push(other);
+      else social.incoming.push(other);
+    });
+  }catch(err){ console.warn('Amis indisponibles :', err); }
+  return social;
+}
+
+function relationWith(userId){
+  if(social.friends.some(f => f.id === userId)) return 'friend';
+  if(social.outgoing.some(f => f.id === userId)) return 'outgoing';
+  if(social.incoming.some(f => f.id === userId)) return 'incoming';
+  return 'none';
+}
+
+async function sendFriendRequest(userId, pseudo){
+  if(!getPseudo()){
+    renderPseudoBlock("Choisis un pseudo avant d'ajouter des amis.");
+    document.getElementById('pseudo-block').scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+  try{
+    const { error } = await sb.from('friendships').insert({
+      requester_id: currentUser.id, requester_pseudo: getPseudo(),
+      addressee_id: userId, addressee_pseudo: pseudo
+    });
+    if(error) throw error;
+    await refreshSocial();
+  }catch(err){
+    console.warn('Demande impossible :', err);
+    alert("Demande impossible — vous êtes peut-être déjà liés, ou la table 'friendships' n'existe pas encore côté Supabase.");
+  }
+}
+
+async function respondFriendRequest(rowId, accept){
+  try{
+    const q = accept
+      ? sb.from('friendships').update({ status:'accepted' }).eq('id', rowId)
+      : sb.from('friendships').delete().eq('id', rowId);
+    const { error } = await q;
+    if(error) throw error;
+    await refreshSocial();
+  }catch(err){ console.warn('Réponse impossible :', err); }
+}
+
+// Défi nominatif : opponent_id est renseigné dès la création, donc le duel apparaît
+// directement chez la personne visée — pas besoin de lien à envoyer.
+async function challengeFriend(friend){
+  if(!getPseudo()) return;
+  try{
+    const { data, error } = await sb.from('duels').insert({
+      seed: Math.floor(Math.random() * 1e9),
+      challenger_id: currentUser.id,
+      challenger_pseudo: getPseudo(),
+      opponent_id: friend.id,
+      opponent_pseudo: friend.pseudo
+    }).select().single();
+    if(error) throw error;
+    startBlitz(data.seed, data);
+  }catch(err){
+    console.warn('Défi impossible :', err);
+    alert('Défi impossible à créer pour le moment.');
+  }
+}
+
+function renderFriends(){
+  const el = document.getElementById('friends-list');
+  if(!el) return;
+  if(!sb || !currentUser){
+    el.innerHTML = `<div class="result-label">Connecte-toi pour ajouter des amis.</div>`;
+    return;
+  }
+  const parts = [];
+  social.incoming.forEach(f=>{
+    parts.push(`<div class="friend-row pending">
+      <span class="friend-name">${f.pseudo}<span class="friend-sub"> veut être ton ami</span></span>
+      <button class="mini-btn" data-accept-friend="${f.row.id}">Accepter</button>
+      <button class="mini-btn ghost" data-decline-friend="${f.row.id}">Refuser</button>
+    </div>`);
+  });
+  social.friends.forEach(f=>{
+    parts.push(`<div class="friend-row">
+      <span class="friend-name">${f.pseudo}</span>
+      <button class="mini-btn hen" data-challenge="${f.id}">Défier</button>
+    </div>`);
+  });
+  social.outgoing.forEach(f=>{
+    parts.push(`<div class="friend-row">
+      <span class="friend-name">${f.pseudo}<span class="friend-sub"> — demande envoyée</span></span>
+      <button class="mini-btn ghost" data-decline-friend="${f.row.id}">Annuler</button>
+    </div>`);
+  });
+  el.innerHTML = parts.length
+    ? parts.join('')
+    : `<div class="result-label">Aucun ami pour l'instant. Ajoute quelqu'un depuis le classement.</div>`;
+
+  el.querySelectorAll('[data-accept-friend]').forEach(b=>{
+    b.onclick = ()=> respondFriendRequest(b.dataset.acceptFriend, true);
+  });
+  el.querySelectorAll('[data-decline-friend]').forEach(b=>{
+    b.onclick = ()=> respondFriendRequest(b.dataset.declineFriend, false);
+  });
+  el.querySelectorAll('[data-challenge]').forEach(b=>{
+    b.onclick = ()=>{
+      const friend = social.friends.find(f => f.id === b.dataset.challenge);
+      if(friend) challengeFriend(friend);
+    };
+  });
+}
+
+// ---------------------------------------------------------------
+// NOTIFICATIONS — demandes d'amis reçues + défis où c'est à toi de jouer
+// ---------------------------------------------------------------
+async function refreshSocialBadge(){
+  const badge = document.getElementById('tab-badge-games');
+  if(!badge) return;
+  let count = social.incoming.length;
+  if(sb && currentUser){
+    try{
+      const { data } = await sb.from('duels').select('id')
+        .eq('opponent_id', currentUser.id).is('opponent_score', null);
+      count += (data || []).length;
+    }catch(err){ /* la pastille n'est pas critique */ }
+  }
+  badge.textContent = count > 9 ? '9+' : String(count);
+  badge.hidden = count === 0;
+}
+
+// Recharge l'état social puis tout ce qui en dépend à l'écran
+async function refreshSocial(){
+  await loadFriends();
+  renderFriends();
+  loadLeaderboard();
+  loadMyDuels();
+  refreshSocialBadge();
 }
 
 async function acceptDuel(duel){
@@ -3986,19 +4207,20 @@ function renderGames(){
       <div class="game-card-desc">${BLITZ_QUESTIONS} questions, ${BLITZ_SECONDS} secondes chacune. Vite et juste.</div>
     </div>
     <div class="game-card duel" id="game-duel">
-      <div class="game-card-title"><svg class="ic-sm" style="color:var(--henna-dark)"><use href="#s-bolt"/></svg> Défier un ami</div>
-      <div class="game-card-desc">Tu joues, tu envoies le lien, il joue les mêmes questions. Le meilleur score gagne — à égalité, le plus rapide.</div>
+      <div class="game-card-title"><svg class="ic-sm" style="color:var(--henna-dark)"><use href="#s-bolt"/></svg> Défi ouvert</div>
+      <div class="game-card-desc">Tu joues, et le premier qui relève ton défi affronte les mêmes questions. Visible par tous les joueurs — ou envoie le lien à qui tu veux.</div>
     </div>
+    <div class="game-section-title"><svg class="ic-sm"><use href="#s-user"/></svg> Mes amis</div>
+    <div id="friends-list"><div class="result-label">Chargement…</div></div>
+    <div class="game-section-title"><svg class="ic-sm"><use href="#s-flame"/></svg> Mes défis</div>
+    <div id="duel-list"><div class="result-label">Chargement…</div></div>
     <div class="game-section-title"><svg class="ic-sm"><use href="#s-trophy"/></svg> Classement</div>
     <div id="rank-list"><div class="result-label">Chargement…</div></div>
-    <div id="pseudo-block"></div>
-    <div class="game-section-title"><svg class="ic-sm"><use href="#s-flame"/></svg> Mes défis</div>
-    <div id="duel-list"><div class="result-label">Chargement…</div></div>`;
+    <div id="pseudo-block"></div>`;
   document.getElementById('game-solo').onclick = ()=> startBlitz(Math.floor(Math.random() * 1e9), null);
   document.getElementById('game-duel').onclick = startDuelFlow;
   renderPseudoBlock();
-  loadLeaderboard();
-  loadMyDuels();
+  refreshSocial(); // amis d'abord : le classement en a besoin pour ses boutons
 }
 
 // ---------------------------------------------------------------
