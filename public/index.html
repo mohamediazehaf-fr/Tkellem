@@ -285,8 +285,20 @@
     background:var(--card-bg);border:1px solid rgba(22,75,84,0.10);border-radius:12px;
     padding:11px 13px;margin-bottom:7px;font-size:14px;
   }
+  /* Un défi reçu est une invitation à agir : il se distingue et porte son bouton. */
+  .duel-row.invite{
+    border-color:var(--henna);background:rgba(241,99,61,.09);
+  }
+  .duel-action{
+    margin-top:9px;background:var(--henna);color:#fff;border:none;
+    border-radius:var(--r-sm);padding:9px 13px;font-family:var(--font-display);
+    font-weight:800;font-size:13.5px;cursor:pointer;
+    box-shadow:0 3px 0 var(--henna-dark);
+    transition:transform .07s ease,box-shadow .07s ease;
+  }
+  .duel-action:active{transform:translateY(2px);box-shadow:0 1px 0 var(--henna-dark);}
   .duel-vs{font-weight:700;color:var(--zellige);}
-  .duel-state{font-size:12.5px;color:#8a8272;margin-top:2px;}
+  .duel-state{font-size:12.5px;color:var(--muted);margin-top:2px;}
   .duel-state.win{color:var(--palm-dark);font-weight:700;}
   .duel-state.lose{color:var(--henna-dark);font-weight:700;}
   .share-box{
@@ -3767,20 +3779,26 @@ async function settleDuel(duel, score, timeMs, container){
   const patch = iAmChallenger
     ? { challenger_score: score, challenger_time_ms: timeMs }
     : { opponent_id: currentUser.id, opponent_pseudo: getPseudo(), opponent_score: score, opponent_time_ms: timeMs };
-  let fresh = null;
+  let fresh = null, failed = false;
   try{
     const { data, error } = await sb.from('duels').update(patch).eq('id', duel.id).select().single();
     if(error) throw error;
     fresh = data;
-  }catch(err){ console.warn('Défi non enregistré :', err); }
-  renderDuelOutcome(fresh || { ...duel, ...patch }, container);
+  }catch(err){
+    failed = true; // à dire franchement : sinon le joueur croit son score enregistré
+    console.warn('Défi non enregistré :', err);
+  }
+  renderDuelOutcome(fresh || { ...duel, ...patch }, container, failed);
 }
 
-function renderDuelOutcome(d, container){
+function renderDuelOutcome(d, container, failed){
+  const warn = failed
+    ? `<div class="pron-result weak" style="margin-bottom:10px;">Ton score n'a pas pu être enregistré : ton adversaire ne le verra pas. Vérifie ta connexion et rejoue le défi.</div>`
+    : '';
   const winner = duelWinner(d);
   if(!winner){
     const link = duelLink(d.id);
-    container.innerHTML = `
+    container.innerHTML = warn + `
       <div class="duel-compare">
         <div class="duel-verdict">Défi lancé !</div>
         <div class="result-label">Envoie ce lien : ton adversaire joue les mêmes questions, et le résultat s'affiche dès qu'il a terminé.</div>
@@ -3805,7 +3823,7 @@ function renderDuelOutcome(d, container){
   const verdict = winner === 'draw'
     ? '🤝 Égalité parfaite !'
     : (winner === me ? '🏆 Tu gagnes !' : '😤 Battu cette fois');
-  container.innerHTML = `
+  container.innerHTML = warn + `
     <div class="duel-compare">
       <div class="duel-side ${winner === 'challenger' ? 'winner' : ''}">
         <span>${d.challenger_pseudo}</span>
@@ -3819,6 +3837,15 @@ function renderDuelOutcome(d, container){
     </div>`;
 }
 
+async function acceptDuel(duel){
+  if(!getPseudo()){
+    renderPseudoBlock('Choisis un pseudo avant de relever un défi.');
+    document.getElementById('pseudo-block').scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+  startBlitz(duel.seed, duel);
+}
+
 async function loadMyDuels(){
   const el = document.getElementById('duel-list');
   if(!el) return;
@@ -3827,29 +3854,77 @@ async function loadMyDuels(){
     return;
   }
   try{
-    const { data, error } = await sb.from('duels').select('*')
-      .or(`challenger_id.eq.${currentUser.id},opponent_id.eq.${currentUser.id}`)
-      .order('created_at', { ascending:false })
-      .limit(10);
-    if(error) throw error;
-    if(!data || !data.length){
+    // Deux requêtes, parce qu'un défi qu'on vient de te lancer a opponent_id à NULL :
+    // il n'apparaît donc dans aucun filtre sur ton identifiant. C'est ce qui rendait
+    // les invitations reçues invisibles, accessibles seulement par le lien partagé.
+    const [mine, open] = await Promise.all([
+      sb.from('duels').select('*')
+        .or(`challenger_id.eq.${currentUser.id},opponent_id.eq.${currentUser.id}`)
+        .order('created_at', { ascending:false }).limit(10),
+      sb.from('duels').select('*')
+        .is('opponent_id', null).neq('challenger_id', currentUser.id)
+        .order('created_at', { ascending:false }).limit(10)
+    ]);
+    if(mine.error) throw mine.error;
+
+    // on n'affiche que les défis dont le lanceur a réellement joué : sinon il n'y a
+    // pas encore de score à battre
+    const invites = (open.data || []).filter(d => d.challenger_score != null);
+    const duels = mine.data || [];
+    if(!invites.length && !duels.length){
       el.innerHTML = `<div class="result-label">Aucun défi pour l'instant.</div>`;
       return;
     }
-    el.innerHTML = data.map(d=>{
+
+    const byId = new Map();
+    [...invites, ...duels].forEach(d => byId.set(d.id, d));
+
+    const invitesHtml = invites.map(d => `
+      <div class="duel-row invite">
+        <div class="duel-vs">${d.challenger_pseudo} te défie</div>
+        <div class="duel-state">${d.challenger_score}/${BLITZ_QUESTIONS} en ${(d.challenger_time_ms/1000).toFixed(1)} s à battre</div>
+        <button class="duel-action" data-accept="${d.id}">Relever le défi</button>
+      </div>`).join('');
+
+    const mineHtml = duels.map(d=>{
       const winner = duelWinner(d);
       const me = d.challenger_id === currentUser.id ? 'challenger' : 'opponent';
       const other = me === 'challenger' ? (d.opponent_pseudo || 'adversaire en attente') : d.challenger_pseudo;
-      let state = '', cls = '';
-      if(!winner) state = me === 'challenger' ? 'En attente de son tour' : 'À toi de jouer !';
+      let state = '', cls = '', action = '';
+      if(!winner){
+        if(me === 'challenger'){
+          state = 'En attente de son tour';
+          action = `<button class="duel-action" data-share="${d.id}">Renvoyer le lien</button>`;
+        } else {
+          state = 'À toi de jouer !';
+          action = `<button class="duel-action" data-accept="${d.id}">Jouer maintenant</button>`;
+        }
+      }
       else if(winner === 'draw') state = 'Égalité';
       else if(winner === me){ state = 'Gagné'; cls = 'win'; }
       else { state = 'Perdu'; cls = 'lose'; }
       return `<div class="duel-row">
         <div class="duel-vs">Contre ${other}</div>
         <div class="duel-state ${cls}">${state}</div>
+        ${action}
       </div>`;
     }).join('');
+
+    el.innerHTML = invitesHtml + mineHtml;
+
+    el.querySelectorAll('[data-accept]').forEach(btn=>{
+      btn.onclick = ()=> acceptDuel(byId.get(btn.dataset.accept));
+    });
+    el.querySelectorAll('[data-share]').forEach(btn=>{
+      btn.onclick = async ()=>{
+        const link = duelLink(btn.dataset.share);
+        try{
+          if(navigator.share){ await navigator.share({ title:'Tkellem', text:'Je te défie en darija !', url:link }); return; }
+          await navigator.clipboard.writeText(link);
+          btn.textContent = 'Lien copié ✓';
+        }catch(err){ prompt('Copie ce lien et envoie-le :', link); }
+      };
+    });
   }catch(err){
     console.warn('Défis indisponibles :', err);
     el.innerHTML = `<div class="result-label">Défis indisponibles — la table n'existe peut-être pas encore côté Supabase.</div>`;
