@@ -534,6 +534,12 @@
     transition:transform .07s ease, box-shadow .07s ease;
   }
   .menu-card:active{transform:translateY(3px);box-shadow:0 1px 0 var(--line);}
+  /* palier encore fermé : visible pour donner envie, mais inerte */
+  .menu-card.locked{
+    opacity:.6;cursor:not-allowed;box-shadow:none;background:rgba(14,79,86,.04);
+  }
+  .menu-card.locked:active{transform:none;}
+  .menu-card.locked .menu-icon{background:rgba(14,79,86,.07);font-size:22px;}
   .menu-icon{
     font-size:26px;width:44px;height:44px;border-radius:var(--r-md);
     background:rgba(14,79,86,.09);
@@ -661,8 +667,10 @@
   /* Une fois acquis, il n'y a plus d'action à proposer : le bouton cesse de coller
      au bas de l'écran et redevient une simple ligne de confirmation. */
   .complete-btn.acquired{
-    position:static;background:none;color:var(--palm-dark);opacity:1;
-    box-shadow:none;padding:10px;font-size:14.5px;
+    position:static;opacity:1;box-shadow:none;
+    background:rgba(47,190,143,.13);color:var(--palm-dark);
+    border:1.5px solid rgba(47,190,143,.55); /* sans contour, ça flottait sans forme */
+    padding:12px;font-size:14.5px;
     display:flex;align-items:center;justify-content:center;gap:7px;
   }
 
@@ -825,6 +833,36 @@
   .mode-btn.active{background:var(--zellige);color:var(--cream);border-color:var(--zellige);}
   /* le sélecteur collant recouvre la marge de l'écran : on la lui rend */
   #screen-select .voice-panel{position:relative;z-index:41;}
+
+  /* ---------- DISCUSSION LIBRE ---------- */
+  .free-talk{
+    background:var(--card-bg);border:1.5px solid var(--line);border-radius:var(--r-lg);
+    padding:16px;margin-bottom:18px;box-shadow:0 var(--edge) 0 var(--line);
+  }
+  .free-talk-title{
+    font-family:var(--font-display);font-weight:800;font-size:17px;
+    color:var(--zellige);letter-spacing:-.01em;
+  }
+  .free-talk-sub{font-size:13px;color:var(--muted);margin-top:3px;line-height:1.4;}
+  .free-talk-row{display:flex;gap:8px;margin-top:12px;}
+  .free-talk-row input{
+    flex:1;min-width:0;padding:11px 13px;border-radius:var(--r-md);
+    border:1.5px solid var(--line);font-size:15px;font-family:inherit;
+  }
+  .free-talk-row button{
+    background:var(--zellige);color:var(--cream);border:none;border-radius:var(--r-md);
+    padding:11px 15px;font-family:var(--font-display);font-weight:800;font-size:14px;
+    cursor:pointer;box-shadow:0 3px 0 var(--zellige-deep);
+    transition:transform .07s ease,box-shadow .07s ease;
+  }
+  .free-talk-row button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--zellige-deep);}
+  .free-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px;}
+  .free-chips button{
+    background:rgba(14,79,86,.07);border:none;border-radius:999px;
+    padding:7px 12px;font-size:13px;font-family:inherit;font-weight:600;
+    color:var(--zellige);cursor:pointer;
+  }
+  .free-chips button:active{background:rgba(14,79,86,.14);}
 
   /* ---------- SCREEN: CONVERSATION ---------- */
   /* Hauteur définie, sinon #transcript ne peut pas défiler en interne et c'est la
@@ -1106,6 +1144,16 @@
       <button class="mode-btn" data-mode="kids">🧒 Enfants (débutants)</button>
     </div>
 
+    <!-- Discussion libre : c'est l'apprenant qui pose le sujet -->
+    <div class="free-talk" id="free-talk">
+      <div class="free-talk-title">De quoi veux-tu parler aujourd'hui ?</div>
+      <div class="free-talk-sub">Écris un sujet, et quelqu'un te répondra en darija — sans scénario imposé.</div>
+      <div class="free-talk-row">
+        <input type="text" id="free-topic" maxlength="70" placeholder="Le foot, mon travail, la cuisine…">
+        <button id="free-talk-go">Discuter</button>
+      </div>
+      <div class="free-chips" id="free-chips"></div>
+    </div>
     <div class="scenario-grid" id="scenario-grid"></div>
   </div>
 
@@ -1527,7 +1575,11 @@ const PHRASEBOOK = [
     {ar:'عندي ... عام',latin:'3andi ... 3am',fr:"J'ai ... ans"},
     {ar:'فرحت بيك',latin:'Frahte bik',fr:'Ravi de te rencontrer'}
   ]},
-  { id:'expressions', icon:'💬', name:'Expressions courantes', phrases:[
+  // Dix paliers de dix, débloqués l'un après l'autre : on ne voit le suivant qu'en
+  // ayant validé le précédent. Le premier garde l'identifiant 'expressions' pour ne
+  // pas effacer la progression des utilisateurs actuels.
+  { id:'expressions_groupe', icon:'💬', name:'Expressions courantes', progressive:true, children:[
+  { id:'expressions', icon:'🤝', name:'1. La politesse essentielle', phrases:[
     {ar:'عافاك',latin:'3afak',fr:"S'il te plaît"},
     {ar:'شكرا',latin:'Choukran',fr:'Merci'},
     {ar:'بلا جميل',latin:'Bla jmil',fr:'De rien'},
@@ -1539,6 +1591,115 @@ const PHRASEBOOK = [
     {ar:'ما فهمتش',latin:'Ma fhemtch',fr:"Je n'ai pas compris"},
     {ar:'عاود عافاك',latin:'3awed 3afak',fr:"Répète s'il te plaît"}
   ]},
+  { id:'exp_2', icon:'👌', name:'2. Approuver, nuancer', phrases:[
+    {ar:'إيوا',latin:'Iwa',fr:'Oui, voilà'},
+    {ar:'يمكن',latin:'Yemken',fr:'Peut-être'},
+    {ar:'ماشي',latin:'Machi',fr:"Ce n'est pas"},
+    {ar:'صافي',latin:'Safi',fr:"C'est bon, ça suffit"},
+    {ar:'بزاف',latin:'Bezzaf',fr:'Beaucoup, trop'},
+    {ar:'شوية',latin:'Chwiya',fr:'Un peu'},
+    {ar:'كافي',latin:'Kafi',fr:'Assez'},
+    {ar:'ياك؟',latin:'Yak?',fr:"N'est-ce pas ?"},
+    {ar:'بالتأكيد',latin:'Bettakid',fr:'Certainement'},
+    {ar:'على الأقل',latin:'3la lqell',fr:'Au moins'}
+  ]},
+  { id:'exp_3', icon:'❓', name:'3. Poser une question', phrases:[
+    {ar:'شكون؟',latin:'Chkoun?',fr:'Qui ?'},
+    {ar:'أشنو؟',latin:'Achnou?',fr:'Quoi ?'},
+    {ar:'فين؟',latin:'Fin?',fr:'Où ?'},
+    {ar:'إمتى؟',latin:'Imta?',fr:'Quand ?'},
+    {ar:'علاش؟',latin:'3lach?',fr:'Pourquoi ?'},
+    {ar:'كيفاش؟',latin:'Kifach?',fr:'Comment ?'},
+    {ar:'شحال؟',latin:'Chhal?',fr:'Combien ?'},
+    {ar:'واش...؟',latin:'Wach...?',fr:'Est-ce que... ?'},
+    {ar:'أشمن واحد؟',latin:'Achmen wahed?',fr:'Lequel ?'},
+    {ar:'فوقاش؟',latin:'Fouqach?',fr:'À quelle heure ?'}
+  ]},
+  { id:'exp_4', icon:'⏰', name:'4. Situer dans le temps', phrases:[
+    {ar:'اليوم',latin:'Lyoum',fr:"Aujourd'hui"},
+    {ar:'غدا',latin:'Ghedda',fr:'Demain'},
+    {ar:'البارح',latin:'Lbareh',fr:'Hier'},
+    {ar:'دابا',latin:'Daba',fr:'Maintenant'},
+    {ar:'من بعد',latin:'Men be3d',fr:'Plus tard'},
+    {ar:'دغيا',latin:'Deghya',fr:'Vite, tout de suite'},
+    {ar:'بشوية',latin:'Bchwiya',fr:'Doucement'},
+    {ar:'كل نهار',latin:'Koul nhar',fr:'Chaque jour'},
+    {ar:'مرة مرة',latin:'Marra marra',fr:'De temps en temps'},
+    {ar:'ديما',latin:'Dima',fr:'Toujours'}
+  ]},
+  { id:'exp_5', icon:'💗', name:'5. Dire ce que tu ressens', phrases:[
+    {ar:'فرحان',latin:'Ferhan',fr:'Content'},
+    {ar:'مقلق',latin:'Mqelleq',fr:'Contrarié'},
+    {ar:'عيان',latin:'3eyyan',fr:'Fatigué'},
+    {ar:'فيا الجوع',latin:'Fiya jjou3',fr:"J'ai faim"},
+    {ar:'فيا العطش',latin:'Fiya l3tach',fr:"J'ai soif"},
+    {ar:'كنبغي',latin:'Kanebghi',fr:"J'aime"},
+    {ar:'ما كنبغيش',latin:'Ma kanebghich',fr:"Je n'aime pas"},
+    {ar:'خايف',latin:'Khayef',fr:"J'ai peur"},
+    {ar:'مستعجل',latin:'Msta3jel',fr:'Pressé'},
+    {ar:'بخير',latin:'Bikhir',fr:'Je vais bien'}
+  ]},
+  { id:'exp_6', icon:'🧭', name:'6. Se débrouiller', phrases:[
+    {ar:'عاوني عافاك',latin:'3awenni 3afak',fr:"Aide-moi s'il te plaît"},
+    {ar:'ما عرفتش',latin:'Ma 3reftch',fr:'Je ne sais pas'},
+    {ar:'ضاع ليا',latin:'Da3 liya',fr:"Je l'ai perdu"},
+    {ar:'تكلم بشوية عافاك',latin:'Tkellem bchwiya 3afak',fr:'Parle doucement, merci'},
+    {ar:'كتهضر بالفرنسية؟',latin:'Katehder belfransiya?',fr:'Tu parles français ?'},
+    {ar:'بغيت نمشي ل...',latin:'Bghit nemchi l...',fr:'Je veux aller à...'},
+    {ar:'عندك...؟',latin:'3andek...?',fr:'Est-ce que tu as... ?'},
+    {ar:'بشحال هادا؟',latin:'Bchhal hada?',fr:'Combien coûte ceci ?'},
+    {ar:'خلاص',latin:'Khlas',fr:"C'est réglé, terminé"},
+    {ar:'وقف هنا عافاك',latin:'Wqef hna 3afak',fr:"Arrête-toi ici s'il te plaît"}
+  ]},
+  { id:'exp_7', icon:'⭐', name:'7. Donner ton avis', phrases:[
+    {ar:'زوين',latin:'Zwin',fr:'Beau, joli'},
+    {ar:'خايب',latin:'Khayb',fr:'Laid, mauvais'},
+    {ar:'مزيان',latin:'Mezyan',fr:'Bien'},
+    {ar:'ما مزيانش',latin:'Ma mezyanch',fr:'Pas bien'},
+    {ar:'بنين',latin:'Bnin',fr:'Délicieux'},
+    {ar:'غالي',latin:'Ghali',fr:'Cher'},
+    {ar:'رخيص',latin:'Rkhis',fr:'Bon marché'},
+    {ar:'صعيب',latin:'S3ib',fr:'Difficile'},
+    {ar:'ساهل',latin:'Sahel',fr:'Facile'},
+    {ar:'عجبني',latin:'3jebni',fr:"Ça m'a plu"}
+  ]},
+  { id:'exp_8', icon:'🙏', name:'8. Les formules qui font marocain', phrases:[
+    {ar:'الله يعطيك الصحة',latin:'Allah y3tik sseha',fr:'Merci (littéralement : que Dieu te donne la santé)'},
+    {ar:'الله يخليك',latin:'Allah ykhellik',fr:"Je t'en prie, de grâce"},
+    {ar:'تبارك الله عليك',latin:'Tbarkallah 3lik',fr:'Bravo, félicitations'},
+    {ar:'الحمد لله',latin:'Lhamdoullah',fr:'Dieu merci'},
+    {ar:'مبروك',latin:'Mabrouk',fr:'Félicitations'},
+    {ar:'الله يسهل',latin:'Allah ysehhel',fr:'Que Dieu facilite'},
+    {ar:'تهلا في راسك',latin:'Thella f rasek',fr:'Prends soin de toi'},
+    {ar:'بسلامة',latin:'Bslama',fr:'Va en paix'},
+    {ar:'الله يرحم الوالدين',latin:'Allah yrhem lwalidin',fr:'Formule de remerciement appuyé'},
+    {ar:'واه؟',latin:'Wah?',fr:'Ah bon ?'}
+  ]},
+  { id:'exp_9', icon:'🎭', name:'9. Expressions imagées', phrases:[
+    {ar:'شوية بشوية',latin:'Chwiya b chwiya',fr:'Petit à petit'},
+    {ar:'على قد الحال',latin:'3la qed lhal',fr:'Modestement, comme on peut'},
+    {ar:'الله غالب',latin:'Allah ghaleb',fr:"On n'y peut rien, c'est ainsi"},
+    {ar:'صافي بقيت أنا',latin:'Safi bqit ana',fr:"Ça suffit, j'arrête là"},
+    {ar:'بصح؟',latin:'Bsseh?',fr:'Vraiment ?'},
+    {ar:'ما كاين باس',latin:'Ma kayn bas',fr:'Il n’y a pas de mal'},
+    {ar:'دير النية',latin:'Dir nniya',fr:'Fais-le de bon cœur'},
+    {ar:'غير بشوية عليك',latin:'Ghir bchwiya 3lik',fr:'Vas-y doucement'},
+    {ar:'واقيلا',latin:'Waqila',fr:'Il me semble que'},
+    {ar:'زعما؟',latin:'Z3ma?',fr:'Ah bon, c’est-à-dire ?'}
+  ]},
+  { id:'exp_10', icon:'🏅', name:'10. Proverbes et sagesse', phrases:[
+    {ar:'الصبر مفتاح الفرج',latin:'Sser meftah lfaraj',fr:'La patience est la clé du salut'},
+    {ar:'اللي فات مات',latin:'Lli fat mat',fr:'Ce qui est passé est passé'},
+    {ar:'يد وحدة ما كتصفقش',latin:'Yed wehda ma katsefeqch',fr:"Une seule main n'applaudit pas"},
+    {ar:'الجار قبل الدار',latin:'Ljar qbel ddar',fr:'Le voisin avant la maison'},
+    {ar:'حبة حبة كتعمر الخابية',latin:'Hebba hebba kat3emmer lkhabya',fr:'Grain par grain, le pot se remplit'},
+    {ar:'كل تأخيرة فيها خيرة',latin:'Koul takhira fiha khira',fr:'Tout retard a du bon'},
+    {ar:'اللي بغا العسل يصبر لقريص النحل',latin:'Lli bgha l3sel ysber l qris nhel',fr:'Qui veut le miel supporte les piqûres'},
+    {ar:'ديما الحق كيبان',latin:'Dima lhaq kayban',fr:'La vérité finit toujours par paraître'},
+    {ar:'اللي ما عندو ما يخسر',latin:'Lli ma 3ando ma ykhser',fr:"Qui n'a rien n'a rien à perdre"},
+    {ar:'الله يجيب الخير',latin:'Allah yjib lkhir',fr:'Que Dieu apporte le bien'}
+  ]}
+  ]}, // fin du groupe "Expressions courantes"
   // Nœud de regroupement : pas de "phrases", donc pas de progression propre — il ne
   // sert qu'à ranger les paliers de nombres sous une seule carte au premier niveau.
   { id:'chiffres_groupe', icon:'🔢', name:'Les chiffres', children:[
@@ -1659,6 +1820,79 @@ const CORE_PHRASEBOOK = PHRASEBOOK_LEAVES.filter(c => !c.advanced);
 // ---------------------------------------------------------------
 // QUIZ IMAGES-MOTS (emoji utilisés comme illustration, sans droits d'auteur)
 // ---------------------------------------------------------------
+// Trois banques d'images, de plus en plus exigeantes. Chaque partie tire 10 items
+// au hasard dans la banque choisie, donc deux parties de suite ne se ressemblent pas.
+const QUIZ_BANKS = {
+  debutant: [
+    { emoji:'🍞', latin:'khobz', ar:'الخبز', fr:'pain' },
+    { emoji:'🍵', latin:'atay', ar:'أتاي', fr:'thé' },
+    { emoji:'☕', latin:'qahwa', ar:'قهوة', fr:'café' },
+    { emoji:'🥛', latin:'hlib', ar:'الحليب', fr:'lait' },
+    { emoji:'💧', latin:'lma', ar:'الما', fr:'eau' },
+    { emoji:'🥚', latin:'beid', ar:'البيض', fr:'œufs' },
+    { emoji:'🐱', latin:'mouch', ar:'موش', fr:'chat' },
+    { emoji:'🐶', latin:'kelb', ar:'كلب', fr:'chien' },
+    { emoji:'🚗', latin:'ssiyara', ar:'السيارة', fr:'voiture' },
+    { emoji:'🚕', latin:'taxi', ar:'الطاكسي', fr:'taxi' },
+    { emoji:'🚌', latin:'tobis', ar:'الطوبيس', fr:'bus' },
+    { emoji:'🏠', latin:'ddar', ar:'الدار', fr:'maison' },
+    { emoji:'☀️', latin:'chems', ar:'الشمس', fr:'soleil' },
+    { emoji:'🌙', latin:'qamar', ar:'القمر', fr:'lune' },
+    { emoji:'✋', latin:'yed', ar:'اليد', fr:'main' },
+    { emoji:'👁️', latin:'3in', ar:'العين', fr:'œil' }
+  ],
+  intermediaire: [
+    { emoji:'✈️', latin:'tyara', ar:'الطيارة', fr:'avion' },
+    { emoji:'🚆', latin:'tran', ar:'الطران', fr:'train' },
+    { emoji:'🏍️', latin:'moto', ar:'موطو', fr:'moto' },
+    { emoji:'🍽️', latin:'tajine', ar:'الطاجين', fr:'tajine' },
+    { emoji:'🐟', latin:'lhout', ar:'الحوت', fr:'poisson' },
+    { emoji:'🍖', latin:'llham', ar:'اللحم', fr:'viande' },
+    { emoji:'🍏', latin:'tteffah', ar:'التفاح', fr:'pomme' },
+    { emoji:'🍊', latin:'llimoun', ar:'الليمون', fr:'orange' },
+    { emoji:'🧅', latin:'lbsla', ar:'البصلة', fr:'oignon' },
+    { emoji:'🥕', latin:'khizzou', ar:'الخيزو', fr:'carotte' },
+    { emoji:'🔑', latin:'sarout', ar:'الساروت', fr:'clé' },
+    { emoji:'🚪', latin:'lbab', ar:'الباب', fr:'porte' },
+    { emoji:'🪑', latin:'chelya', ar:'الشلية', fr:'chaise' },
+    { emoji:'👕', latin:'qamija', ar:'القاميجة', fr:'chemise' },
+    { emoji:'👟', latin:'sebbat', ar:'الصباط', fr:'chaussures' },
+    { emoji:'💰', latin:'flous', ar:'الفلوس', fr:'argent' },
+    { emoji:'🕌', latin:'jame3', ar:'الجامع', fr:'mosquée' },
+    { emoji:'🏖️', latin:'lbhar', ar:'البحر', fr:'mer' }
+  ],
+  avance: [
+    { emoji:'🐐', latin:'l3atrous', ar:'العتروس', fr:'bouc' },
+    { emoji:'🐫', latin:'jmel', ar:'الجمل', fr:'chameau' },
+    { emoji:'🦉', latin:'lmouka', ar:'الموكة', fr:'chouette' },
+    { emoji:'🐝', latin:'nnehla', ar:'النحلة', fr:'abeille' },
+    { emoji:'🌵', latin:'lhendiya', ar:'الهندية', fr:'figuier de barbarie' },
+    { emoji:'🫒', latin:'zzitoun', ar:'الزيتون', fr:'olives' },
+    { emoji:'🌾', latin:'zzr3', ar:'الزرع', fr:'blé, culture' },
+    { emoji:'🧵', latin:'zerbiya', ar:'الزربية', fr:'tapis' },
+    { emoji:'🫖', latin:'berrad', ar:'البراد', fr:'théière' },
+    { emoji:'🥘', latin:'kesksou', ar:'الكسكسو', fr:'couscous' },
+    { emoji:'🌶️', latin:'lfelfla harra', ar:'الفلفلة الحارة', fr:'piment' },
+    { emoji:'🧄', latin:'ttouma', ar:'التومة', fr:'ail' },
+    { emoji:'⛰️', latin:'jbel', ar:'الجبل', fr:'montagne' },
+    { emoji:'🏜️', latin:'ssahra', ar:'الصحراء', fr:'désert' },
+    { emoji:'🌧️', latin:'chta', ar:'الشتا', fr:'pluie' },
+    { emoji:'❄️', latin:'telj', ar:'الثلج', fr:'neige' },
+    { emoji:'🔥', latin:'l3afiya', ar:'العافية', fr:'feu' },
+    { emoji:'⭐', latin:'nnejma', ar:'النجمة', fr:'étoile' },
+    { emoji:'👶', latin:'dderri', ar:'الدري', fr:'enfant' },
+    { emoji:'👵', latin:'l3jouza', ar:'العجوزة', fr:'vieille dame' }
+  ]
+};
+
+const QUIZ_LEVELS = [
+  { id:'debutant',      name:'Débutant',      icon:'🌱', desc:'Les mots du quotidien, les plus courants' },
+  { id:'intermediaire', name:'Intermédiaire', icon:'🚀', desc:'Objets, aliments, lieux — un cran au-dessus' },
+  { id:'avance',        name:'Avancé',        icon:'🏅', desc:'Nature, animaux, vie marocaine' }
+];
+const QUIZ_LENGTH = 10;
+
+// conservé pour le tirage du quiz chrono, qui pioche dans tout le vocabulaire
 const QUIZ_ITEMS = [
   { emoji:'🏍️', latin:'moto', ar:'موطو', fr:'moto' },
   { emoji:'🚗', latin:'ssiyara', ar:'السيارة', fr:'voiture' },
@@ -2465,6 +2699,51 @@ function renderScenarioGrid(){
   });
 }
 
+// ---------------------------------------------------------------
+// DISCUSSION LIBRE
+// Le sujet vient de l'apprenant : on fabrique un scénario à la volée, avec un
+// interlocuteur ordinaire plutôt qu'un rôle. Rien n'est enregistré côté serveur,
+// le persona est construit dans le navigateur au moment du clic.
+// ---------------------------------------------------------------
+const FREE_TOPICS = ['Le foot', 'Mon travail', 'La cuisine', 'Mes vacances', 'La musique', 'Ma famille', 'Le Maroc', 'Le temps qu\'il fait'];
+
+function freeTalkScenario(topic){
+  return {
+    mode: currentGridMode,
+    id: 'libre',
+    icon: '🗨️',
+    name: 'Discussion libre',
+    role: `On parle de : ${topic}`,
+    desc: topic,
+    persona: `Tu es un Marocain ou une Marocaine de l'âge de l'apprenant, sympathique et curieux, qui discute avec lui de façon informelle. Il n'y a aucun rôle à jouer, aucun décor : vous bavardez simplement.
+
+Le sujet choisi par l'apprenant est : « ${topic} ». Reste sur ce sujet, mais laisse la conversation respirer comme une vraie discussion : réagis à ce qu'il dit, raconte brièvement ton propre point de vue, et relance avec une question ouverte.
+
+Adapte-toi à son niveau : s'il écrit des phrases très simples, réponds simplement. S'il se débrouille bien, enrichis un peu ton vocabulaire.`,
+    opening: {
+      ar: `واخا! نهضرو على ${topic}. أشنو بغيتي تقول ليا؟`,
+      latin: `Wakha! Nehedro 3la ${topic}. Achnou bghiti tqoul liya?`,
+      fr: `D'accord ! Parlons de ${topic}. Qu'est-ce que tu veux me dire ?`
+    }
+  };
+}
+
+function startFreeTalk(topic){
+  const clean = (topic || '').trim();
+  if(clean.length < 2) return;
+  showScreen('screen-convo'); // startScenario ne masque que l'écran de sélection
+  startScenario(freeTalkScenario(clean), true); // toujours neuf : le sujet change
+}
+
+document.getElementById('free-talk-go').onclick = ()=> startFreeTalk(document.getElementById('free-topic').value);
+document.getElementById('free-topic').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') startFreeTalk(e.target.value);
+});
+document.getElementById('free-chips').innerHTML = FREE_TOPICS.map(t => `<button data-topic="${t}">${t}</button>`).join('');
+document.getElementById('free-chips').querySelectorAll('[data-topic]').forEach(b=>{
+  b.onclick = ()=> startFreeTalk(b.dataset.topic);
+});
+
 // Le choix « Enfants » ne filtre pas seulement les scénarios : il agrandit toute
 // l'interface (icônes, boutons, texte) et il est retenu d'une visite à l'autre.
 function applyKidsUi(mode){
@@ -2577,7 +2856,7 @@ function showScreen(id){
 
 document.getElementById('menu-scenarios').onclick = ()=>{ showScreen('screen-select'); renderScenarioGrid(); };
 document.getElementById('menu-phrasebook').onclick = ()=>{ showScreen('screen-phrasebook'); renderPhrasebookCategories(); };
-document.getElementById('menu-quiz').onclick = ()=>{ showScreen('screen-quiz'); startQuiz(); };
+document.getElementById('menu-quiz').onclick = ()=>{ showScreen('screen-quiz'); renderQuizLevels(); };
 document.getElementById('menu-basics').onclick = ()=>{ showScreen('screen-basics'); renderBasics(); };
 
 // ---------------------------------------------------------------
@@ -3286,28 +3565,36 @@ function renderPhrasebookBreadcrumb(){
 
 function renderPhrasebookGrid(nodes){
   const parentPath = phrasebookPath.slice(); // figé : les cartes restent valides après navigation
+  const parent = parentPath[parentPath.length - 1] || null;
+  // Un groupe "progressive" ouvre ses paliers l'un après l'autre : on ne voit le
+  // suivant qu'en ayant validé tous les précédents.
+  const progressive = !!(parent && parent.progressive);
   document.getElementById('phrasebook-detail').style.display = 'none';
   const grid = document.getElementById('phrasebook-categories');
   grid.style.display = 'grid';
   grid.innerHTML = '';
-  nodes.forEach(node=>{
+  nodes.forEach((node, i)=>{
+    const locked = progressive && i > 0
+      && !nodes.slice(0, i).every(n => isCompleted('phrasebook_' + n.id));
     const card = document.createElement('div');
-    card.className = 'menu-card';
+    card.className = 'menu-card' + (locked ? ' locked' : '');
     let title, desc;
     if(node.children){
       const leaves = phrasebookLeaves([node]);
       const done = leaves.filter(l => isCompleted('phrasebook_' + l.id)).length;
       title = `${node.name}${done === leaves.length ? ' ✓' : ''}`;
-      desc = `${leaves.length} niveaux · ${done}/${leaves.length} appris`;
+      desc = `${leaves.length} paliers · ${done}/${leaves.length} appris`;
     } else {
       title = `${node.name}${isCompleted('phrasebook_' + node.id) ? ' ✓' : ''}`;
-      desc = `${node.phrases.length} phrases`;
+      desc = locked ? 'Termine le palier précédent' : `${node.phrases.length} phrases`;
     }
-    card.innerHTML = `<div class="menu-icon">${emojiImg(node.icon,26)}</div>`
-      + `<div class="menu-title">${title}</div><div class="menu-desc">${desc}</div>`;
+    card.innerHTML = locked
+      ? `<div class="menu-icon">🔒</div><div class="menu-title">${node.name}</div><div class="menu-desc">${desc}</div>`
+      : `<div class="menu-icon">${emojiImg(node.icon,26)}</div>`
+        + `<div class="menu-title">${title}</div><div class="menu-desc">${desc}</div>`;
     // on ne remet à zéro le défilement que sur un vrai changement de niveau : un simple
     // rafraîchissement sur place (bouton « j'ai appris ») doit laisser l'apprenant où il est
-    card.onclick = ()=>{ renderPhrasebook([...parentPath, node]); scrollToTop(); };
+    if(!locked) card.onclick = ()=>{ renderPhrasebook([...parentPath, node]); scrollToTop(); };
     grid.appendChild(card);
   });
 }
@@ -3355,12 +3642,40 @@ document.getElementById('phrasebook-complete-btn').onclick = ()=>{
 let quizOrder = [];
 let quizIndex = 0;
 let quizScore = 0;
+let quizLevel = null;
 
-function startQuiz(){
-  quizOrder = [...QUIZ_ITEMS].sort(()=> Math.random() - 0.5).slice(0, 8);
+// Écran de choix : on entre toujours par le niveau, jamais directement dans les questions
+function renderQuizLevels(){
+  quizLevel = null;
+  document.getElementById('quiz-body').innerHTML = `
+    <h2 style="font-family:var(--font-display);margin:0 0 4px;">Quiz images</h2>
+    <p class="basics-intro" style="margin-bottom:18px;">${QUIZ_LENGTH} images, un mot à trouver pour chacune. Choisis ton niveau — tu peux arrêter en cours de route.</p>
+    ${QUIZ_LEVELS.map(l=>{
+      const bank = QUIZ_BANKS[l.id] || [];
+      const best = parseInt(localStorage.getItem('tkellem_quizbest_' + l.id) || '0', 10);
+      return `<button class="nav-tile press" data-quiz-level="${l.id}">
+        <span class="nav-ico ni-${l.id === 'debutant' ? 'palm' : l.id === 'intermediaire' ? 'saf' : 'hen'}">${emojiImg(l.icon,22)}</span>
+        <span class="nav-txt"><b>${l.name}</b><small>${l.desc} · ${bank.length} images${best ? ` · record ${best}/${QUIZ_LENGTH}` : ''}</small></span>
+        <span class="nav-tail"><svg class="ic-sm"><use href="#s-chev"/></svg></span>
+      </button>`;
+    }).join('')}`;
+  document.querySelectorAll('[data-quiz-level]').forEach(btn=>{
+    btn.onclick = ()=> startQuiz(btn.dataset.quizLevel);
+  });
+}
+
+function startQuiz(levelId){
+  quizLevel = levelId || 'debutant';
+  const bank = QUIZ_BANKS[quizLevel] || QUIZ_BANKS.debutant;
+  quizOrder = [...bank].sort(()=> Math.random() - 0.5).slice(0, QUIZ_LENGTH);
   quizIndex = 0;
   quizScore = 0;
   renderQuizItem();
+}
+
+function quitQuiz(){
+  if(quizIndex > 0 && !confirm('Arrêter ce quiz ? Tes réponses de cette partie ne seront pas comptées.')) return;
+  renderQuizLevels();
 }
 
 function renderQuizItem(){
@@ -3372,6 +3687,11 @@ function renderQuizItem(){
     markCompleted('quiz_completed_once');
     checkNewBadges();
     fireConfetti();
+    // record par niveau, pour donner une raison de refaire une partie
+    const bestKey = 'tkellem_quizbest_' + quizLevel;
+    if(quizScore > parseInt(localStorage.getItem(bestKey) || '0', 10)){
+      localStorage.setItem(bestKey, String(quizScore));
+    }
     body.innerHTML = `
       <div class="quiz-card">
         <div class="quiz-emoji">${emojiImg('🎉',56)}</div>
@@ -3379,9 +3699,11 @@ function renderQuizItem(){
         <p>${quizScore} / ${quizOrder.length} bonnes réponses</p>
         <p>+${quizScore * 5 + bonus} ⭐ ${bonus ? '(dont un bonus de +20 pour un score parfait !)' : ''}</p>
         <p style="color:var(--zellige);font-weight:700;">${randomEncouragement()}</p>
-        <button class="quiz-next-btn" id="quiz-restart-btn">🔁 Refaire un quiz</button>
+        <button class="quiz-next-btn" id="quiz-restart-btn">🔁 Refaire ce niveau</button>
+        <button class="blitz-quit" id="quiz-levels-btn">Changer de niveau</button>
       </div>`;
-    document.getElementById('quiz-restart-btn').onclick = startQuiz;
+    document.getElementById('quiz-restart-btn').onclick = ()=> startQuiz(quizLevel);
+    document.getElementById('quiz-levels-btn').onclick = renderQuizLevels;
     return;
   }
   const item = quizOrder[quizIndex];
@@ -3403,7 +3725,9 @@ function renderQuizItem(){
         <button id="quiz-submit-btn">Valider</button>
       </div>
       <div id="quiz-feedback"></div>
-    </div>`;
+    </div>
+    <button class="blitz-quit" id="quiz-abandon-btn">Arrêter ce quiz</button>`;
+  document.getElementById('quiz-abandon-btn').onclick = quitQuiz;
   document.getElementById('quiz-submit-btn').onclick = submitQuizAnswer;
   document.getElementById('quiz-answer-input').addEventListener('keydown', (e)=>{
     if(e.key === 'Enter') submitQuizAnswer();
@@ -3536,7 +3860,7 @@ function renderProgress(guidedMode){
     // étape 0 volontairement non bloquante : un apprenant qui a des bases doit pouvoir l'ignorer
     document.getElementById('guided-step-0').onclick = ()=>{ showScreen('screen-basics'); renderBasics(); };
     document.getElementById('guided-step-1').onclick = ()=>{ showScreen('screen-phrasebook'); renderPhrasebookCategories(); };
-    document.getElementById('guided-step-2').onclick = ()=>{ if(step1Done){ showScreen('screen-quiz'); startQuiz(); } };
+    document.getElementById('guided-step-2').onclick = ()=>{ if(step1Done){ showScreen('screen-quiz'); renderQuizLevels(); } };
     document.getElementById('guided-step-3').onclick = ()=>{ if(step2Done){ showScreen('screen-select'); renderScenarioGrid(); } };
   }
 }
