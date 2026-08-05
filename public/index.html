@@ -588,6 +588,13 @@
   }
   .complete-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--palm-dark);}
   .complete-btn:disabled{box-shadow:none;transform:none;opacity:.55;cursor:default;}
+  /* Une fois acquis, il n'y a plus d'action à proposer : le bouton cesse de coller
+     au bas de l'écran et redevient une simple ligne de confirmation. */
+  .complete-btn.acquired{
+    position:static;background:none;color:var(--palm-dark);opacity:1;
+    box-shadow:none;padding:10px;font-size:14.5px;
+    display:flex;align-items:center;justify-content:center;gap:7px;
+  }
 
   .quiz-card{
     background:var(--card-bg);border-radius:22px;padding:26px 18px;text-align:center;
@@ -3079,7 +3086,10 @@ function renderBasics(){
 
   const done = isCompleted('basics_done');
   const completeBtn = document.getElementById('basics-complete-btn');
-  completeBtn.textContent = done ? '✓ Bases acquises' : "✓ J'ai compris les bases (+15 ⭐)";
+  completeBtn.classList.toggle('acquired', done);
+  completeBtn.innerHTML = done
+    ? '<svg class="ic-sm"><use href="#s-check"/></svg> Bases acquises'
+    : `<svg class="ic-sm"><use href="#s-check"/></svg> J'ai compris les bases · +15 <svg class="ic-sm"><use href="#s-star"/></svg>`;
   completeBtn.disabled = done;
   completeBtn.onclick = ()=>{
     if(isCompleted('basics_done')) return;
@@ -3180,7 +3190,10 @@ function renderPhrasebookLeaf(cat){
   cat.phrases.forEach((p, i)=> list.appendChild(buildPhraseRow(p, `pron_${cat.id}_${i}`)));
   const doneAlready = isCompleted('phrasebook_' + cat.id);
   const completeBtn = document.getElementById('phrasebook-complete-btn');
-  completeBtn.textContent = doneAlready ? '✓ Déjà appris' : "✓ J'ai appris ces mots (+10 ⭐)";
+  completeBtn.classList.toggle('acquired', doneAlready);
+  completeBtn.innerHTML = doneAlready
+    ? '<svg class="ic-sm"><use href="#s-check"/></svg> Déjà appris'
+    : `<svg class="ic-sm"><use href="#s-check"/></svg> J'ai appris ces mots · +10 <svg class="ic-sm"><use href="#s-star"/></svg>`;
   completeBtn.disabled = doneAlready;
 }
 
