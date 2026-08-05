@@ -883,10 +883,13 @@
   /* Hauteur définie, sinon #transcript ne peut pas défiler en interne et c'est la
      page entière qui défile : l'en-tête de la scène et la zone de saisie sortent
      alors du champ. dvh suit la barre d'URL mobile, vh sert de repli. */
+  /* Plein écran : l'en-tête de l'app s'efface pendant une conversation (elle a déjà
+     son propre bandeau avec le retour). Ça rend ~90 px au transcript sur téléphone,
+     et ça supprime la dépendance à --header-h, qui était un point de fragilité. */
   #screen-convo{
     display:none;flex-direction:column;
-    height:calc(100vh - var(--header-h));
-    height:calc(100dvh - var(--header-h));
+    height:100vh;
+    height:100dvh;
   }
   .convo-header{
     position:sticky;top:0;z-index:20; /* filet si la hauteur calculée dérape */
@@ -960,6 +963,10 @@
   }
 
   .control-bar{
+    /* flex-shrink:0 est indispensable : sans lui, cette barre se laisse comprimer
+       quand la place manque et son contenu (micro de 78px, champs) se fait rogner,
+       au lieu de laisser le transcript absorber la contrainte en défilant. */
+    flex-shrink:0;
     padding:14px 16px 22px;
     background:var(--card-bg);
     border-top:1px solid rgba(22,75,84,0.12);
@@ -3280,8 +3287,9 @@ function scrollToTop(){ window.scrollTo(0, 0); }
 function showScreen(id){
   ALL_SCREENS.forEach(s => document.getElementById(s).style.display = (s === id ? ((s === 'screen-convo' || s === 'screen-onboarding') ? 'flex' : 'block') : 'none'));
   if(id === 'screen-home') updatePointsBadge();
-  // une partie au chrono se joue sans décor : l'en-tête s'efface aussi
-  document.querySelector('header.top').classList.toggle('hidden', id === 'screen-blitz');
+  // une partie au chrono et une conversation se jouent sans décor : l'en-tête s'efface
+  document.querySelector('header.top').classList.toggle('hidden',
+    id === 'screen-blitz' || id === 'screen-convo');
   syncTabbar(id);
   scrollToTop();
 }
@@ -3582,7 +3590,15 @@ async function callAvatarAPI(){
       body: JSON.stringify({
         task: 'chat', // le serveur choisit modèle/effort/cache d'après ce nom — voir server.js
         system: buildSystemPrompt(),
-        messages: history.filter(h=>h.ar).map(h => ({role: h.role === 'avatar' ? 'assistant' : 'user', content: h.ar}))
+        messages: [
+          ...history.filter(h=>h.ar).map(h => ({role: h.role === 'avatar' ? 'assistant' : 'user', content: h.ar})),
+          // Préremplissage : en imposant l'accolade ouvrante comme début de sa
+          // réponse, le modèle ne PEUT plus répondre en prose. C'est nécessaire
+          // parce que l'historique qu'on lui renvoie ne contient que le darija et
+          // pas le JSON : au bout de quelques tours il imitait son propre historique
+          // et abandonnait le format demandé.
+          { role: 'assistant', content: '{' }
+        ]
       })
     });
     const data = await response.json();
@@ -3603,9 +3619,19 @@ async function callAvatarAPI(){
     });
     const raw = data.content.map(b => b.text || '').join('').trim();
     console.log('Réponse brute de l\'API :', raw);
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    if(!jsonMatch) throw new Error('Aucun JSON trouvé dans la réponse : ' + raw.slice(0,150));
-    const parsed = JSON.parse(jsonMatch[0]);
+    // L'API ne renvoie pas l'accolade préremplie : on la remet avant de parser.
+    const candidate = raw.startsWith('{') ? raw : '{' + raw;
+    const jsonMatch = candidate.match(/\{[\s\S]*\}/);
+    let parsed;
+    try{
+      parsed = JSON.parse(jsonMatch ? jsonMatch[0] : candidate);
+    }catch(parseErr){
+      // Dégradation douce : plutôt qu'une erreur technique en pleine conversation,
+      // on affiche le darija tel quel. L'apprenant perd la translittération et la
+      // traduction pour ce tour, mais l'échange continue.
+      console.warn('Réponse hors format, affichée telle quelle :', parseErr);
+      parsed = { darija_ar: raw.replace(/^[{"\s]+|[}"\s]+$/g, ''), darija_latin: '', french: '', feedback: null };
+    }
 
     removeThinking();
     if(parsed.feedback){
