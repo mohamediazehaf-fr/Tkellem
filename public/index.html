@@ -29,6 +29,7 @@
     --font-display:'Baloo 2',sans-serif;
     --font-body:'Nunito','IBM Plex Sans Arabic',sans-serif;
     --font-arabic:'Cairo',sans-serif;
+    --header-h:78px; /* valeur de repli : recalculée au chargement par syncHeaderHeight() */
   }
   *{box-sizing:border-box;}
   body{
@@ -63,12 +64,18 @@
     .app{max-width:820px;}
     .menu-grid, .scenario-grid{grid-template-columns:repeat(4,1fr);}
   }
+  /* En-tête collant : le bandeau ramène à l'accueil, le badge aux points et l'avatar au
+     compte — donc toute la navigation reste à portée sans jamais remonter la page. */
   header.top{
+    position:sticky;top:0;z-index:50;
     padding:22px 20px 14px;
     display:flex;
     align-items:center;
     gap:12px;
     border-bottom:1px solid rgba(22,75,84,0.12);
+    background:rgba(255,246,233,0.90); /* --cream translucide : le dégradé du fond reste visible */
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
   }
   .brand{
     display:flex;align-items:center;gap:12px;flex:1;
@@ -272,7 +279,12 @@
      du carnet, et sert de seul chemin pour remonter d'un niveau */
   .breadcrumb{
     display:flex;flex-wrap:wrap;align-items:center;gap:1px;
-    margin:2px 0 14px;
+    position:sticky;top:var(--header-h);z-index:40;
+    /* déborde sur le padding de l'écran pour masquer le contenu qui défile derrière */
+    margin:0 -22px 14px;padding:6px 22px;
+    background:rgba(255,246,233,0.94);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
   }
   .crumb{
     display:inline-block;background:none;border:none;
@@ -340,7 +352,7 @@
     100%{opacity:0;transform:translate(-50%,-40px) scale(0.95);}
   }
   .points-toast{
-    position:fixed;top:70px;left:50%;z-index:9999;
+    position:fixed;top:calc(var(--header-h) + 10px);left:50%;z-index:9999;
     background:var(--saffron);color:#4a3512;font-family:var(--font-display);font-weight:800;font-size:16px;
     padding:8px 18px;border-radius:20px;
     animation:points-toast-anim 1.6s ease forwards;
@@ -2026,9 +2038,24 @@ document.getElementById('back-btn').onclick = ()=>{
 // NAVIGATION ENTRE ÉCRANS PRINCIPAUX
 // ---------------------------------------------------------------
 const ALL_SCREENS = ['screen-home','screen-select','screen-convo','screen-phrasebook','screen-quiz','screen-progress','screen-account','screen-onboarding','screen-basics'];
+// Le fil d'Ariane se cale juste sous l'en-tête collant : on mesure la hauteur réelle
+// plutôt que de la coder en dur, car les polices web la font varier au chargement.
+function syncHeaderHeight(){
+  const header = document.querySelector('header.top');
+  if(header) document.documentElement.style.setProperty('--header-h', header.offsetHeight + 'px');
+}
+syncHeaderHeight();
+window.addEventListener('resize', syncHeaderHeight);
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(syncHeaderHeight);
+
+// Changer d'écran sans ça laissait le nouvel écran affiché au milieu, à la position de
+// défilement du précédent.
+function scrollToTop(){ window.scrollTo(0, 0); }
+
 function showScreen(id){
   ALL_SCREENS.forEach(s => document.getElementById(s).style.display = (s === id ? ((s === 'screen-convo' || s === 'screen-onboarding') ? 'flex' : 'block') : 'none'));
   if(id === 'screen-home') updatePointsBadge();
+  scrollToTop();
 }
 
 document.getElementById('menu-scenarios').onclick = ()=>{ showScreen('screen-select'); renderScenarioGrid(); };
@@ -2656,7 +2683,7 @@ function renderPhrasebookBreadcrumb(){
     return `<button class="crumb" data-depth="${i}">${label}</button><span class="crumb-sep">›</span>`;
   }).join('');
   bc.querySelectorAll('.crumb[data-depth]').forEach(btn=>{
-    btn.onclick = ()=> renderPhrasebook(phrasebookPath.slice(0, Number(btn.dataset.depth)));
+    btn.onclick = ()=>{ renderPhrasebook(phrasebookPath.slice(0, Number(btn.dataset.depth))); scrollToTop(); };
   });
 }
 
@@ -2681,7 +2708,9 @@ function renderPhrasebookGrid(nodes){
     }
     card.innerHTML = `<div class="menu-icon">${emojiImg(node.icon,26)}</div>`
       + `<div class="menu-title">${title}</div><div class="menu-desc">${desc}</div>`;
-    card.onclick = ()=> renderPhrasebook([...parentPath, node]);
+    // on ne remet à zéro le défilement que sur un vrai changement de niveau : un simple
+    // rafraîchissement sur place (bouton « j'ai appris ») doit laisser l'apprenant où il est
+    card.onclick = ()=>{ renderPhrasebook([...parentPath, node]); scrollToTop(); };
     grid.appendChild(card);
   });
 }
