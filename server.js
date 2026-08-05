@@ -92,7 +92,12 @@ function logUsage(task, model, usage){
 // ELEVENLABS_TTS_MODEL=eleven_multilingual_v2 rétablit l'ancien modèle
 // si la qualité de voix te paraît en baisse.
 // ---------------------------------------------------------------
-const TTS_MODEL = process.env.ELEVENLABS_TTS_MODEL || 'eleven_flash_v2_5';
+// Deux modèles, deux usages. Le cache partagé change l'arbitrage : une phrase du
+// carnet n'est générée qu'une fois pour tous, donc la lenteur du modèle de qualité
+// ne coûte qu'au premier auditeur — autant prendre le meilleur. En conversation en
+// revanche, chaque réponse est unique et jamais réutilisée : là, le rythme primer.
+const TTS_MODEL = process.env.ELEVENLABS_TTS_MODEL || 'eleven_multilingual_v2';
+const TTS_MODEL_FAST = process.env.ELEVENLABS_TTS_MODEL_FAST || 'eleven_flash_v2_5';
 
 // ---------------------------------------------------------------
 // STOCK D'AUDIO PARTAGÉ (Supabase Storage)
@@ -111,6 +116,7 @@ const TTS_CACHE = process.env.TKELLEM_TTS_CACHE !== 'off'
 
 // Le modèle entre dans la clé : changer ELEVENLABS_TTS_MODEL régénère au lieu de
 // servir l'ancienne voix. Le navigateur calcule la même empreinte de son côté.
+// Seul le contenu d'apprentissage est mis en stock, donc seul TTS_MODEL y figure.
 function ttsKey(voiceId, text){
   const hex = crypto.createHash('sha1').update(TTS_MODEL + '|' + text, 'utf8').digest('hex');
   return `${voiceId}/${hex}.mp3`;
@@ -240,10 +246,15 @@ app.post('/api/speak', async (req, res) => {
     return res.status(400).json({ error: "ELEVENLABS_API_KEY n'est pas configurée sur le serveur." });
   }
   try {
-    const { text, voice_id } = req.body;
+    const { text, voice_id, quality } = req.body;
     if (!text || !voice_id) {
       return res.status(400).json({ error: 'text et voice_id sont requis.' });
     }
+    // 'fast' = audio de conversation : unique, jamais réutilisé, donc ni qualité
+    // maximale ni mise en stock. Tout le reste est du contenu d'apprentissage.
+    const fast = quality === 'fast';
+    const model = fast ? TTS_MODEL_FAST : TTS_MODEL;
+    const cacheable = TTS_CACHE && !fast;
     // endpoint /stream : ElevenLabs renvoie l'audio au fur et à mesure qu'il le
     // génère, au lieu d'attendre le fichier complet
     const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice_id}/stream`, {
@@ -255,7 +266,7 @@ app.post('/api/speak', async (req, res) => {
       },
       body: JSON.stringify({
         text,
-        model_id: TTS_MODEL,
+        model_id: model,
         voice_settings: { stability: 0.45, similarity_boost: 0.8 }
       })
     });
@@ -266,7 +277,7 @@ app.post('/api/speak', async (req, res) => {
     }
     res.set('Content-Type', 'audio/mpeg');
 
-    if(TTS_CACHE){
+    if(cacheable){
       // On garde l'audio en mémoire le temps de le renvoyer ET de le déposer dans le
       // stock partagé. C'est la seule génération que ce texte coûtera, jamais plus.
       const buffer = Buffer.from(await r.arrayBuffer());

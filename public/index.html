@@ -2971,8 +2971,10 @@ async function writeAudioCache(url, response){
   }catch(err){ /* quota plein ou mode privé : sans conséquence */ }
 }
 
-async function fetchSpeechBlob(text){
-  const remote = await ttsCacheUrl(text);
+// quality === 'fast' : audio de conversation, texte unique. Ni stock partagé (il ne
+// serait jamais relu) ni modèle de qualité (le rythme de l'échange primer).
+async function fetchSpeechBlob(text, quality){
+  const remote = quality === 'fast' ? null : await ttsCacheUrl(text);
   if(remote){
     const stored = await readAudioCache(remote);
     if(stored) return await stored.blob();
@@ -2987,7 +2989,7 @@ async function fetchSpeechBlob(text){
   const res = await fetch('/api/speak', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ text, voice_id: elevenLabsVoiceId })
+    body: JSON.stringify({ text, voice_id: elevenLabsVoiceId, quality: quality || 'high' })
   });
   if(!res.ok) throw new Error((await res.text()).slice(0, 200));
   const blob = await res.blob();
@@ -2995,7 +2997,7 @@ async function fetchSpeechBlob(text){
   return blob;
 }
 
-async function speak(text, latinText, btn){
+async function speak(text, latinText, btn, quality){
   setAudioLoading(btn, true);
   try{
     if(elevenLabsVoiceId){
@@ -3006,7 +3008,7 @@ async function speak(text, latinText, btn){
         return;
       }
       try{
-        const blob = await fetchSpeechBlob(text);
+        const blob = await fetchSpeechBlob(text, quality);
         const url = URL.createObjectURL(blob);
         cacheAudio(key, url);
         await playAudioUrl(url);
@@ -3185,7 +3187,7 @@ function startScenario(s, forceRestart){
     const openingBtn = addBubble('avatar', s.opening.ar, s.opening.latin, s.opening.fr);
     history.push({role:'avatar', ...s.opening});
     saveHistory();
-    speak(s.opening.ar, s.opening.latin, openingBtn);
+    speak(s.opening.ar, s.opening.latin, openingBtn, 'fast');
   }
   setupSpeechRecognition();
 }
@@ -3352,7 +3354,8 @@ function addBubble(role, ar, latin, fr){
       <button class="replay"><span class="btn-ic"><svg class="ic-sm"><use href="#s-speaker"/></svg></span> Réécouter</button>
     </div>`;
   const replayBtn = b.querySelector('.replay');
-  replayBtn.onclick = ()=> speak(ar, latin, replayBtn);
+  // 'fast' : le fil d'une conversation est du texte unique, jamais mis en stock
+  replayBtn.onclick = ()=> speak(ar, latin, replayBtn, 'fast');
   t.appendChild(b);
   t.scrollTop = t.scrollHeight;
   return replayBtn; // sert aussi d'indicateur de chargement pour la lecture automatique
@@ -3368,7 +3371,7 @@ function addCoachNote(message, phrase){
   d.innerHTML = `<span class="coach-icon">📘</span><div><span>${message}</span>${replayBtn}</div>`;
   if(phrase && phrase.ar){
     const coachBtn = d.querySelector('.coach-replay');
-    coachBtn.onclick = ()=> speak(phrase.ar, phrase.latin, coachBtn);
+    coachBtn.onclick = ()=> speak(phrase.ar, phrase.latin, coachBtn, 'fast');
   }
   t.appendChild(d);
   t.scrollTop = t.scrollHeight;
@@ -3537,7 +3540,7 @@ async function callAvatarAPI(){
     const replayBtn = addBubble('avatar', parsed.darija_ar, parsed.darija_latin, parsed.french);
     history.push({role:'avatar', ar:parsed.darija_ar, latin:parsed.darija_latin, fr:parsed.french});
     saveHistory();
-    speak(parsed.darija_ar, parsed.darija_latin, replayBtn);
+    speak(parsed.darija_ar, parsed.darija_latin, replayBtn, 'fast');
 
     // première fois que cette conversation atteint une longueur significative : on la compte comme "pratiquée"
     const scenarioProgressKey = 'scenario_' + currentScenario.id;
@@ -3657,7 +3660,7 @@ Réponds UNIQUEMENT en JSON : {"darija_ar":"...","darija_latin":"..."}`;
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     const parsed = JSON.parse(jsonMatch[0]);
     resultBox.innerHTML = `<div class="t-ar">${parsed.darija_ar}</div><div class="t-latin">${parsed.darija_latin}</div>`;
-    speak(parsed.darija_ar, parsed.darija_latin);
+    speak(parsed.darija_ar, parsed.darija_latin, null, 'fast');
   }catch(err){
     resultBox.textContent = 'Impossible de traduire cette phrase, réessaie.';
   }
