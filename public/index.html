@@ -2931,6 +2931,58 @@ function setAudioLoading(btn, loading){
 }
 
 // ---------------------------------------------------------------
+// MESURE DE CONSOMMATION
+// On accumule en mémoire et on envoie par lots : un enregistrement par appel
+// ferait plus de trafic que ce qu'il mesure. Envoi quand l'app passe en arrière-plan
+// ou tous les dix appels — et jamais bloquant, la mesure ne doit rien casser.
+// ---------------------------------------------------------------
+let usageBatch = { chat_calls:0, input_tokens:0, cache_read:0, output_tokens:0, tts_calls:0, stt_calls:0 };
+
+function noteUsage(patch){
+  Object.keys(patch).forEach(k => { usageBatch[k] = (usageBatch[k] || 0) + patch[k]; });
+  const calls = usageBatch.chat_calls + usageBatch.tts_calls + usageBatch.stt_calls;
+  if(calls >= 10) flushUsage();
+}
+
+async function flushUsage(){
+  if(!sb || !currentUser) return;
+  const total = Object.values(usageBatch).reduce((a, b) => a + b, 0);
+  if(!total) return;
+  const batch = usageBatch;
+  usageBatch = { chat_calls:0, input_tokens:0, cache_read:0, output_tokens:0, tts_calls:0, stt_calls:0 };
+  try{
+    await sb.from('usage_events').insert({ user_id: currentUser.id, ...batch });
+  }catch(err){ /* la mesure n'est pas critique : on n'insiste pas */ }
+}
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden) flushUsage(); });
+
+// ---------------------------------------------------------------
+// PLAFONDS QUOTIDIENS
+// Volontairement très larges : un apprenant assidu ne les atteint jamais. Ils
+// existent pour l'onglet oublié ouvert et le doigt resté sur le micro. Le vrai
+// verrou est côté serveur — celui-ci sert à l'expliquer gentiment.
+// ---------------------------------------------------------------
+const DAILY_CAPS = { chat: 120, pron: 200 };
+
+function quotaKey(){ return 'tkellem_quota_' + new Date().toISOString().slice(0, 10); }
+
+function quotaLeft(kind){
+  let used = {};
+  try{ used = JSON.parse(localStorage.getItem(quotaKey()) || '{}'); }catch(e){}
+  return (DAILY_CAPS[kind] || Infinity) - (used[kind] || 0);
+}
+
+// true si l'action est permise, et elle est alors décomptée
+function takeQuota(kind){
+  if(quotaLeft(kind) <= 0) return false;
+  let used = {};
+  try{ used = JSON.parse(localStorage.getItem(quotaKey()) || '{}'); }catch(e){}
+  used[kind] = (used[kind] || 0) + 1;
+  localStorage.setItem(quotaKey(), JSON.stringify(used));
+  return true;
+}
+
+// ---------------------------------------------------------------
 // TROIS NIVEAUX DE CACHE AVANT DE PAYER UNE GÉNÉRATION
 //   1. mémoire      — la phrase vient d'être jouée
 //   2. CacheStorage — déjà jouée lors d'une visite précédente, survit au rechargement
@@ -2992,6 +3044,7 @@ async function fetchSpeechBlob(text, quality){
     body: JSON.stringify({ text, voice_id: elevenLabsVoiceId, quality: quality || 'high' })
   });
   if(!res.ok) throw new Error((await res.text()).slice(0, 200));
+  noteUsage({ tts_calls: 1 }); // on ne compte que les vraies générations, cache exclu
   const blob = await res.blob();
   if(remote) writeAudioCache(remote, new Response(blob, { headers:{ 'Content-Type':'audio/mpeg' } }));
   return blob;
@@ -3462,6 +3515,7 @@ async function transcribeBlob(blob){
   if(!res.ok){
     throw new Error(data.error?.message || data.error || 'Transcription impossible.');
   }
+  noteUsage({ stt_calls: 1 });
   return (data.text || '').trim();
 }
 
@@ -3517,6 +3571,11 @@ function handleUserInput(userText){
 
 async function callAvatarAPI(){
   try{
+    if(!takeQuota('chat')){
+      removeThinking();
+      addErrorBubble("Tu as beaucoup discuté aujourd'hui ! Reviens demain, les conversations reprennent à zéro.");
+      return;
+    }
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
@@ -3527,6 +3586,17 @@ async function callAvatarAPI(){
       })
     });
     const data = await response.json();
+    // sans ce contrôle, une erreur du serveur (429, clé absente) faisait planter
+    // data.content.map avec un message incompréhensible pour l'apprenant
+    if(!response.ok || !data.content){
+      throw new Error(data.error?.message || data.error || 'Le serveur est indisponible.');
+    }
+    noteUsage({
+      chat_calls: 1,
+      input_tokens: data.usage?.input_tokens || 0,
+      cache_read: data.usage?.cache_read_input_tokens || 0,
+      output_tokens: data.usage?.output_tokens || 0
+    });
     const raw = data.content.map(b => b.text || '').join('').trim();
     console.log('Réponse brute de l\'API :', raw);
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
@@ -3702,6 +3772,10 @@ function showPronNote(feedbackEl, cls, text){
 }
 
 async function practicePronunciation(phrase, progressKey, feedbackEl, btn, retry){
+  if(!pronRecorder && quotaLeft('pron') <= 0){
+    showPronNote(feedbackEl, 'close', "Tu t'es beaucoup entraîné aujourd'hui — et c'est très bien ! L'exercice revient demain.");
+    return;
+  }
   if(pronRecorder){
     // deuxième appui sur le même bouton = j'ai fini de parler
     if(pronRecorder.btn === btn && pronRecorder.rec.state === 'recording') pronRecorder.rec.stop();
@@ -3735,6 +3809,7 @@ async function practicePronunciation(phrase, progressKey, feedbackEl, btn, retry
     setPracticeState(btn, 'grading');
     feedbackEl.innerHTML = `<div class="pron-hint">J'écoute ta prononciation…</div>`;
     try{
+      takeQuota('pron'); // décompté à l'envoi réel, pas au simple appui sur le micro
       const heard = await transcribeBlob(new Blob(chunks, { type: rec.mimeType || 'audio/webm' }));
       if(!heard) throw new Error("Je n'ai rien entendu — rapproche-toi du micro et parle un peu plus fort.");
       renderPronVerdict(await gradePronunciation(phrase, heard), heard, phrase, progressKey, feedbackEl, retry);

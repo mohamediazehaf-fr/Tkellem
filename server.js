@@ -4,8 +4,50 @@ const crypto = require('crypto');
 const { Readable } = require('stream');
 
 const app = express();
+app.set('trust proxy', true); // Render place un proxy devant : sans ça toutes les IP sont identiques
 app.use(express.json({ limit: '8mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// ---------------------------------------------------------------
+// GARDE-FOU DE DÉBIT (par adresse IP, en mémoire)
+// Ce n'est pas de l'anti-fraude : c'est le filet qui évite qu'un onglet laissé
+// ouvert, un script maladroit ou un enfant qui garde le doigt sur le micro ne
+// vide ton compte ElevenLabs en une nuit. Les plafonds sont volontairement très
+// larges — un usage humain normal ne les approche pas.
+// Compteurs en mémoire : remis à zéro à chaque redéploiement, et c'est très bien.
+// ---------------------------------------------------------------
+const RATE_LIMITS = {
+  '/api/chat':       { max: Number(process.env.LIMIT_CHAT       || 300), windowMs: 3600000 },
+  '/api/speak':      { max: Number(process.env.LIMIT_SPEAK      || 400), windowMs: 3600000 },
+  '/api/transcribe': { max: Number(process.env.LIMIT_TRANSCRIBE || 300), windowMs: 3600000 }
+};
+const RATE_ENABLED = process.env.TKELLEM_RATE_LIMIT !== 'off';
+const hits = new Map(); // "ip route" -> [horodatages]
+
+function rateLimiter(req, res, next){
+  const rule = RATE_LIMITS[req.path];
+  if(!RATE_ENABLED || !rule) return next();
+  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.ip || 'inconnu';
+  const key = ip + ' ' + req.path;
+  const now = Date.now();
+  const recent = (hits.get(key) || []).filter(t => now - t < rule.windowMs);
+  if(recent.length >= rule.max){
+    console.warn(`[quota] ${key} : ${recent.length} appels sur l'heure, refusé`);
+    return res.status(429).json({
+      error: "Beaucoup d'activité depuis ton appareil. Réessaie dans quelques minutes."
+    });
+  }
+  recent.push(now);
+  hits.set(key, recent);
+  // ménage : sans ça la Map enfle indéfiniment au fil des visiteurs
+  if(hits.size > 5000){
+    for(const [k, v] of hits){
+      if(!v.length || now - v[v.length - 1] > rule.windowMs) hits.delete(k);
+    }
+  }
+  next();
+}
+app.use(rateLimiter);
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;

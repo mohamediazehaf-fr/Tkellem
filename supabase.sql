@@ -131,6 +131,71 @@ create index if not exists friendships_requester_idx on public.friendships (requ
 create index if not exists friendships_addressee_idx on public.friendships (addressee_id, status);
 
 
+-- ------------------------------------------------------------
+-- 4. Mesure de consommation
+-- Table en ajout seul : chaque ligne est un lot d'appels consommés par un
+-- utilisateur. Pas de lecture-modification-écriture, donc pas de conflit entre
+-- appareils, et l'historique reste intact.
+-- Sert à répondre à UNE question : combien me coûte un utilisateur actif ?
+-- ------------------------------------------------------------
+create table if not exists public.usage_events (
+  id              bigserial primary key,
+  user_id         uuid not null references auth.users(id) on delete cascade,
+  at              timestamptz not null default now(),
+  chat_calls      int not null default 0,
+  input_tokens    int not null default 0,
+  cache_read      int not null default 0,
+  output_tokens   int not null default 0,
+  tts_calls       int not null default 0,  -- générations réelles, cache exclu
+  stt_calls       int not null default 0
+);
+
+alter table public.usage_events enable row level security;
+
+-- Chacun n'écrit et ne relit que sa propre consommation. Toi, tu lis tout depuis
+-- le dashboard (qui contourne RLS).
+drop policy if exists "usage_insert_own" on public.usage_events;
+create policy "usage_insert_own" on public.usage_events
+  for insert to authenticated with check (auth.uid() = user_id);
+
+drop policy if exists "usage_read_own" on public.usage_events;
+create policy "usage_read_own" on public.usage_events
+  for select to authenticated using (auth.uid() = user_id);
+
+create index if not exists usage_events_idx on public.usage_events (user_id, at desc);
+
+
+-- ============================================================
+-- LA REQUÊTE QUI DONNE TON COÛT RÉEL
+-- À coller dans SQL Editor quand tu veux savoir où tu en es. Les tarifs sont
+-- ceux de Sonnet 4.6 (3 $ / 15 $ le million, lecture de cache à 0,1x) — ajuste
+-- les trois nombres si tu changes de modèle.
+--
+-- select
+--   u.user_id,
+--   l.pseudo,
+--   count(*)                        as lots,
+--   sum(u.chat_calls)               as appels_claude,
+--   sum(u.tts_calls)                as generations_voix,
+--   sum(u.stt_calls)                as transcriptions,
+--   round((
+--     sum(u.input_tokens)  * 3.0 / 1000000 +
+--     sum(u.cache_read)    * 0.3 / 1000000 +
+--     sum(u.output_tokens) * 15.0 / 1000000
+--   )::numeric, 4)                  as cout_claude_usd
+-- from public.usage_events u
+-- left join public.leaderboard l on l.user_id = u.user_id
+-- where u.at > now() - interval '30 days'
+-- group by u.user_id, l.pseudo
+-- order by cout_claude_usd desc;
+--
+-- Le coût ElevenLabs ne s'exprime pas en dollars ici : c'est du crédit. Retiens
+-- que generations_voix compte les VRAIES générations, celles qui n'ont pas été
+-- servies par le stock partagé. Si ce nombre reste bas alors que l'app est
+-- utilisée, c'est que le cache fait son travail.
+-- ============================================================
+
+
 -- ============================================================
 -- STOCK D'AUDIO PARTAGÉ — à faire dans l'interface, pas en SQL
 --
