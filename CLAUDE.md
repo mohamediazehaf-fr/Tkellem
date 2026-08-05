@@ -99,6 +99,8 @@ When Supabase is reachable, [`applyAuthGate()`](public/index.html#L1284) forces 
 
 Single page, eight sibling `<div id="screen-*">` blocks toggled by [`showScreen()`](public/index.html#L1909) against `ALL_SCREENS` — no router, no history API. Adding a screen means adding the div, the id to `ALL_SCREENS`, and its back-button wiring.
 
+A **fixed bottom tab bar** (`#tabbar`) carries the four destinations — Apprendre / Défis / Parcours / Compte — and is the app's primary navigation; the home screen is just the Apprendre tab's content, no longer a menu of everything. `syncTabbar()` runs from `showScreen()` and hides the bar on the three screens that demand full attention (`screen-convo`, `screen-blitz`, `screen-onboarding`) and while the auth gate is closed. **`tabTarget()` is a function, not a const map** — `applyAuthGate()` can call `showScreen()` during boot, before this section's consts would be initialised, and a const there reintroduces the blank-page bug. Screens carry `padding-bottom: calc(var(--tab-h) + 28px)` so content clears the bar.
+
 The header is **sticky chrome shared by every screen** — the banner goes home, the star badge to progress, the avatar to the account — so navigation never requires scrolling back up. The phrasebook breadcrumb sticks directly beneath it at `top: var(--header-h)`, and that variable is **measured at runtime** by `syncHeaderHeight()` (on load, on resize, and after `document.fonts.ready`, since web fonts change the header's height) rather than hard-coded. Anything else pinned below the header — currently `.points-toast` — must offset from the same variable, or it will overlap once the fonts settle.
 
 `showScreen()` also resets the scroll position; without it a new screen appeared at the previous screen's scroll offset. Phrasebook level changes reset it too, but a **same-level re-render must not** (the "j'ai appris" button re-renders in place and should leave the learner where they were), which is why `scrollToTop()` sits in the click handlers rather than inside `renderPhrasebook()`.
@@ -221,8 +223,11 @@ The guided path ([`renderProgress(true)`](public/index.html#L2482)) hard-codes a
 
 - **Everything user-facing is French; comments in the source are French too.** Match that when editing.
 - Darija is always carried as the triple `{ar, latin, fr}` — arabic script, arabizi transliteration, french gloss. Keep all three in sync; the UI and the TTS both depend on it (`speak()` falls back to `latin`).
-- Emoji are rendered as Twemoji `<img>` via [`emojiImg()`](public/index.html#L1236) because native phone rendering is inconsistent — use it instead of inlining an emoji in generated markup.
-- No framework: DOM built with template strings and `document.getElementById`, handlers assigned as `.onclick`. Design tokens are CSS custom properties (`--cream`, `--zellige`, …) in the single `<style>` block.
+- **Two icon systems, and the split is deliberate.** Structural chrome (navigation, listen/practice buttons, points star, streak, chevrons, section headers) uses the **inline SVG sprite** defined at the top of `<body>` — `<svg class="ic"><use href="#s-name"/></svg>`, sized by `.ic` / `.ic-lg` / `.ic-sm`, coloured by `currentColor`. Content identity (scenario cards, phrasebook category icons, badges, quiz items, avatars) stays **emoji via [`emojiImg()`](public/index.html#L1236)**, because a grocer and a taxi read better as pictures than as line icons. Adding a chrome icon means adding a `<g id="s-…">` to the sprite, not an emoji — every `emojiImg()` call is a separate CDN request.
+- **Pressable is the house gesture.** `.press` (plus `.press-z` / `.press-saf` / `.press-palm` / `.press-hen` for coloured grounds) gives a solid bottom edge via `box-shadow: 0 var(--edge) 0` and translates down on `:active`. Any new button should use it, or it will read as flat next to everything else.
+- Design tokens live in `:root`: one role per colour (saffron = points/action, henna = streak/urgency, palm = success, zellige = structure), plus `--muted` / `--line` neutrals biased toward the teal, radii `--r-lg/md/sm`, and `--edge`. Prefer the tokens over the hardcoded neutrals that survive in older rules.
+- `:root.kids-ui` amplifies sizes and saturation across the whole app, driven by the "Enfants" choice on the scenario screen and persisted in `tkellem_mode`. It's on the root element, not `.app`, so it also reaches the fixed tab bar.
+- No framework: DOM built with template strings and `document.getElementById`, handlers assigned as `.onclick`.
 
 ## Gotchas
 

@@ -14,23 +14,85 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
+  /* ============================================================
+     JETONS — une couleur, un rôle. Les teintes marocaines sont conservées,
+     c'est leur répartition qui a été resserrée.
+     ============================================================ */
   :root{
+    /* structure */
     --zellige:#0E4F56;
     --zellige-light:#186E77;
-    --saffron:#FFB238;
+    --zellige-deep:#08383D;   /* arête basse des boutons pleins */
+    /* accents : un métier chacun */
+    --saffron:#FFB238;        /* points, action */
     --saffron-dark:#B87A0F;
-    --henna:#F1633D;
+    --henna:#F1633D;          /* série, urgence */
     --henna-dark:#A8391E;
-    --cream:#FFF6E9;
-    --ink:#21201C;
-    --palm:#2FBE8F;
+    --palm:#2FBE8F;           /* réussite */
     --palm-dark:#1D7D5D;
+    /* fonds et neutres, tirés vers le vert-bleu plutôt qu'empruntés au gris */
+    --cream:#FFFBF4;
     --card-bg:#FFFFFF;
+    --ink:#17211F;
+    --muted:#7C8A88;
+    --line:#EDE6D8;
+    /* formes */
+    --r-lg:18px;
+    --r-md:14px;
+    --r-sm:11px;
+    --edge:4px;               /* épaisseur de l'arête basse pressable */
     --font-display:'Baloo 2',sans-serif;
     --font-body:'Nunito','IBM Plex Sans Arabic',sans-serif;
     --font-arabic:'Cairo',sans-serif;
     --header-h:78px; /* valeur de repli : recalculée au chargement par syncHeaderHeight() */
+    --tab-h:62px;
   }
+
+  /* ------------------------------------------------------------
+     PRESSABLE — l'arête basse solide, et l'enfoncement au doigt.
+     C'est le geste qui sépare une interface plate d'une interface de jeu.
+     ------------------------------------------------------------ */
+  .press{
+    box-shadow:0 var(--edge) 0 var(--line);
+    transition:transform .07s ease, box-shadow .07s ease;
+  }
+  .press:active{ transform:translateY(calc(var(--edge) - 1px)); box-shadow:0 1px 0 var(--line); }
+  .press-z{ box-shadow:0 var(--edge) 0 var(--zellige-deep); }
+  .press-z:active{ transform:translateY(calc(var(--edge) - 1px)); box-shadow:0 1px 0 var(--zellige-deep); }
+  .press-saf{ box-shadow:0 var(--edge) 0 var(--saffron-dark); }
+  .press-saf:active{ transform:translateY(calc(var(--edge) - 1px)); box-shadow:0 1px 0 var(--saffron-dark); }
+  .press-palm{ box-shadow:0 var(--edge) 0 var(--palm-dark); }
+  .press-palm:active{ transform:translateY(calc(var(--edge) - 1px)); box-shadow:0 1px 0 var(--palm-dark); }
+  .press-hen{ box-shadow:0 var(--edge) 0 var(--henna-dark); }
+  .press-hen:active{ transform:translateY(calc(var(--edge) - 1px)); box-shadow:0 1px 0 var(--henna-dark); }
+  .press:disabled, .press-saf:disabled, .press-palm:disabled{
+    box-shadow:none; transform:none; opacity:.55;
+  }
+
+  /* Icônes maison : une seule famille, intégrée, aucune requête réseau */
+  .ic{width:22px;height:22px;flex:none;vertical-align:-4px;}
+  .ic-lg{width:26px;height:26px;}
+  .ic-sm{width:15px;height:15px;vertical-align:-2px;}
+
+  /* ------------------------------------------------------------
+     MODE ENFANT — mêmes composants, tout est plus grand et plus franc.
+     Suit le choix « Enfants » de l'écran des mises en situation.
+     ------------------------------------------------------------ */
+  :root.kids-ui{ --r-lg:22px; --r-md:16px; --edge:5px; }
+  :root.kids-ui .ic{width:26px;height:26px;}
+  :root.kids-ui .ic-lg{width:30px;height:30px;}
+  :root.kids-ui .nav-ico{width:50px;height:50px;}
+  :root.kids-ui .nav-txt b{font-size:17.5px;}
+  :root.kids-ui .nav-txt small{font-size:13.5px;}
+  :root.kids-ui .ni-z{background:rgba(14,79,86,.20);}
+  :root.kids-ui .ni-saf{background:rgba(255,178,56,.40);}
+  :root.kids-ui .ni-hen{background:rgba(241,99,61,.28);}
+  :root.kids-ui .ni-palm{background:rgba(47,190,143,.32);}
+  :root.kids-ui .phrase-item .listen-btn,
+  :root.kids-ui .practice-btn{width:44px;height:44px;}
+  :root.kids-ui .menu-icon{width:52px;height:52px;font-size:30px;}
+  :root.kids-ui .blitz-opt{font-size:18px;padding:16px;}
+  :root.kids-ui .tab{font-size:11.5px;}
   *{box-sizing:border-box;}
   body{
     margin:0;
@@ -95,21 +157,92 @@
   }
   header.top .sub{font-size:14px;color:var(--zellige-light);margin-top:1px;}
 
+  /* ------------------------------------------------------------
+     TUILES DE NAVIGATION — remplacent la grille de cartes de l'accueil :
+     plus lisibles à une main, et l'icône annonce la nature de l'écran.
+     ------------------------------------------------------------ */
+  .menu-list{display:flex;flex-direction:column;gap:11px;}
+  .nav-tile{
+    display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+    background:var(--card-bg);border:1.5px solid var(--line);border-radius:var(--r-lg);
+    padding:13px 14px;font-family:inherit;color:inherit;cursor:pointer;
+  }
+  .nav-ico{
+    width:42px;height:42px;border-radius:var(--r-md);flex:none;
+    display:grid;place-items:center;
+  }
+  .ni-z{background:rgba(14,79,86,.11);color:var(--zellige);}
+  .ni-saf{background:rgba(255,178,56,.22);color:var(--saffron-dark);}
+  .ni-hen{background:rgba(241,99,61,.15);color:var(--henna-dark);}
+  .ni-palm{background:rgba(47,190,143,.18);color:var(--palm-dark);}
+  .nav-txt{flex:1;min-width:0;}
+  .nav-txt b{
+    display:block;font-family:var(--font-display);font-weight:800;
+    font-size:16px;letter-spacing:-.01em;line-height:1.25;
+  }
+  .nav-txt small{display:block;font-size:12.5px;color:var(--muted);line-height:1.35;margin-top:1px;}
+  .nav-tail{color:var(--muted);display:grid;place-items:center;}
+
+  /* Anneau de progression : la progression devient une forme, plus un ratio */
+  .home-ring{
+    display:flex;align-items:center;gap:13px;width:100%;text-align:left;
+    background:var(--card-bg);border:1.5px solid var(--line);border-radius:var(--r-lg);
+    padding:12px 14px;margin-bottom:16px;font-family:inherit;color:inherit;cursor:pointer;
+  }
+  .ring{width:54px;height:54px;flex:none;transform:rotate(-90deg);}
+  .ring circle{fill:none;stroke-width:6;stroke-linecap:round;}
+  .ring .bg{stroke:rgba(14,79,86,.12);}
+  .ring .fg{stroke:var(--palm);transition:stroke-dashoffset .6s ease;}
+  .ring-txt{flex:1;min-width:0;}
+  .ring-txt b{display:block;font-family:var(--font-display);font-weight:800;font-size:15.5px;}
+  .ring-txt span{font-size:12.5px;color:var(--muted);}
+
+  /* ------------------------------------------------------------
+     BARRE D'ONGLETS — alignée sur la largeur de .app pour rester
+     centrée sur grand écran comme sur téléphone.
+     ------------------------------------------------------------ */
+  .tabbar{
+    position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+    width:100%;max-width:520px;z-index:60;
+    display:flex;padding:7px 4px calc(9px + env(safe-area-inset-bottom,0px));
+    background:var(--card-bg);border-top:1px solid var(--line);
+  }
+  @media (min-width:700px){ .tabbar{max-width:680px;} }
+  @media (min-width:1000px){ .tabbar{max-width:820px;} }
+  .tabbar.hidden{display:none;}
+  .tab{
+    flex:1;display:grid;place-items:center;gap:3px;padding:5px 0;
+    background:none;border:0;font-family:inherit;cursor:pointer;
+    font-size:10.5px;font-weight:700;color:var(--muted);
+    transition:color .15s ease;
+  }
+  .tab.on{color:var(--zellige);}
+  .tab.on::after{
+    content:'';width:5px;height:5px;border-radius:50%;background:var(--saffron);
+  }
+  .tab::after{content:'';width:5px;height:5px;}
+
   /* ---------- SCREEN: SELECTOR ---------- */
   #screen-home{padding:24px 22px;flex:1;}
   #screen-select{display:none;padding:24px 22px;flex:1;}
   #screen-select .intro{font-size:15.5px;color:#4c463c;line-height:1.5;margin:6px 0 20px;}
   #screen-phrasebook, #screen-quiz, #screen-progress, #screen-account, #screen-basics, #screen-games, #screen-blitz{padding:24px 22px;flex:1;}
+  /* de quoi ne pas passer sous la barre d'onglets */
+  #screen-home, #screen-select, #screen-phrasebook, #screen-quiz,
+  #screen-progress, #screen-account, #screen-basics, #screen-games{
+    padding-bottom:calc(var(--tab-h) + 28px);
+  }
 
   /* ---------- DÉFIS : accueil du mode jeu ---------- */
   .game-card{
-    background:var(--card-bg);border:1px solid rgba(22,75,84,0.10);
-    border-bottom:5px solid var(--saffron-dark);
-    border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;
-    transition:transform .1s ease;
+    background:var(--card-bg);border:1.5px solid var(--line);
+    border-radius:var(--r-lg);padding:16px;margin-bottom:14px;cursor:pointer;
+    box-shadow:0 var(--edge) 0 var(--saffron-dark);
+    transition:transform .07s ease,box-shadow .07s ease;
   }
-  .game-card:active{transform:scale(0.985);}
-  .game-card.duel{border-bottom-color:var(--henna-dark);}
+  .game-card:active{transform:translateY(3px);box-shadow:0 1px 0 var(--saffron-dark);}
+  .game-card.duel{box-shadow:0 var(--edge) 0 var(--henna-dark);}
+  .game-card.duel:active{box-shadow:0 1px 0 var(--henna-dark);}
   .game-card-title{font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--zellige);}
   .game-card-desc{font-size:13.5px;color:#7a7266;margin-top:3px;line-height:1.4;}
   .game-section-title{
@@ -180,13 +313,18 @@
   .blitz-options{display:flex;flex-direction:column;gap:10px;margin-top:24px;}
   .blitz-opt{
     text-align:left;background:var(--card-bg);color:var(--ink);
-    border:1.5px solid rgba(22,75,84,0.18);border-radius:14px;
-    padding:15px 16px;font-size:16.5px;font-family:inherit;font-weight:600;
-    cursor:pointer;transition:transform .08s ease,background .12s ease,border-color .12s ease;
+    border:2px solid var(--line);border-radius:15px;
+    padding:14px 16px;font-size:16.5px;font-family:inherit;font-weight:700;
+    cursor:pointer;box-shadow:0 var(--edge) 0 var(--line);
+    transition:transform .07s ease,box-shadow .07s ease,background .12s ease,border-color .12s ease;
   }
-  .blitz-opt:active{transform:scale(0.985);}
-  .blitz-opt.good{background:rgba(47,190,143,0.22);border-color:var(--palm);}
-  .blitz-opt.bad{background:rgba(241,99,61,0.18);border-color:var(--henna);}
+  .blitz-opt:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--line);}
+  .blitz-opt.good{
+    background:rgba(47,190,143,0.18);border-color:var(--palm);box-shadow:0 var(--edge) 0 var(--palm);
+  }
+  .blitz-opt.bad{
+    background:rgba(241,99,61,0.14);border-color:var(--henna);box-shadow:0 var(--edge) 0 var(--henna);
+  }
   .blitz-opt:disabled{cursor:default;}
   .blitz-quit{
     display:block;margin:26px auto 0;background:none;border:none;
@@ -238,16 +376,22 @@
   .sound-ex{font-size:13px;color:var(--zellige-light);margin-top:4px;}
   .sound-ex bdi{font-family:var(--font-arabic);font-size:15.5px;color:var(--ink);}
   .basics-cta{
-    width:100%;background:var(--zellige);color:var(--cream);border:none;border-radius:12px;
-    padding:13px;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;
+    width:100%;background:var(--zellige);color:var(--cream);border:none;border-radius:var(--r-lg);
+    padding:14px;font-family:var(--font-display);font-weight:800;font-size:15.5px;
+    cursor:pointer;margin-top:12px;
+    box-shadow:0 var(--edge) 0 var(--zellige-deep);
+    transition:transform .07s ease,box-shadow .07s ease;
   }
+  .basics-cta:active{transform:translateY(3px);box-shadow:0 1px 0 var(--zellige-deep);}
 
   .points-badge{
-    background:var(--saffron);color:#4a3512;border:none;border-radius:20px;
-    padding:6px 12px;font-weight:700;font-size:14.5px;flex-shrink:0;align-self:center;
-    cursor:pointer;transition:transform .1s ease;
+    display:flex;align-items:center;gap:5px;
+    background:rgba(255,178,56,.22);color:var(--saffron-dark);border:none;border-radius:999px;
+    padding:6px 11px 6px 9px;font-family:var(--font-display);font-weight:800;font-size:14px;
+    flex-shrink:0;align-self:center;cursor:pointer;font-variant-numeric:tabular-nums;
+    transition:transform .1s ease;
   }
-  .points-badge:active{transform:scale(0.92);}
+  .points-badge:active{transform:scale(0.94);}
   .account-btn{
     background:rgba(22,75,84,0.08);border:none;border-radius:50%;width:36px;height:36px;
     font-size:16px;cursor:pointer;flex-shrink:0;align-self:center;
@@ -299,29 +443,23 @@
     cursor:pointer;padding:0;margin-bottom:14px;font-weight:600;
   }
 
-  .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+  /* Grille de cartes : ne sert plus qu'aux catégories du carnet, où l'icône
+     est un emoji expressif propre au contenu. Même geste pressable qu'ailleurs. */
+  .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:18px;}
   .menu-card{
-    background:var(--card-bg);border:none;border-radius:20px;
-    border-bottom:6px solid var(--zellige);
-    padding:18px 14px 15px;cursor:pointer;display:flex;flex-direction:column;gap:6px;
-    transition:transform .08s ease, border-bottom-width .08s ease;
+    background:var(--card-bg);border:1.5px solid var(--line);border-radius:var(--r-lg);
+    padding:16px 14px 14px;cursor:pointer;display:flex;flex-direction:column;gap:7px;
+    box-shadow:0 var(--edge) 0 var(--line);
+    transition:transform .07s ease, box-shadow .07s ease;
   }
-  .menu-card:active{transform:translateY(4px);border-bottom-width:2px;}
-  .menu-card:nth-child(1){border-bottom-color:var(--saffron-dark);}
-  .menu-card:nth-child(2){border-bottom-color:var(--henna-dark);}
-  .menu-card:nth-child(3){border-bottom-color:var(--palm-dark);}
-  .menu-card:nth-child(4){border-bottom-color:var(--zellige);}
-  .menu-icon{font-size:30px;width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;}
-  .menu-card:nth-child(1) .menu-icon{background:#FFE9C2;}
-  .menu-card:nth-child(2) .menu-icon{background:#FBD9CD;}
-  .menu-card:nth-child(3) .menu-icon{background:#CFEFE2;}
-  .menu-card:nth-child(4) .menu-icon{background:#D6E8EA;}
-  .menu-title{font-family:var(--font-display);font-weight:700;font-size:15px;}
-  .menu-desc{font-size:13px;color:#6b6357;line-height:1.35;}
-  .progress-link{
-    display:block;width:100%;background:none;border:1px solid var(--zellige-light);
-    color:var(--zellige);border-radius:12px;padding:10px;font-size:14.5px;font-weight:600;cursor:pointer;
+  .menu-card:active{transform:translateY(3px);box-shadow:0 1px 0 var(--line);}
+  .menu-icon{
+    font-size:26px;width:44px;height:44px;border-radius:var(--r-md);
+    background:rgba(14,79,86,.09);
+    display:flex;align-items:center;justify-content:center;
   }
+  .menu-title{font-family:var(--font-display);font-weight:800;font-size:15.5px;letter-spacing:-.01em;}
+  .menu-desc{font-size:12.5px;color:var(--muted);line-height:1.35;}
   .home-greeting{
     font-family:var(--font-display);font-size:17px;font-weight:700;color:var(--zellige);
     margin-bottom:16px;display:flex;align-items:center;gap:10px;
@@ -341,20 +479,28 @@
   .phrase-item .txt .latin{font-size:13.5px;font-style:italic;color:var(--zellige-light);margin-top:2px;}
   .phrase-item .txt .fr{font-size:13px;color:#7a7266;margin-top:2px;}
   .phrase-item .listen-btn{
-    background:var(--zellige);color:var(--cream);border:none;border-radius:50%;
-    width:38px;height:38px;font-size:16px;cursor:pointer;flex-shrink:0;
+    background:var(--zellige);color:var(--cream);border:none;border-radius:var(--r-sm);
+    width:38px;height:38px;cursor:pointer;flex-shrink:0;
+    display:grid;place-items:center;
+    box-shadow:0 3px 0 var(--zellige-deep);
+    transition:transform .07s ease,box-shadow .07s ease;
   }
+  .phrase-item .listen-btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--zellige-deep);}
   .item-actions{display:flex;gap:8px;flex-shrink:0;}
 
   /* ---------- EXERCICE DE PRONONCIATION ---------- */
   .practice-btn{
-    background:var(--henna);color:#fff;border:none;border-radius:50%;
-    width:38px;height:38px;font-size:16px;cursor:pointer;flex-shrink:0;
-    transition:transform .1s ease;
+    background:var(--henna);color:#fff;border:none;border-radius:var(--r-sm);
+    width:38px;height:38px;cursor:pointer;flex-shrink:0;
+    display:grid;place-items:center;
+    box-shadow:0 3px 0 var(--henna-dark);
+    transition:transform .07s ease,box-shadow .07s ease;
   }
-  .practice-btn:active{transform:scale(0.92);}
-  .practice-btn:disabled{opacity:.6;cursor:progress;}
-  .practice-btn.done{background:var(--palm);}       /* déjà réussi sur ce mot */
+  .practice-btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--henna-dark);}
+  .practice-btn:disabled{opacity:.6;cursor:progress;box-shadow:none;transform:none;}
+  /* déjà réussi sur ce mot : la couleur suffit à le dire */
+  .practice-btn.done{background:var(--palm);box-shadow:0 3px 0 var(--palm-dark);}
+  .practice-btn.done:active{box-shadow:0 1px 0 var(--palm-dark);}
   .practice-btn.recording{
     background:#d92b2b;animation:pulse-rec 1s ease-in-out infinite;
   }
@@ -420,9 +566,14 @@
   .cat-note strong{color:var(--henna-dark);}
   .cat-note-icon{flex-shrink:0;font-size:16px;line-height:1.4;}
   .complete-btn{
-    width:100%;background:var(--palm);color:#fff;border:none;border-radius:12px;
-    padding:12px;font-weight:700;font-size:15px;cursor:pointer;margin-top:10px;
+    width:100%;background:var(--palm);color:#fff;border:none;border-radius:var(--r-lg);
+    padding:14px;font-family:var(--font-display);font-weight:800;font-size:15.5px;
+    cursor:pointer;margin-top:12px;
+    box-shadow:0 var(--edge) 0 var(--palm-dark);
+    transition:transform .07s ease,box-shadow .07s ease;
   }
+  .complete-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--palm-dark);}
+  .complete-btn:disabled{box-shadow:none;transform:none;opacity:.55;cursor:default;}
 
   .quiz-card{
     background:var(--card-bg);border-radius:22px;padding:26px 18px;text-align:center;
@@ -732,6 +883,49 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
+<!-- Famille d'icônes maison : trait 1,9px, grille 24px, la même main partout.
+     Intégrée au document — aucune requête réseau, aucun affichage différé.
+     Les emoji restent employés là où ils sont expressifs (scénarios, badges,
+     avatars, catégories) et non structurels. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <g id="s-flag" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 21V4"/><path d="M6 4.5h11l-2.4 3.6L17 11.7H6"/></g>
+  <g id="s-book" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 6.5C10.5 5 8.6 4.3 5 4.3v13.4c3.6 0 5.5.7 7 2.2"/>
+    <path d="M12 6.5c1.5-1.5 3.4-2.2 7-2.2v13.4c-3.6 0-5.5.7-7 2.2"/><path d="M12 6.5v13.4"/></g>
+  <g id="s-cards" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3.2" y="7" width="12" height="13.5" rx="2.6"/><path d="M8 4.2h8.6a2.6 2.6 0 012.6 2.6v10"/></g>
+  <g id="s-chat" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 6.6A2.6 2.6 0 016.6 4h10.8A2.6 2.6 0 0120 6.6v7.2a2.6 2.6 0 01-2.6 2.6H9.5L4 20.5V6.6z"/>
+    <path d="M8.5 10.2h7M8.5 13.2h4"/></g>
+  <g id="s-bolt" fill="currentColor">
+    <path d="M13.6 2.2a.6.6 0 011.06.52L13.5 9h4.05a.7.7 0 01.55 1.13l-8 10.4a.6.6 0 01-1.06-.5L10.3 14H6.3a.7.7 0 01-.56-1.12l7.86-10.68z"/></g>
+  <g id="s-trophy" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 4h8v4.2a4 4 0 01-8 0V4z"/><path d="M8 5.4H5.6a2 2 0 002.1 3.1M16 5.4h2.4a2 2 0 01-2.1 3.1"/>
+    <path d="M12 12.3V16M8.8 20h6.4M10.4 20v-2.2h3.2V20"/></g>
+  <g id="s-star" fill="currentColor">
+    <path d="M12 3.2l2.55 5.2 5.75.8-4.15 4 1 5.7-5.15-2.9-5.15 2.9 1-5.7-4.15-4 5.75-.8L12 3.2z"/></g>
+  <g id="s-flame" fill="currentColor">
+    <path d="M12.3 2.4c.4 2.6 1.9 3.6 3.3 5.2 1.2 1.4 1.9 3 1.9 4.8a5.5 5.5 0 11-11 0c0-2.1 1-3.6 2.3-4.9-.2 1.7.4 2.6 1.1 2.9.9.3 1.5-.5 1.2-2-.3-1.7-.4-4.2 1.2-6z"/></g>
+  <g id="s-speaker" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.5 9.6h2.6L11.2 6v12l-4.1-3.6H4.5a.9.9 0 01-.9-.9v-3a.9.9 0 01.9-.9z"/>
+    <path d="M14.6 9.4a3.6 3.6 0 010 5.2M17.3 6.9a7.2 7.2 0 010 10.2"/></g>
+  <g id="s-mic" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="9" y="2.8" width="6" height="10.4" rx="3"/>
+    <path d="M5.8 11.2a6.2 6.2 0 0012.4 0M12 17.4V21M9.2 21h5.6"/></g>
+  <g id="s-check" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.2 12.6l5.1 5.1L20 7"/></g>
+  <g id="s-user" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="8.2" r="3.9"/><path d="M4.4 20.6c0-3.7 3.4-5.8 7.6-5.8s7.6 2.1 7.6 5.8"/></g>
+  <g id="s-chev" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9.5 5.5l6.4 6.5-6.4 6.5"/></g>
+  <g id="s-clock" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.8"/><path d="M12 6.8v5.6l3.8 2.1"/></g>
+  <g id="s-sparkle" fill="currentColor">
+    <path d="M12 2.6l1.5 4.2 4.2 1.5-4.2 1.5L12 14l-1.5-4.2L6.3 8.3l4.2-1.5L12 2.6z"/>
+    <path d="M18.4 14.2l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"/></g>
+</defs></svg>
+
 <div class="app">
 
   <header class="top">
@@ -749,34 +943,29 @@
   <!-- SCREEN 0 : accueil / menu principal -->
   <div id="screen-home" style="display:none;">
     <div id="home-greeting" class="home-greeting"></div>
-    <div class="menu-grid">
-      <div class="menu-card" id="menu-guided">
-        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f3af.svg" alt="🎯" style="width:26px;height:26px;"></div>
-        <div class="menu-title">Parcours guidé</div>
-        <div class="menu-desc">Mots de base → quiz → mises en situation, dans l'ordre</div>
-      </div>
-      <div class="menu-card" id="menu-phrasebook">
-        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f5e3.svg" alt="🗣️" style="width:26px;height:26px;"></div>
-        <div class="menu-title">Phrases utiles</div>
-        <div class="menu-desc">Salutations, chiffres, transports, nourriture...</div>
-      </div>
-      <div class="menu-card" id="menu-quiz">
-        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f9e0.svg" alt="🧠" style="width:26px;height:26px;"></div>
-        <div class="menu-title">Quiz images</div>
-        <div class="menu-desc">Devine et prononce ce que tu vois</div>
-      </div>
-      <div class="menu-card" id="menu-games">
-        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/26a1.svg" alt="⚡" style="width:26px;height:26px;"></div>
-        <div class="menu-title">Défis</div>
-        <div class="menu-desc">Quiz chrono, classement, duels entre amis</div>
-      </div>
-      <div class="menu-card" id="menu-scenarios">
-        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f3ac.svg" alt="🎬" style="width:26px;height:26px;"></div>
-        <div class="menu-title">Discussions à la carte</div>
-        <div class="menu-desc">Choisis librement une mise en situation</div>
-      </div>
+    <div id="home-progress"></div>
+    <div class="menu-list">
+      <button class="nav-tile press" id="menu-basics">
+        <span class="nav-ico ni-saf"><svg class="ic"><use href="#s-flag"/></svg></span>
+        <span class="nav-txt"><b>Je débute</b><small>Les sons, 12 mots-clés, ta première phrase</small></span>
+        <span class="nav-tail"><svg class="ic-sm"><use href="#s-chev"/></svg></span>
+      </button>
+      <button class="nav-tile press" id="menu-phrasebook">
+        <span class="nav-ico ni-z"><svg class="ic"><use href="#s-book"/></svg></span>
+        <span class="nav-txt"><b>Phrases utiles</b><small>Salutations, chiffres, transports, nourriture…</small></span>
+        <span class="nav-tail"><svg class="ic-sm"><use href="#s-chev"/></svg></span>
+      </button>
+      <button class="nav-tile press" id="menu-quiz">
+        <span class="nav-ico ni-palm"><svg class="ic"><use href="#s-cards"/></svg></span>
+        <span class="nav-txt"><b>Quiz images</b><small>Devine et prononce ce que tu vois</small></span>
+        <span class="nav-tail"><svg class="ic-sm"><use href="#s-chev"/></svg></span>
+      </button>
+      <button class="nav-tile press" id="menu-scenarios">
+        <span class="nav-ico ni-hen"><svg class="ic"><use href="#s-chat"/></svg></span>
+        <span class="nav-txt"><b>Discussions</b><small>Épicier, taxi, docteur… 15 mises en situation</small></span>
+        <span class="nav-tail"><svg class="ic-sm"><use href="#s-chev"/></svg></span>
+      </button>
     </div>
-    <button class="progress-link" id="menu-progress"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f6e3.svg" alt="🛣️" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"> Voir mon parcours</button>
   </div>
 
   <!-- SCREEN 1 : sélection du scénario (mode libre) -->
@@ -894,6 +1083,15 @@
   </div>
 
 </div>
+
+<!-- Navigation permanente. Masquée pendant une conversation, une partie et
+     l'onboarding : ces trois écrans réclament l'attention entière. -->
+<nav class="tabbar" id="tabbar" aria-label="Navigation principale">
+  <button class="tab" data-tab="home"><svg class="ic-lg"><use href="#s-book"/></svg>Apprendre</button>
+  <button class="tab" data-tab="games"><svg class="ic-lg"><use href="#s-bolt"/></svg>Défis</button>
+  <button class="tab" data-tab="progress"><svg class="ic-lg"><use href="#s-trophy"/></svg>Parcours</button>
+  <button class="tab" data-tab="account"><svg class="ic-lg"><use href="#s-user"/></svg>Compte</button>
+</nav>
 
 <script>
 // ---------------------------------------------------------------
@@ -1361,7 +1559,8 @@ function addPoints(n){
   return total;
 }
 function updatePointsBadge(){
-  document.getElementById('points-badge-header').innerHTML = emojiImg('⭐',15) + ' ' + getPoints();
+  document.getElementById('points-badge-header').innerHTML =
+    '<svg class="ic-sm"><use href="#s-star"/></svg>' + getPoints();
 }
 function getCompleted(){
   try{ return JSON.parse(localStorage.getItem('tkellem_completed') || '[]'); }catch(e){ return []; }
@@ -2097,16 +2296,31 @@ function renderScenarioGrid(){
     grid.appendChild(card);
   });
 }
-renderScenarioGrid();
+
+// Le choix « Enfants » ne filtre pas seulement les scénarios : il agrandit toute
+// l'interface (icônes, boutons, texte) et il est retenu d'une visite à l'autre.
+function applyKidsUi(mode){
+  document.documentElement.classList.toggle('kids-ui', mode === 'kids');
+}
 
 document.querySelectorAll('.mode-btn').forEach(btn=>{
   btn.onclick = ()=>{
     document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     currentGridMode = btn.dataset.mode;
+    localStorage.setItem('tkellem_mode', currentGridMode);
+    applyKidsUi(currentGridMode);
     renderScenarioGrid();
   };
 });
+
+// restauration du mode au chargement
+currentGridMode = localStorage.getItem('tkellem_mode') === 'kids' ? 'kids' : 'standard';
+applyKidsUi(currentGridMode);
+document.querySelectorAll('.mode-btn').forEach(b=>{
+  b.classList.toggle('active', b.dataset.mode === currentGridMode);
+});
+renderScenarioGrid();
 
 // ---------------------------------------------------------------
 // NAVIGATION
@@ -2186,15 +2400,97 @@ function scrollToTop(){ window.scrollTo(0, 0); }
 
 function showScreen(id){
   ALL_SCREENS.forEach(s => document.getElementById(s).style.display = (s === id ? ((s === 'screen-convo' || s === 'screen-onboarding') ? 'flex' : 'block') : 'none'));
-  if(id === 'screen-home') updatePointsBadge();
+  if(id === 'screen-home'){ updatePointsBadge(); renderHomeProgress(); }
+  syncTabbar(id);
   scrollToTop();
 }
 
 document.getElementById('menu-scenarios').onclick = ()=>{ showScreen('screen-select'); renderScenarioGrid(); };
 document.getElementById('menu-phrasebook').onclick = ()=>{ showScreen('screen-phrasebook'); renderPhrasebookCategories(); };
 document.getElementById('menu-quiz').onclick = ()=>{ showScreen('screen-quiz'); startQuiz(); };
-document.getElementById('menu-progress').onclick = ()=>{ showScreen('screen-progress'); renderProgress(); };
-document.getElementById('menu-guided').onclick = ()=>{ showScreen('screen-progress'); renderProgress(true); };
+document.getElementById('menu-basics').onclick = ()=>{ showScreen('screen-basics'); renderBasics(); };
+
+// ---------------------------------------------------------------
+// BARRE D'ONGLETS
+// Le parcours guidé vit désormais dans l'onglet Parcours, et les défis dans
+// le leur : l'accueil n'a plus à porter toute la navigation.
+// ---------------------------------------------------------------
+// Déclarée en fonction et non en const : syncTabbar() peut être appelée par
+// applyAuthGate() dès le démarrage, avant que les const de cette section soient
+// initialisées — une const ici rejouerait l'écran blanc au chargement.
+function tabTarget(name){
+  switch(name){
+    case 'home':     return { screen:'screen-home',     open:()=>{} };
+    case 'games':    return { screen:'screen-games',    open:renderGames };
+    case 'progress': return { screen:'screen-progress', open:()=> renderProgress(true) };
+    case 'account':  return { screen:'screen-account',  open:renderAccount };
+    default:         return null;
+  }
+}
+
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.onclick = ()=>{
+    const t = tabTarget(tab.dataset.tab);
+    if(!t) return;
+    showScreen(t.screen);
+    t.open();
+  };
+});
+
+function syncTabbar(screenId){
+  const bar = document.getElementById('tabbar');
+  if(!bar) return;
+  // écrans qui réclament l'attention entière, plus le portail de connexion :
+  // on ne propose pas de naviguer ailleurs
+  const fullscreen = ['screen-convo','screen-blitz','screen-onboarding'].includes(screenId);
+  const gated = sb && (!currentUser || !currentProfile.display_name);
+  bar.classList.toggle('hidden', fullscreen || gated);
+  document.querySelectorAll('.tab').forEach(tab=>{
+    const t = tabTarget(tab.dataset.tab);
+    tab.classList.toggle('on', !!t && t.screen === screenId);
+  });
+}
+
+// Progression globale : les quatre étapes du parcours guidé, sous forme d'anneau
+function renderHomeProgress(){
+  const el = document.getElementById('home-progress');
+  if(!el) return;
+  const completed = getCompleted();
+  const steps = [
+    isCompleted('basics_done'),
+    CORE_PHRASEBOOK.every(c => completed.includes('phrasebook_' + c.id)),
+    completed.includes('quiz_completed_once'),
+    completed.some(c => c.startsWith('scenario_'))
+  ];
+  const done = steps.filter(Boolean).length;
+  const pct = Math.round(done / steps.length * 100);
+  const circumference = 2 * Math.PI * 16; // r=16 dans le viewBox 40×40
+  const labels = [
+    'Commence par « Je débute »',
+    'Apprends les phrases utiles',
+    'Passe le quiz images',
+    'Lance une vraie conversation',
+    'Parcours terminé — continue à t\'entraîner'
+  ];
+  el.innerHTML = `
+    <button class="home-ring press" id="home-ring-btn">
+      <svg class="ring" viewBox="0 0 40 40" aria-hidden="true">
+        <circle class="bg" cx="20" cy="20" r="16"></circle>
+        <circle class="fg" cx="20" cy="20" r="16"
+          stroke-dasharray="${circumference.toFixed(1)}"
+          stroke-dashoffset="${(circumference * (1 - done / steps.length)).toFixed(1)}"></circle>
+      </svg>
+      <span class="ring-txt">
+        <b>Parcours guidé · ${pct} %</b>
+        <span>${labels[done]}</span>
+      </span>
+      <span class="nav-tail"><svg class="ic-sm"><use href="#s-chev"/></svg></span>
+    </button>`;
+  document.getElementById('home-ring-btn').onclick = ()=>{
+    showScreen('screen-progress');
+    renderProgress(true);
+  };
+}
 
 document.getElementById('back-to-home-1').onclick = ()=> showScreen('screen-home');
 document.getElementById('back-to-home-2').onclick = ()=> showScreen('screen-home');
@@ -2203,7 +2499,6 @@ document.getElementById('back-to-home-4').onclick = ()=> showScreen('screen-home
 document.getElementById('back-to-home-5').onclick = ()=> showScreen('screen-home');
 document.getElementById('back-to-home-6').onclick = ()=> showScreen('screen-home');
 document.getElementById('back-to-home-7').onclick = ()=> showScreen('screen-home');
-document.getElementById('menu-games').onclick = ()=>{ showScreen('screen-games'); renderGames(); };
 
 // Le bandeau du haut (icône + titre) ramène à l'accueil depuis n'importe quel écran
 function goHome(){
@@ -3538,19 +3833,21 @@ function renderPseudoBlock(msg){
 
 function renderGames(){
   document.getElementById('games-body').innerHTML = `
-    <h2 style="font-family:var(--font-display);margin:0 0 14px;">⚡ Défis</h2>
+    <h2 style="font-family:var(--font-display);margin:0 0 14px;display:flex;align-items:center;gap:8px;">
+      <svg class="ic-lg" style="color:var(--henna-dark)"><use href="#s-bolt"/></svg> Défis
+    </h2>
     <div class="game-card" id="game-solo">
-      <div class="game-card-title">Quiz chrono</div>
+      <div class="game-card-title"><svg class="ic-sm" style="color:var(--saffron-dark)"><use href="#s-clock"/></svg> Quiz chrono</div>
       <div class="game-card-desc">${BLITZ_QUESTIONS} questions, ${BLITZ_SECONDS} secondes chacune. Vite et juste.</div>
     </div>
     <div class="game-card duel" id="game-duel">
-      <div class="game-card-title">Défier un ami</div>
+      <div class="game-card-title"><svg class="ic-sm" style="color:var(--henna-dark)"><use href="#s-bolt"/></svg> Défier un ami</div>
       <div class="game-card-desc">Tu joues, tu envoies le lien, il joue les mêmes questions. Le meilleur score gagne — à égalité, le plus rapide.</div>
     </div>
-    <div class="game-section-title">🏆 Classement</div>
+    <div class="game-section-title"><svg class="ic-sm"><use href="#s-trophy"/></svg> Classement</div>
     <div id="rank-list"><div class="result-label">Chargement…</div></div>
     <div id="pseudo-block"></div>
-    <div class="game-section-title">⚔️ Mes défis</div>
+    <div class="game-section-title"><svg class="ic-sm"><use href="#s-flame"/></svg> Mes défis</div>
     <div id="duel-list"><div class="result-label">Chargement…</div></div>`;
   document.getElementById('game-solo').onclick = ()=> startBlitz(Math.floor(Math.random() * 1e9), null);
   document.getElementById('game-duel').onclick = startDuelFlow;
