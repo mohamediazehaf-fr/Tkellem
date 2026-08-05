@@ -3590,15 +3590,17 @@ async function callAvatarAPI(){
       body: JSON.stringify({
         task: 'chat', // le serveur choisit modèle/effort/cache d'après ce nom — voir server.js
         system: buildSystemPrompt(),
-        messages: [
-          ...history.filter(h=>h.ar).map(h => ({role: h.role === 'avatar' ? 'assistant' : 'user', content: h.ar})),
-          // Préremplissage : en imposant l'accolade ouvrante comme début de sa
-          // réponse, le modèle ne PEUT plus répondre en prose. C'est nécessaire
-          // parce que l'historique qu'on lui renvoie ne contient que le darija et
-          // pas le JSON : au bout de quelques tours il imitait son propre historique
-          // et abandonnait le format demandé.
-          { role: 'assistant', content: '{' }
-        ]
+        // Les tours de l'avatar sont renvoyés SOUS FORME DE JSON, comme il les a
+        // produits. Auparavant on ne renvoyait que le darija : le modèle voyait donc
+        // dans son propre historique un assistant qui répond en prose, et au bout de
+        // quelques tours il imitait ce motif au lieu de suivre le prompt système.
+        // (Le préremplissage assistant serait plus direct, mais ce modèle le refuse.)
+        messages: history.filter(h=>h.ar).map(h => h.role === 'avatar'
+          ? { role:'assistant', content: JSON.stringify({
+              darija_ar: h.ar, darija_latin: h.latin || '', french: h.fr || '',
+              feedback: null, feedback_phrase: null
+            }) }
+          : { role:'user', content: h.ar })
       })
     });
     const data = await response.json();
@@ -3619,12 +3621,10 @@ async function callAvatarAPI(){
     });
     const raw = data.content.map(b => b.text || '').join('').trim();
     console.log('Réponse brute de l\'API :', raw);
-    // L'API ne renvoie pas l'accolade préremplie : on la remet avant de parser.
-    const candidate = raw.startsWith('{') ? raw : '{' + raw;
-    const jsonMatch = candidate.match(/\{[\s\S]*\}/);
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
     let parsed;
     try{
-      parsed = JSON.parse(jsonMatch ? jsonMatch[0] : candidate);
+      parsed = JSON.parse(jsonMatch ? jsonMatch[0] : raw);
     }catch(parseErr){
       // Dégradation douce : plutôt qu'une erreur technique en pleine conversation,
       // on affiche le darija tel quel. L'apprenant perd la translittération et la
