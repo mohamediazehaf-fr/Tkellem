@@ -2930,6 +2930,71 @@ function setAudioLoading(btn, loading){
   }
 }
 
+// ---------------------------------------------------------------
+// TROIS NIVEAUX DE CACHE AVANT DE PAYER UNE GÉNÉRATION
+//   1. mémoire      — la phrase vient d'être jouée
+//   2. CacheStorage — déjà jouée lors d'une visite précédente, survit au rechargement
+//   3. Supabase     — déjà générée par n'importe quel autre utilisateur
+// ElevenLabs n'est appelé qu'en dernier recours, donc une seule fois par phrase
+// pour toute la base d'utilisateurs.
+// ---------------------------------------------------------------
+const AUDIO_CACHE_NAME = 'tkellem-audio-v1';
+let ttsCacheInfo = null; // { base, prefix }, transmis par /api/voices
+
+async function sha1Hex(str){
+  const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Même formule que ttsKey() côté serveur, sinon les deux ne se retrouvent pas
+async function ttsCacheUrl(text){
+  if(!ttsCacheInfo || !elevenLabsVoiceId || !window.crypto?.subtle) return null;
+  try{
+    const hex = await sha1Hex(ttsCacheInfo.prefix + '|' + text);
+    return `${ttsCacheInfo.base}/${elevenLabsVoiceId}/${hex}.mp3`;
+  }catch(err){ return null; }
+}
+
+async function readAudioCache(url){
+  if(!('caches' in window)) return null;
+  try{
+    const c = await caches.open(AUDIO_CACHE_NAME);
+    return (await c.match(url)) || null;
+  }catch(err){ return null; }
+}
+
+async function writeAudioCache(url, response){
+  if(!('caches' in window)) return;
+  try{
+    const c = await caches.open(AUDIO_CACHE_NAME);
+    await c.put(url, response);
+  }catch(err){ /* quota plein ou mode privé : sans conséquence */ }
+}
+
+async function fetchSpeechBlob(text){
+  const remote = await ttsCacheUrl(text);
+  if(remote){
+    const stored = await readAudioCache(remote);
+    if(stored) return await stored.blob();
+    try{
+      const res = await fetch(remote); // lecture publique, aucun appel à notre serveur
+      if(res.ok){
+        writeAudioCache(remote, res.clone()); // cloner AVANT de lire le corps
+        return await res.blob();
+      }
+    }catch(err){ /* pas encore en stock : on génère plus bas */ }
+  }
+  const res = await fetch('/api/speak', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ text, voice_id: elevenLabsVoiceId })
+  });
+  if(!res.ok) throw new Error((await res.text()).slice(0, 200));
+  const blob = await res.blob();
+  if(remote) writeAudioCache(remote, new Response(blob, { headers:{ 'Content-Type':'audio/mpeg' } }));
+  return blob;
+}
+
 async function speak(text, latinText, btn){
   setAudioLoading(btn, true);
   try{
@@ -2941,16 +3006,7 @@ async function speak(text, latinText, btn){
         return;
       }
       try{
-        const res = await fetch('/api/speak', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ text, voice_id: elevenLabsVoiceId })
-        });
-        if(!res.ok){
-          const errText = await res.text();
-          throw new Error(errText.slice(0,200));
-        }
-        const blob = await res.blob();
+        const blob = await fetchSpeechBlob(text);
         const url = URL.createObjectURL(blob);
         cacheAudio(key, url);
         await playAudioUrl(url);
@@ -2978,6 +3034,7 @@ async function loadVoices(){
   try{
     const res = await fetch('/api/voices');
     const data = await res.json();
+    ttsCacheInfo = data.tts_cache || null; // où chercher l'audio déjà généré
     if(!data.voices || !data.voices.length){
       status.textContent = 'Voix serveur non configurée — voix du navigateur utilisée';
       status.className = 'voice-status error';

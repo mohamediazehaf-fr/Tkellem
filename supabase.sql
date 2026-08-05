@@ -132,6 +132,32 @@ create index if not exists friendships_addressee_idx on public.friendships (addr
 
 
 -- ============================================================
+-- STOCK D'AUDIO PARTAGÉ — à faire dans l'interface, pas en SQL
+--
+-- Le contenu fixe de l'app (carnet, grammaire, « Je débute ») ne change jamais,
+-- mais il était régénéré par ElevenLabs pour chaque utilisateur et à chaque
+-- rechargement. Avec ce stock, chaque phrase est générée UNE fois pour tous.
+--
+-- 1. Storage → New bucket → nom : tts → cocher « Public bucket » → créer.
+--    Public est nécessaire : le navigateur lit les mp3 en direct, sans passer par
+--    ton serveur. Ça marche même quand Render dort, et ça épargne sa bande passante.
+--
+-- 2. Settings → API → copier la clé « service_role ».
+--
+-- 3. Sur Render, ajouter deux variables d'environnement :
+--       SUPABASE_URL          = https://sirzvmrlbfsunquxlqwi.supabase.co
+--       SUPABASE_SERVICE_KEY  = (la clé service_role)
+--
+--    ATTENTION : la clé service_role contourne toutes les règles RLS. Elle ne doit
+--    JAMAIS être mise dans public/index.html — uniquement en variable Render, lue
+--    par server.js. Si elle fuite, il faut la régénérer immédiatement.
+--
+-- Tant que ces deux variables sont absentes, l'app fonctionne comme avant, sans
+-- stock. Pour désactiver sans les retirer : TKELLEM_TTS_CACHE=off.
+-- ============================================================
+
+
+-- ============================================================
 -- ENVOI D'EMAILS — rien à faire en SQL, mais à savoir
 --
 -- Le service email intégré de Supabase est prévu pour le développement : il

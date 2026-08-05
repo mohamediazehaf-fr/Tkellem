@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const crypto = require('crypto');
 const { Readable } = require('stream');
 
 const app = express();
@@ -94,6 +95,51 @@ function logUsage(task, model, usage){
 const TTS_MODEL = process.env.ELEVENLABS_TTS_MODEL || 'eleven_flash_v2_5';
 
 // ---------------------------------------------------------------
+// STOCK D'AUDIO PARTAGÉ (Supabase Storage)
+// Le contenu fixe de l'app — carnet, grammaire, « Je débute » — ne change jamais,
+// mais était régénéré pour chaque utilisateur et à chaque rechargement. On le
+// génère désormais UNE fois pour tout le monde : le coût de la voix pour ce
+// contenu devient un paiement unique au lieu de croître avec le nombre d'usagers.
+// Inactif tant que SUPABASE_URL et SUPABASE_SERVICE_KEY ne sont pas renseignés :
+// l'app se comporte alors exactement comme avant.
+// ---------------------------------------------------------------
+const SUPABASE_URL = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || '';
+const TTS_BUCKET = process.env.TTS_BUCKET || 'tts';
+const TTS_CACHE = process.env.TKELLEM_TTS_CACHE !== 'off'
+  && !!(SUPABASE_URL && SUPABASE_SERVICE_KEY);
+
+// Le modèle entre dans la clé : changer ELEVENLABS_TTS_MODEL régénère au lieu de
+// servir l'ancienne voix. Le navigateur calcule la même empreinte de son côté.
+function ttsKey(voiceId, text){
+  const hex = crypto.createHash('sha1').update(TTS_MODEL + '|' + text, 'utf8').digest('hex');
+  return `${voiceId}/${hex}.mp3`;
+}
+
+function ttsPublicBase(){
+  return `${SUPABASE_URL}/storage/v1/object/public/${TTS_BUCKET}`;
+}
+
+async function putTtsCache(key, buffer){
+  try{
+    const r = await fetch(`${SUPABASE_URL}/storage/v1/object/${TTS_BUCKET}/${key}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Content-Type': 'audio/mpeg',
+        'x-upsert': 'true',
+        'Cache-Control': 'public, max-age=31536000, immutable'
+      },
+      body: buffer
+    });
+    if(!r.ok) console.warn('Stock audio : dépôt refusé', r.status, (await r.text()).slice(0, 200));
+  }catch(err){
+    console.warn('Stock audio indisponible :', err.message); // jamais bloquant
+  }
+}
+
+// ---------------------------------------------------------------
 // Conversation avec l'avatar (Claude)
 // ---------------------------------------------------------------
 app.post('/api/chat', async (req, res) => {
@@ -137,7 +183,12 @@ app.get('/api/voices', async (req, res) => {
       headers: { 'xi-api-key': ELEVENLABS_API_KEY }
     });
     const data = await r.json();
-    res.json(data);
+    // On profite de cet appel, déjà fait au démarrage, pour dire au navigateur où
+    // chercher l'audio déjà généré. Sans ça il ne peut pas calculer la même clé.
+    res.json({
+      ...data,
+      tts_cache: TTS_CACHE ? { base: ttsPublicBase(), prefix: TTS_MODEL } : null
+    });
   } catch (err) {
     console.error('Erreur /api/voices:', err);
     res.status(500).json({ error: err.message });
@@ -213,9 +264,18 @@ app.post('/api/speak', async (req, res) => {
       console.error('Erreur ElevenLabs:', errText);
       return res.status(r.status).send(errText);
     }
-    // on réémet le flux au lieu de le bufferiser : les deux transferts
-    // (ElevenLabs→serveur et serveur→navigateur) se chevauchent
     res.set('Content-Type', 'audio/mpeg');
+
+    if(TTS_CACHE){
+      // On garde l'audio en mémoire le temps de le renvoyer ET de le déposer dans le
+      // stock partagé. C'est la seule génération que ce texte coûtera, jamais plus.
+      const buffer = Buffer.from(await r.arrayBuffer());
+      res.send(buffer);
+      putTtsCache(ttsKey(voice_id, text), buffer); // en tâche de fond, sans attendre
+      return;
+    }
+
+    // sans stock partagé : on réémet le flux, les deux transferts se chevauchent
     const audioStream = Readable.fromWeb(r.body);
     audioStream.on('error', (err) => {
       console.error('Erreur flux ElevenLabs:', err); // en-têtes déjà envoyés, on coupe
