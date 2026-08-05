@@ -249,6 +249,31 @@
     padding-bottom:calc(var(--tab-h) + 28px);
   }
 
+  /* ------------------------------------------------------------
+     ONGLETS INTERNES DE L'ÉCRAN DÉFIS
+     Une seule section à la fois : empiler jeux, amis, défis et classement
+     donnait une page interminable. Le sélecteur reste collé sous l'en-tête.
+     ------------------------------------------------------------ */
+  .seg-wrap{
+    position:sticky;top:var(--header-h);z-index:40;
+    margin:0 -22px 16px;padding:4px 22px 10px;
+    background:rgba(255,251,244,.94);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  }
+  .seg{display:flex;gap:3px;background:rgba(14,79,86,.07);border-radius:999px;padding:4px;}
+  .seg button{
+    flex:1;min-width:0;background:none;border:0;border-radius:999px;
+    padding:9px 3px;font-family:var(--font-display);font-weight:800;font-size:11.5px;
+    letter-spacing:-.01em;color:var(--muted);cursor:pointer;white-space:nowrap;
+    display:flex;align-items:center;justify-content:center;gap:4px;
+    transition:background .15s ease,color .15s ease;
+  }
+  .seg button.on{
+    background:var(--card-bg);color:var(--zellige);
+    box-shadow:0 1px 3px rgba(14,79,86,.16);
+  }
+  .seg-dot{width:6px;height:6px;border-radius:50%;background:var(--henna);flex:none;}
+
   /* ---------- DÉFIS : accueil du mode jeu ---------- */
   .game-card{
     background:var(--card-bg);border:1.5px solid var(--line);
@@ -1934,6 +1959,42 @@ async function syncToServer(extra){
   }catch(err){ console.warn('Sync vers le serveur impossible :', err); }
 }
 
+// Supabase renvoie ses erreurs en anglais et sans contexte : un utilisateur qui lit
+// « email rate limit exceeded » ne peut rien en faire. On traduit, et surtout on dit
+// quoi faire ensuite.
+function authErrorMessage(error){
+  if(!error) return '';
+  const code = (error.code || '').toLowerCase();
+  const raw = (error.message || '').toLowerCase();
+  const has = (...needles)=> needles.some(n => code.includes(n) || raw.includes(n));
+
+  if(has('email rate limit', 'over_email_send_rate_limit')){
+    return "Trop d'emails ont été envoyés dans la dernière heure (limite de notre hébergeur, pas de ta faute). Réessaie dans une heure — ou dis-le moi, je peux supprimer cette étape.";
+  }
+  if(has('for security purposes', 'over_request_rate_limit', 'too many requests')){
+    return "Trop d'essais rapprochés. Patiente une minute avant de réessayer.";
+  }
+  if(has('already registered', 'user_already_exists')){
+    return "Cette adresse a déjà un compte. Connecte-toi plutôt, ou utilise « Mot de passe oublié ? ».";
+  }
+  if(has('invalid login credentials', 'invalid_credentials')){
+    return "Email ou mot de passe incorrect.";
+  }
+  if(has('email not confirmed', 'email_not_confirmed')){
+    return "Ton adresse n'est pas encore confirmée : regarde ta boîte mail, et pense aux indésirables.";
+  }
+  if(has('weak_password', 'password should be')){
+    return "Mot de passe trop court : 6 caractères minimum.";
+  }
+  if(has('unable to validate email', 'invalid format', 'validation_failed')){
+    return "Cette adresse email n'est pas valide.";
+  }
+  if(has('failed to fetch', 'network')){
+    return "Connexion impossible. Vérifie ton réseau et réessaie.";
+  }
+  return error.message; // inconnu : on montre l'original plutôt que de masquer
+}
+
 async function signUp(email, password){
   const { data, error } = await sb.auth.signUp({ email, password });
   return { data, error };
@@ -2146,7 +2207,7 @@ function renderAccount(){
       if(pwd.length < 6){ msg.className='auth-msg error'; msg.textContent='6 caractères minimum.'; return; }
       const { error } = await changePassword(pwd);
       msg.className = error ? 'auth-msg error' : 'auth-msg success';
-      msg.textContent = error ? error.message : 'Mot de passe mis à jour ✓';
+      msg.textContent = error ? authErrorMessage(error) : 'Mot de passe mis à jour ✓';
     };
     document.getElementById('logout-btn-action').onclick = logOut;
     return;
@@ -2188,7 +2249,7 @@ function renderAccount(){
     const { data, error } = mode === 'signup' ? await signUp(email, password) : await logIn(email, password);
     submitBtn.disabled = false;
     if(error){
-      msg.className = 'auth-msg error'; msg.textContent = error.message;
+      msg.className = 'auth-msg error'; msg.textContent = authErrorMessage(error);
     } else if(mode === 'signup' && data.user && !data.session){
       msg.className = 'auth-msg success'; msg.textContent = 'Compte créé ! Vérifie ta boîte mail pour confirmer ton adresse, puis reviens te connecter.';
     } else {
@@ -2203,7 +2264,7 @@ function renderAccount(){
     if(!email){ msg.className='auth-msg error'; msg.textContent='Renseigne ton email d\'abord.'; return; }
     const { error } = await sendPasswordReset(email);
     msg.className = error ? 'auth-msg error' : 'auth-msg success';
-    msg.textContent = error ? error.message : 'Email de réinitialisation envoyé ✓';
+    msg.textContent = error ? authErrorMessage(error) : 'Email de réinitialisation envoyé ✓';
   };
 }
 
@@ -3818,8 +3879,7 @@ function duelWinner(d){
 async function startDuelFlow(){
   if(!sb || !currentUser){ alert("Connecte-toi pour défier quelqu'un."); return; }
   if(!getPseudo()){
-    renderPseudoBlock("Choisis d'abord un pseudo, il servira à te reconnaître.");
-    document.getElementById('pseudo-block').scrollIntoView({ behavior:'smooth', block:'center' });
+    promptForPseudo("Choisis d'abord un pseudo, il servira à te reconnaître.");
     return;
   }
   try{
@@ -3938,8 +3998,7 @@ function relationWith(userId){
 
 async function sendFriendRequest(userId, pseudo){
   if(!getPseudo()){
-    renderPseudoBlock("Choisis un pseudo avant d'ajouter des amis.");
-    document.getElementById('pseudo-block').scrollIntoView({ behavior:'smooth', block:'center' });
+    promptForPseudo("Choisis un pseudo avant d'ajouter des amis.");
     return;
   }
   try{
@@ -4035,18 +4094,26 @@ function renderFriends(){
 // NOTIFICATIONS — demandes d'amis reçues + défis où c'est à toi de jouer
 // ---------------------------------------------------------------
 async function refreshSocialBadge(){
-  const badge = document.getElementById('tab-badge-games');
-  if(!badge) return;
-  let count = social.incoming.length;
+  social.pendingDuels = 0;
   if(sb && currentUser){
     try{
-      const { data } = await sb.from('duels').select('id')
-        .eq('opponent_id', currentUser.id).is('opponent_score', null);
-      count += (data || []).length;
+      // deux sources : les défis nominatifs qui t'attendent, et les défis ouverts
+      // déjà joués par leur lanceur, donc relevables tout de suite
+      const [mine, open] = await Promise.all([
+        sb.from('duels').select('id').eq('opponent_id', currentUser.id).is('opponent_score', null),
+        sb.from('duels').select('id').is('opponent_id', null).neq('challenger_id', currentUser.id)
+          .not('challenger_score', 'is', null)
+      ]);
+      social.pendingDuels = (mine.data || []).length + (open.data || []).length;
     }catch(err){ /* la pastille n'est pas critique */ }
   }
-  badge.textContent = count > 9 ? '9+' : String(count);
-  badge.hidden = count === 0;
+  const count = social.incoming.length + social.pendingDuels;
+  const badge = document.getElementById('tab-badge-games');
+  if(badge){
+    badge.textContent = count > 9 ? '9+' : String(count);
+    badge.hidden = count === 0;
+  }
+  updateSegDots();
 }
 
 // Recharge l'état social puis tout ce qui en dépend à l'écran
@@ -4059,9 +4126,9 @@ async function refreshSocial(){
 }
 
 async function acceptDuel(duel){
+  if(!duel) return;
   if(!getPseudo()){
-    renderPseudoBlock('Choisis un pseudo avant de relever un défi.');
-    document.getElementById('pseudo-block').scrollIntoView({ behavior:'smooth', block:'center' });
+    promptForPseudo('Choisis un pseudo avant de relever un défi.');
     return;
   }
   startBlitz(duel.seed, duel);
@@ -4197,29 +4264,76 @@ function renderPseudoBlock(msg){
   };
 }
 
+let gamesTab = 'play';
+const GAMES_TABS = [
+  { id:'play',    label:'Jouer' },
+  { id:'duels',   label:'Défis' },
+  { id:'friends', label:'Amis' },
+  { id:'rank',    label:'Classement' }
+];
+
+function setGamesTab(id){ gamesTab = id; renderGames(); }
+
+// Les pastilles dépendent de comptes chargés en asynchrone : on les repose une fois
+// les données arrivées, sans re-rendre l'écran (qui relancerait les chargements).
+function updateSegDots(){
+  const seg = document.getElementById('games-seg');
+  if(!seg) return;
+  const counts = { duels: social.pendingDuels || 0, friends: social.incoming.length };
+  seg.querySelectorAll('[data-seg]').forEach(btn=>{
+    const n = counts[btn.dataset.seg] || 0;
+    const dot = btn.querySelector('.seg-dot');
+    if(n > 0 && !dot) btn.insertAdjacentHTML('beforeend', '<span class="seg-dot"></span>');
+    if(n === 0 && dot) dot.remove();
+  });
+}
+
+// Le pseudo est demandé depuis n'importe quel onglet : on bascule d'abord sur celui
+// qui contient le champ, sinon l'élément n'existe pas et le scroll échoue.
+function promptForPseudo(message){
+  setGamesTab('rank');
+  renderPseudoBlock(message);
+  const el = document.getElementById('pseudo-block');
+  if(el) el.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
 function renderGames(){
+  const sections = {
+    play: `
+      <div class="game-card" id="game-solo">
+        <div class="game-card-title"><svg class="ic-sm" style="color:var(--saffron-dark)"><use href="#s-clock"/></svg> Quiz chrono</div>
+        <div class="game-card-desc">${BLITZ_QUESTIONS} questions, ${BLITZ_SECONDS} secondes chacune. Vite et juste.</div>
+      </div>
+      <div class="game-card duel" id="game-duel">
+        <div class="game-card-title"><svg class="ic-sm" style="color:var(--henna-dark)"><use href="#s-bolt"/></svg> Défi ouvert</div>
+        <div class="game-card-desc">Tu joues, et le premier qui relève ton défi affronte les mêmes questions. Visible par tous les joueurs — ou envoie le lien à qui tu veux.</div>
+      </div>`,
+    duels:   `<div id="duel-list"><div class="result-label">Chargement…</div></div>`,
+    friends: `<div id="friends-list"><div class="result-label">Chargement…</div></div>`,
+    rank:    `<div id="rank-list"><div class="result-label">Chargement…</div></div>
+              <div id="pseudo-block"></div>`
+  };
+
   document.getElementById('games-body').innerHTML = `
-    <h2 style="font-family:var(--font-display);margin:0 0 14px;display:flex;align-items:center;gap:8px;">
+    <h2 style="font-family:var(--font-display);margin:0 0 10px;display:flex;align-items:center;gap:8px;">
       <svg class="ic-lg" style="color:var(--henna-dark)"><use href="#s-bolt"/></svg> Défis
     </h2>
-    <div class="game-card" id="game-solo">
-      <div class="game-card-title"><svg class="ic-sm" style="color:var(--saffron-dark)"><use href="#s-clock"/></svg> Quiz chrono</div>
-      <div class="game-card-desc">${BLITZ_QUESTIONS} questions, ${BLITZ_SECONDS} secondes chacune. Vite et juste.</div>
+    <div class="seg-wrap">
+      <div class="seg" id="games-seg">
+        ${GAMES_TABS.map(t => `<button data-seg="${t.id}" class="${t.id === gamesTab ? 'on' : ''}">${t.label}</button>`).join('')}
+      </div>
     </div>
-    <div class="game-card duel" id="game-duel">
-      <div class="game-card-title"><svg class="ic-sm" style="color:var(--henna-dark)"><use href="#s-bolt"/></svg> Défi ouvert</div>
-      <div class="game-card-desc">Tu joues, et le premier qui relève ton défi affronte les mêmes questions. Visible par tous les joueurs — ou envoie le lien à qui tu veux.</div>
-    </div>
-    <div class="game-section-title"><svg class="ic-sm"><use href="#s-user"/></svg> Mes amis</div>
-    <div id="friends-list"><div class="result-label">Chargement…</div></div>
-    <div class="game-section-title"><svg class="ic-sm"><use href="#s-flame"/></svg> Mes défis</div>
-    <div id="duel-list"><div class="result-label">Chargement…</div></div>
-    <div class="game-section-title"><svg class="ic-sm"><use href="#s-trophy"/></svg> Classement</div>
-    <div id="rank-list"><div class="result-label">Chargement…</div></div>
-    <div id="pseudo-block"></div>`;
-  document.getElementById('game-solo').onclick = ()=> startBlitz(Math.floor(Math.random() * 1e9), null);
-  document.getElementById('game-duel').onclick = startDuelFlow;
-  renderPseudoBlock();
+    ${sections[gamesTab] || sections.play}`;
+
+  document.getElementById('games-seg').querySelectorAll('[data-seg]').forEach(btn=>{
+    btn.onclick = ()=> setGamesTab(btn.dataset.seg);
+  });
+
+  if(gamesTab === 'play'){
+    document.getElementById('game-solo').onclick = ()=> startBlitz(Math.floor(Math.random() * 1e9), null);
+    document.getElementById('game-duel').onclick = startDuelFlow;
+  }
+  if(gamesTab === 'rank') renderPseudoBlock();
   refreshSocial(); // amis d'abord : le classement en a besoin pour ses boutons
 }
 

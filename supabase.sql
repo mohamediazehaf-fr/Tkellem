@@ -132,6 +132,24 @@ create index if not exists friendships_addressee_idx on public.friendships (addr
 
 
 -- ============================================================
+-- ENVOI D'EMAILS — rien à faire en SQL, mais à savoir
+--
+-- Le service email intégré de Supabase est prévu pour le développement : il
+-- plafonne à quelques messages par heure POUR TOUT LE PROJET, pas par personne.
+-- Les inscriptions échouent alors avec « email rate limit exceeded », et les
+-- réinitialisations de mot de passe consomment le même quota.
+--
+-- Deux sorties, dans l'ordre de préférence :
+--   1. Authentication → Emails → SMTP Settings : brancher un fournisseur
+--      (Resend, Brevo, Mailgun…). Le plafond disparaît.
+--   2. Authentication → Sign In / Providers → Email → décocher « Confirm email ».
+--      Plus aucun email à l'inscription, donc plus de limite. Contrepartie : une
+--      adresse mal saisie ne sera jamais détectée, et « mot de passe oublié »
+--      restera inutilisable pour cette personne.
+-- ============================================================
+
+
+-- ============================================================
 -- DEUX LIMITES À CONNAÎTRE, elles sont assumées et pas accidentelles
 --
 -- 1. Les scores sont déclarés par le navigateur. N'importe qui sachant ouvrir
