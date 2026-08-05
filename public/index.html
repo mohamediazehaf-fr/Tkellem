@@ -92,7 +92,35 @@
   #screen-home{padding:24px 22px;flex:1;}
   #screen-select{display:none;padding:24px 22px;flex:1;}
   #screen-select .intro{font-size:15.5px;color:#4c463c;line-height:1.5;margin:6px 0 20px;}
-  #screen-phrasebook, #screen-quiz, #screen-progress, #screen-account{padding:24px 22px;flex:1;}
+  #screen-phrasebook, #screen-quiz, #screen-progress, #screen-account, #screen-basics{padding:24px 22px;flex:1;}
+
+  /* ---------- SCREEN: JE DÉBUTE ---------- */
+  .basics-intro{font-size:15px;line-height:1.55;color:#4c463c;margin:4px 0 20px;}
+  .basics-step{margin-bottom:24px;}
+  .basics-step h3{
+    font-family:var(--font-display);font-size:16.5px;color:var(--zellige);
+    margin:0 0 4px;display:flex;align-items:center;gap:7px;
+  }
+  .basics-step .why{font-size:13.5px;color:#7a7266;margin:0 0 12px;line-height:1.45;}
+  .sound-item{
+    display:flex;align-items:center;gap:12px;
+    background:var(--card-bg);border:1px solid rgba(22,75,84,0.10);border-radius:12px;
+    padding:11px 13px;margin-bottom:8px;
+  }
+  .sound-key{
+    flex-shrink:0;min-width:44px;height:44px;padding:0 6px;border-radius:10px;
+    background:var(--zellige);color:var(--cream);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-display);font-weight:800;font-size:17px;
+  }
+  .sound-txt{flex:1;min-width:0;}
+  .sound-desc{font-size:14px;line-height:1.4;}
+  .sound-ex{font-size:13px;color:var(--zellige-light);margin-top:4px;}
+  .sound-ex bdi{font-family:var(--font-arabic);font-size:15.5px;color:var(--ink);}
+  .basics-cta{
+    width:100%;background:var(--zellige);color:var(--cream);border:none;border-radius:12px;
+    padding:13px;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;margin-top:10px;
+  }
 
   .points-badge{
     background:var(--saffron);color:#4a3512;border:none;border-radius:20px;
@@ -653,6 +681,12 @@
     </div>
   </div>
 
+  <!-- SCREEN : je débute (pour ceux qui partent de zéro) -->
+  <div id="screen-basics" style="display:none;">
+    <button class="back-inline" id="back-to-home-6">← Accueil</button>
+    <div id="basics-body"></div>
+  </div>
+
   <!-- SCREEN : quiz images -->
   <div id="screen-quiz" style="display:none;">
     <button class="back-inline" id="back-to-home-3">← Accueil</button>
@@ -961,6 +995,47 @@ Reste toujours ludique et très simple, jamais plus d'un mot nouveau à la fois.
 
 // Uniformise le champ "mode" pour les scénarios qui n'en ont pas encore un (par défaut : standard)
 SCENARIOS.forEach(s => { if(!s.mode) s.mode = 'standard'; });
+
+// ---------------------------------------------------------------
+// JE DÉBUTE — le cran d'avant le carnet de phrases, pour quelqu'un qui part de zéro.
+// Le vrai mur d'un francophone n'est pas le vocabulaire : c'est de lire "3achra" ou
+// "bghit" sans savoir quel son ça représente. On règle ça d'abord, en 9 symboles.
+// Les transcriptions suivent la convention utilisée partout dans l'app (3, kh, gh, h, q).
+// ---------------------------------------------------------------
+const BASICS_SOUNDS = [
+  { key:'3', desc:"Un son qui part du fond de la gorge, en la serrant un peu. Il n'existe pas en français — c'est le plus dépaysant, et le plus courant.", ar:'عافاك', latin:'3afak', fr:"s'il te plaît" },
+  { key:'h', desc:"Un h fortement soufflé, comme quand tu embues tes lunettes. Jamais muet comme le h français.", ar:'حوت', latin:'Hout', fr:'poisson' },
+  { key:'kh', desc:"Le son raclé du fond de la bouche : la jota espagnole, ou le « ch » allemand de Bach.", ar:'خمسة', latin:'Khamsa', fr:'cinq' },
+  { key:'gh', desc:"Le même son que kh, mais avec la voix — proche d'un r parisien bien grasseyé.", ar:'بغيت', latin:'Bghit', fr:'je veux' },
+  { key:'q', desc:"Un k articulé beaucoup plus en arrière, presque avalé.", ar:'قهوة', latin:'Qahwa', fr:'café' },
+  { key:'ch', desc:"Comme le « ch » de chat. Celui-là ne te posera aucun problème.", ar:'شكرا', latin:'Choukran', fr:'merci' },
+  { key:'w', desc:"Se lit « oua », comme dans oui. Et tout seul, « w » veut simplement dire « et ».", ar:'واخا', latin:'Wakha', fr:"d'accord" },
+  { key:'t s d', desc:"Les versions « lourdes » de t, s et d : mêmes lettres, mais prononcées plus sourdes, en gonflant l'arrière de la bouche.", ar:'طاجين', latin:'Tajine', fr:'le tajine' },
+  { key:'7 9', desc:"Tu les verras chez tes amis sur WhatsApp : 7 c'est notre h soufflé, 9 c'est notre q. Même sons, autre habitude d'écriture.", ar:'قريب', latin:'Qrib', fr:'proche' }
+];
+
+// Douze mots choisis pour couvrir saluer / remercier / demander / s'excuser : de quoi
+// survivre à un premier échange sans rien apprendre par cœur.
+const BASICS_WORDS = [
+  {ar:'سلام',latin:'Salam',fr:'Salut'},
+  {ar:'صباح الخير',latin:'Sbah lkhir',fr:'Bonjour (le matin)'},
+  {ar:'بسلامة',latin:'Bslama',fr:'Au revoir'},
+  {ar:'شكرا',latin:'Choukran',fr:'Merci'},
+  {ar:'عافاك',latin:'3afak',fr:"S'il te plaît"},
+  {ar:'واخا',latin:'Wakha',fr:"D'accord"},
+  {ar:'نعم / لا',latin:'Ih / Lla',fr:'Oui / Non'},
+  {ar:'سمح لي',latin:'Smah li',fr:'Pardon, excuse-moi'},
+  {ar:'ما فهمتش',latin:'Ma fhemtch',fr:"Je n'ai pas compris"},
+  {ar:'عاود عافاك',latin:'3awed 3afak',fr:"Répète, s'il te plaît"},
+  {ar:'شحال',latin:'Chhal',fr:'Combien'},
+  {ar:'بغيت',latin:'Bghit',fr:'Je veux'}
+];
+
+const BASICS_SENTENCE = {
+  ar:'سلام، سميتي كريم و أنا من فرنسا',
+  latin:'Salam, smiti Karim w ana men Fransa',
+  fr:"Salut, je m'appelle Karim et je viens de France — mets ton prénom à la place"
+};
 
 // ---------------------------------------------------------------
 // CARNET DE PHRASES
@@ -1950,7 +2025,7 @@ document.getElementById('back-btn').onclick = ()=>{
 // ---------------------------------------------------------------
 // NAVIGATION ENTRE ÉCRANS PRINCIPAUX
 // ---------------------------------------------------------------
-const ALL_SCREENS = ['screen-home','screen-select','screen-convo','screen-phrasebook','screen-quiz','screen-progress','screen-account','screen-onboarding'];
+const ALL_SCREENS = ['screen-home','screen-select','screen-convo','screen-phrasebook','screen-quiz','screen-progress','screen-account','screen-onboarding','screen-basics'];
 function showScreen(id){
   ALL_SCREENS.forEach(s => document.getElementById(s).style.display = (s === id ? ((s === 'screen-convo' || s === 'screen-onboarding') ? 'flex' : 'block') : 'none'));
   if(id === 'screen-home') updatePointsBadge();
@@ -1967,6 +2042,7 @@ document.getElementById('back-to-home-2').onclick = ()=> showScreen('screen-home
 document.getElementById('back-to-home-3').onclick = ()=> showScreen('screen-home');
 document.getElementById('back-to-home-4').onclick = ()=> showScreen('screen-home');
 document.getElementById('back-to-home-5').onclick = ()=> showScreen('screen-home');
+document.getElementById('back-to-home-6').onclick = ()=> showScreen('screen-home');
 
 // Le bandeau du haut (icône + titre) ramène à l'accueil depuis n'importe quel écran
 function goHome(){
@@ -2453,6 +2529,101 @@ function renderPronVerdict(verdict, heard, phrase, progressKey, feedbackEl, retr
   }
 }
 
+// Une ligne de phrase : le texte, l'écoute et l'exercice de prononciation. Partagée par
+// le carnet et « Je débute » — toute nouvelle liste de phrases hérite ainsi du micro.
+function buildPhraseRow(p, progressKey){
+  const item = document.createElement('div');
+  item.className = 'phrase-item';
+  item.innerHTML = `
+    <div class="txt">
+      <div class="ar">${p.ar}</div>
+      <div class="latin">${p.latin}</div>
+      <div class="fr">${p.fr}</div>
+    </div>
+    <div class="item-actions">
+      <button class="listen-btn" title="Écouter">🔊</button>
+      <button class="practice-btn" title="M'exercer à le prononcer">🎤</button>
+    </div>
+    <div class="pron-feedback"></div>`;
+  const listenBtn = item.querySelector('.listen-btn');
+  listenBtn.onclick = ()=> speak(p.ar, p.latin, listenBtn);
+
+  const practiceBtn = item.querySelector('.practice-btn');
+  const feedbackEl = item.querySelector('.pron-feedback');
+  if(isCompleted(progressKey)){
+    practiceBtn.classList.add('done');
+    practiceBtn.title = 'Déjà bien prononcé — tu peux réessayer';
+  }
+  const startPractice = ()=> practicePronunciation(p, progressKey, feedbackEl, practiceBtn, startPractice);
+  practiceBtn.onclick = startPractice;
+  return item;
+}
+
+// ---------------------------------------------------------------
+// ÉCRAN « JE DÉBUTE »
+// Trois étapes, finissables en dix minutes, qui se terminent en conversation réelle :
+// c'est ce plafond de dix minutes qui l'empêche de devenir un cours.
+// ---------------------------------------------------------------
+function renderBasics(){
+  const body = document.getElementById('basics-body');
+  body.innerHTML = `
+    <div class="basics-intro">Tu n'as jamais dit un mot de darija ? Tout ce qu'il te faut est ici, et ça se fait en dix minutes. Rien à apprendre par cœur : tu écoutes, tu répètes, tu vas parler.</div>
+    <div class="basics-step" id="basics-sounds">
+      <h3>${emojiImg('🔤',18)} 1. Lire le darija</h3>
+      <p class="why">Le darija n'a pas d'orthographe latine officielle : on écrit les sons qui manquent au français avec des chiffres et des lettres doubles. Voilà les neuf seuls symboles à reconnaître — le reste se lit comme du français.</p>
+    </div>
+    <div class="basics-step" id="basics-words">
+      <h3>${emojiImg('🗝️',18)} 2. Tes 12 premiers mots</h3>
+      <p class="why">Saluer, remercier, demander, s'excuser : ces douze mots couvrent l'essentiel d'un premier échange. Appuie sur le micro pour t'entraîner à les prononcer.</p>
+    </div>
+    <div class="basics-step" id="basics-sentence">
+      <h3>${emojiImg('💬',18)} 3. Ta première phrase</h3>
+      <p class="why">Assemble ce que tu viens de voir : de quoi te présenter à n'importe qui, tout de suite.</p>
+    </div>
+    <button class="complete-btn" id="basics-complete-btn"></button>
+    <button class="basics-cta" id="basics-go-talk">🛒 Aller l'essayer chez l'épicier</button>`;
+
+  const soundsEl = document.getElementById('basics-sounds');
+  BASICS_SOUNDS.forEach(s=>{
+    const row = document.createElement('div');
+    row.className = 'sound-item';
+    row.innerHTML = `
+      <div class="sound-key">${s.key}</div>
+      <div class="sound-txt">
+        <div class="sound-desc">${s.desc}</div>
+        <div class="sound-ex"><bdi>${s.ar}</bdi> · ${s.latin} — ${s.fr}</div>
+      </div>
+      <button class="listen-btn" title="Écouter">🔊</button>`;
+    const btn = row.querySelector('.listen-btn');
+    btn.onclick = ()=> speak(s.ar, s.latin, btn);
+    soundsEl.appendChild(row);
+  });
+
+  const wordsEl = document.getElementById('basics-words');
+  BASICS_WORDS.forEach((p, i)=> wordsEl.appendChild(buildPhraseRow(p, `pron_basics_${i}`)));
+  document.getElementById('basics-sentence').appendChild(buildPhraseRow(BASICS_SENTENCE, 'pron_basics_phrase'));
+
+  const done = isCompleted('basics_done');
+  const completeBtn = document.getElementById('basics-complete-btn');
+  completeBtn.textContent = done ? '✓ Bases acquises' : "✓ J'ai compris les bases (+15 ⭐)";
+  completeBtn.disabled = done;
+  completeBtn.onclick = ()=>{
+    if(isCompleted('basics_done')) return;
+    markCompleted('basics_done');
+    addPoints(15);
+    fireConfetti();
+    checkNewBadges();
+    renderBasics();
+  };
+
+  document.getElementById('basics-go-talk').onclick = ()=>{
+    const epicier = SCENARIOS.find(s => s.id === 'epicerie');
+    if(!epicier) return;
+    showScreen('screen-convo'); // startScenario ne masque que l'écran de sélection
+    startScenario(epicier);
+  };
+}
+
 let currentPhrasebookCat = null;
 
 function renderPhrasebookCategories(){
@@ -2530,34 +2701,7 @@ function renderPhrasebookLeaf(cat){
     note.innerHTML = `<span class="cat-note-icon">💡</span><div>${cat.note}</div>`;
     list.appendChild(note);
   }
-  cat.phrases.forEach((p, i)=>{
-    const item = document.createElement('div');
-    item.className = 'phrase-item';
-    const progressKey = `pron_${cat.id}_${i}`;
-    item.innerHTML = `
-      <div class="txt">
-        <div class="ar">${p.ar}</div>
-        <div class="latin">${p.latin}</div>
-        <div class="fr">${p.fr}</div>
-      </div>
-      <div class="item-actions">
-        <button class="listen-btn" title="Écouter">🔊</button>
-        <button class="practice-btn" title="M'exercer à le prononcer">🎤</button>
-      </div>
-      <div class="pron-feedback"></div>`;
-    const listenBtn = item.querySelector('.listen-btn');
-    listenBtn.onclick = ()=> speak(p.ar, p.latin, listenBtn);
-
-    const practiceBtn = item.querySelector('.practice-btn');
-    const feedbackEl = item.querySelector('.pron-feedback');
-    if(isCompleted(progressKey)){
-      practiceBtn.classList.add('done');
-      practiceBtn.title = 'Déjà bien prononcé — tu peux réessayer';
-    }
-    const startPractice = ()=> practicePronunciation(p, progressKey, feedbackEl, practiceBtn, startPractice);
-    practiceBtn.onclick = startPractice;
-    list.appendChild(item);
-  });
+  cat.phrases.forEach((p, i)=> list.appendChild(buildPhraseRow(p, `pron_${cat.id}_${i}`)));
   const doneAlready = isCompleted('phrasebook_' + cat.id);
   const completeBtn = document.getElementById('phrasebook-complete-btn');
   completeBtn.textContent = doneAlready ? '✓ Déjà appris' : "✓ J'ai appris ces mots (+10 ⭐)";
@@ -2705,6 +2849,10 @@ function renderProgress(guidedMode){
   if(guidedMode){
     guidedHtml = `
       <h2 style="font-family:var(--font-display);margin-top:0;">🎯 Parcours guidé</h2>
+      <div class="phrase-item" style="cursor:pointer;" id="guided-step-0">
+        <div class="txt"><div class="ar" style="direction:ltr;">0. Je débute ${isCompleted('basics_done') ? '✓' : ''}</div><div class="fr">Les sons, 12 mots-clés, ta première phrase — 10 minutes. À sauter si tu as déjà des bases.</div></div>
+        <div>🌱</div>
+      </div>
       <div class="phrase-item" style="cursor:pointer;" id="guided-step-1">
         <div class="txt"><div class="ar" style="direction:ltr;">1. Mots de base ${step1Done ? '✓' : ''}</div><div class="fr">${phrasebookDone}/${CORE_PHRASEBOOK.length} catégories apprises</div></div>
         <div>📖</div>
@@ -2747,6 +2895,8 @@ function renderProgress(guidedMode){
     </div>`;
 
   if(guidedMode){
+    // étape 0 volontairement non bloquante : un apprenant qui a des bases doit pouvoir l'ignorer
+    document.getElementById('guided-step-0').onclick = ()=>{ showScreen('screen-basics'); renderBasics(); };
     document.getElementById('guided-step-1').onclick = ()=>{ showScreen('screen-phrasebook'); renderPhrasebookCategories(); };
     document.getElementById('guided-step-2').onclick = ()=>{ if(step1Done){ showScreen('screen-quiz'); startQuiz(); } };
     document.getElementById('guided-step-3').onclick = ()=>{ if(step2Done){ showScreen('screen-select'); renderScenarioGrid(); } };

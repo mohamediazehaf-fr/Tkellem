@@ -194,6 +194,9 @@ All learning content is plain `const` arrays near the top of the script block �
 - [`QUIZ_ITEMS`](public/index.html#L1075) — 12 emoji→word items (emoji used as illustration to avoid image licensing)
 - [`BADGES`](public/index.html#L1121) — each has a `check(completed, streak)` predicate evaluated against the ids in `tkellem_completed`
 - [`ONBOARDING_SLIDES`](public/index.html#L2554) — shown once, gated by `tkellem_onboarding_done`
+- `BASICS_SOUNDS` / `BASICS_WORDS` / `BASICS_SENTENCE` — the « Je débute » screen, for learners with no base at all. `BASICS_SOUNDS` is the arabizi decoder (`3`, `kh`, `gh`, `h`, `q`…) and is the point of the whole screen: the wall for a francophone beginner is reading `3achra`, not vocabulary. **It documents the convention this app actually uses**, so if a transliteration style ever changes, that table has to change with it. Reached as a non-blocking step 0 of the guided path — deliberately *not* a new home card, and deliberately finishable in ten minutes, which is what keeps it from becoming a course. It ends by launching the épicier scenario.
+
+`buildPhraseRow(phrase, progressKey)` builds the standard listen + practice row and is shared by the phrasebook and « Je débute » — use it for any new phrase list and the pronunciation exercise comes along for free.
 
 The guided path ([`renderProgress(true)`](public/index.html#L2482)) hard-codes a three-step gate: finish every phrasebook category → quiz → free scenarios. Its step conditions read `tkellem_completed` directly, so new content types need matching id prefixes to count.
 
