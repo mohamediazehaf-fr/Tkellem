@@ -2936,7 +2936,7 @@ function setAudioLoading(btn, loading){
 // ferait plus de trafic que ce qu'il mesure. Envoi quand l'app passe en arrière-plan
 // ou tous les dix appels — et jamais bloquant, la mesure ne doit rien casser.
 // ---------------------------------------------------------------
-let usageBatch = { chat_calls:0, input_tokens:0, cache_read:0, output_tokens:0, tts_calls:0, stt_calls:0 };
+let usageBatch = { chat_calls:0, input_tokens:0, cache_read:0, cache_write:0, output_tokens:0, tts_calls:0, stt_calls:0 };
 
 function noteUsage(patch){
   Object.keys(patch).forEach(k => { usageBatch[k] = (usageBatch[k] || 0) + patch[k]; });
@@ -2949,7 +2949,7 @@ async function flushUsage(){
   const total = Object.values(usageBatch).reduce((a, b) => a + b, 0);
   if(!total) return;
   const batch = usageBatch;
-  usageBatch = { chat_calls:0, input_tokens:0, cache_read:0, output_tokens:0, tts_calls:0, stt_calls:0 };
+  usageBatch = { chat_calls:0, input_tokens:0, cache_read:0, cache_write:0, output_tokens:0, tts_calls:0, stt_calls:0 };
   try{
     await sb.from('usage_events').insert({ user_id: currentUser.id, ...batch });
   }catch(err){ /* la mesure n'est pas critique : on n'insiste pas */ }
@@ -3591,10 +3591,14 @@ async function callAvatarAPI(){
     if(!response.ok || !data.content){
       throw new Error(data.error?.message || data.error || 'Le serveur est indisponible.');
     }
+    // Quatre compteurs distincts : input_tokens EXCLUT l'écriture et la lecture de
+    // cache. Oublier cache_creation, c'est sous-estimer le coût des premiers tours,
+    // qui sont facturés 1,25× — c'est là que le cache se paie avant de rapporter.
     noteUsage({
       chat_calls: 1,
       input_tokens: data.usage?.input_tokens || 0,
       cache_read: data.usage?.cache_read_input_tokens || 0,
+      cache_write: data.usage?.cache_creation_input_tokens || 0,
       output_tokens: data.usage?.output_tokens || 0
     });
     const raw = data.content.map(b => b.text || '').join('').trim();

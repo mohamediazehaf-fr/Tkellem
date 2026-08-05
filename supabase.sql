@@ -143,12 +143,16 @@ create table if not exists public.usage_events (
   user_id         uuid not null references auth.users(id) on delete cascade,
   at              timestamptz not null default now(),
   chat_calls      int not null default 0,
-  input_tokens    int not null default 0,
-  cache_read      int not null default 0,
+  input_tokens    int not null default 0,  -- exclut l'écriture ET la lecture de cache
+  cache_read      int not null default 0,  -- facturé 0,1x
+  cache_write     int not null default 0,  -- facturé 1,25x : le cache se paie avant de rapporter
   output_tokens   int not null default 0,
   tts_calls       int not null default 0,  -- générations réelles, cache exclu
   stt_calls       int not null default 0
 );
+
+-- pour les installations créées avant l'ajout de cette colonne
+alter table public.usage_events add column if not exists cache_write int not null default 0;
 
 alter table public.usage_events enable row level security;
 
@@ -167,9 +171,10 @@ create index if not exists usage_events_idx on public.usage_events (user_id, at 
 
 -- ============================================================
 -- LA REQUÊTE QUI DONNE TON COÛT RÉEL
--- À coller dans SQL Editor quand tu veux savoir où tu en es. Les tarifs sont
--- ceux de Sonnet 4.6 (3 $ / 15 $ le million, lecture de cache à 0,1x) — ajuste
--- les trois nombres si tu changes de modèle.
+-- À coller dans SQL Editor quand tu veux savoir où tu en es. Tarifs de Sonnet 4.6 :
+-- 3 $ le million en entrée, 15 $ en sortie, lecture de cache à 0,1x (= 0,30 $) et
+-- écriture de cache à 1,25x (= 3,75 $). Ajuste ces quatre nombres si tu changes
+-- de modèle.
 --
 -- select
 --   u.user_id,
@@ -178,9 +183,11 @@ create index if not exists usage_events_idx on public.usage_events (user_id, at 
 --   sum(u.chat_calls)               as appels_claude,
 --   sum(u.tts_calls)                as generations_voix,
 --   sum(u.stt_calls)                as transcriptions,
+--   sum(u.cache_read)               as tokens_relus_du_cache,
 --   round((
---     sum(u.input_tokens)  * 3.0 / 1000000 +
---     sum(u.cache_read)    * 0.3 / 1000000 +
+--     sum(u.input_tokens)  * 3.00 / 1000000 +
+--     sum(u.cache_write)   * 3.75 / 1000000 +
+--     sum(u.cache_read)    * 0.30 / 1000000 +
 --     sum(u.output_tokens) * 15.0 / 1000000
 --   )::numeric, 4)                  as cout_claude_usd
 -- from public.usage_events u
@@ -188,6 +195,10 @@ create index if not exists usage_events_idx on public.usage_events (user_id, at 
 -- where u.at > now() - interval '30 days'
 -- group by u.user_id, l.pseudo
 -- order by cout_claude_usd desc;
+--
+-- Pour juger si le cache est rentable, compare tokens_relus_du_cache à ce qu'ils
+-- auraient coûté plein tarif : chaque token relu t'a coûté 0,30 $ le million au
+-- lieu de 3,00 $. C'est une économie de 90 % sur cette part.
 --
 -- Le coût ElevenLabs ne s'exprime pas en dollars ici : c'est du crédit. Retiens
 -- que generations_voix compte les VRAIES générations, celles qui n'ont pas été
