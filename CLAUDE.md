@@ -187,6 +187,19 @@ Cap `history` before sending; a scenario arc is 5 steps, so ~20 messages is alre
 - **Don't lower `max_tokens` expecting savings.** Output bills on tokens actually produced, not on the ceiling. `max_tokens: 1000` is a runaway guard; tightening it to ~200 on the utility calls is harmless, doing it on the role-play turn risks truncated JSON — which costs a retry.
 - **Don't switch to `claude-sonnet-5` for cost.** It tokenizes the same text into ~30% more tokens, so at list price ($3/$15) it is a net increase over Sonnet 4.6; the intro pricing that currently offsets that ends 2026-08-31, which is too short a window to design around. Worse, its adaptive thinking is **on** when `thinking` is omitted, which would add reasoning tokens to every turn. It is the right move for *quality* (and unlocks structured outputs, killing the regex parsing), but then pass `thinking: {type: 'disabled'}` explicitly and re-measure everything.
 
+## Games: blitz quiz, leaderboard, duels
+
+**No Claude call anywhere in this module, by design.** Questions are multiple-choice and graded locally — mandatory for a timed game (a network round-trip per answer would kill the rhythm), and free as a side effect. Keep it that way: the moment a question needs LLM grading it stops being a game.
+
+- `getQuestionPool()` aggregates `BASICS_WORDS` + every phrasebook leaf + `QUIZ_ITEMS`, deduped through `normFr()` — which strips articles, because "Le taxi" and "taxi" as two options in the same question is an unanswerable question, not a hard one.
+- `buildQuiz(seed)` is **deterministic** via `seededRandom()` (mulberry32). That is the whole basis of fair duels: both players get the same questions, order and distractors from the same seed. Never introduce `Math.random()` into quiz construction — only into seed *choice*.
+- Scoring is `correct count`, tie-break is total answering time (`performance.now()` accumulated per question). This mirrors the duel rule exactly; don't add a speed bonus to the score or the two stop agreeing.
+- **Duels are asynchronous by share link**, not realtime: the challenger plays, sends a link, the opponent plays the same seed whenever. With a handful of users a realtime lobby would be an empty room.
+
+Supabase side lives in [supabase.sql](supabase.sql) — **the user must run it once**; the app degrades with an explicit "table probably missing" message until then. Two tables: `leaderboard` (public read, own-row write, holds *only* pseudo + best score — `progress` stays private, which is the privacy boundary) and `duels`. Two accepted limits documented in that file: **scores are client-reported and forgeable**, and an unaccepted duel is readable by any authenticated user, not just the link holder. Hardening either one without the other is wasted effort.
+
+`window.history.replaceState` clears the `?duel=` param — write `window.history`, never bare `history`, since the conversation transcript already owns that name at module scope.
+
 ## Adding content
 
 All learning content is plain `const` arrays near the top of the script block — no CMS, no fetch:

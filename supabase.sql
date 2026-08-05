@@ -1,0 +1,101 @@
+-- ============================================================
+-- Tkellem — tables nécessaires au classement et aux défis 1v1
+--
+-- À exécuter UNE FOIS dans Supabase : dashboard → SQL Editor → New query
+-- → coller tout ce fichier → Run. Le script est idempotent : le relancer
+-- ne casse rien.
+--
+-- La table "progress" existante n'est pas touchée : elle reste privée.
+-- Tout ce qui est destiné à être vu des autres utilisateurs vit dans
+-- "leaderboard", et rien d'autre. C'est la frontière de confidentialité.
+-- ============================================================
+
+
+-- ------------------------------------------------------------
+-- 1. Classement
+-- Ne contient QUE le pseudo choisi et le meilleur score. Jamais l'email,
+-- jamais le prénom réel, jamais la photo.
+-- ------------------------------------------------------------
+create table if not exists public.leaderboard (
+  user_id      uuid primary key references auth.users(id) on delete cascade,
+  pseudo       text not null,
+  best_score   int  not null default 0,
+  best_time_ms int  not null default 0,
+  games_played int  not null default 0,
+  updated_at   timestamptz not null default now()
+);
+
+alter table public.leaderboard enable row level security;
+
+drop policy if exists "leaderboard_read" on public.leaderboard;
+create policy "leaderboard_read" on public.leaderboard
+  for select to authenticated using (true);
+
+drop policy if exists "leaderboard_insert_own" on public.leaderboard;
+create policy "leaderboard_insert_own" on public.leaderboard
+  for insert to authenticated with check (auth.uid() = user_id);
+
+drop policy if exists "leaderboard_update_own" on public.leaderboard;
+create policy "leaderboard_update_own" on public.leaderboard
+  for update to authenticated
+  using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+create index if not exists leaderboard_rank_idx
+  on public.leaderboard (best_score desc, best_time_ms asc);
+
+
+-- ------------------------------------------------------------
+-- 2. Défis 1v1 asynchrones
+-- "seed" garantit que les deux adversaires reçoivent exactement les mêmes
+-- questions, dans le même ordre, avec les mêmes propositions.
+-- ------------------------------------------------------------
+create table if not exists public.duels (
+  id                 uuid primary key default gen_random_uuid(),
+  seed               bigint not null,
+  challenger_id      uuid not null references auth.users(id) on delete cascade,
+  challenger_pseudo  text not null,
+  challenger_score   int,
+  challenger_time_ms int,
+  opponent_id        uuid references auth.users(id) on delete cascade,
+  opponent_pseudo    text,
+  opponent_score     int,
+  opponent_time_ms   int,
+  created_at         timestamptz not null default now()
+);
+
+alter table public.duels enable row level security;
+
+-- Lecture : les deux participants, plus tout connecté sur un défi encore libre
+-- (c'est ce qui permet à l'invité d'ouvrir le lien avant d'accepter).
+drop policy if exists "duels_read" on public.duels;
+create policy "duels_read" on public.duels
+  for select to authenticated
+  using (auth.uid() = challenger_id or auth.uid() = opponent_id or opponent_id is null);
+
+drop policy if exists "duels_insert_own" on public.duels;
+create policy "duels_insert_own" on public.duels
+  for insert to authenticated with check (auth.uid() = challenger_id);
+
+-- Mise à jour : le lanceur, l'adversaire déjà inscrit, ou celui qui accepte un défi libre.
+drop policy if exists "duels_update_participants" on public.duels;
+create policy "duels_update_participants" on public.duels
+  for update to authenticated
+  using (auth.uid() = challenger_id or auth.uid() = opponent_id or opponent_id is null);
+
+create index if not exists duels_challenger_idx on public.duels (challenger_id, created_at desc);
+create index if not exists duels_opponent_idx   on public.duels (opponent_id,   created_at desc);
+
+
+-- ============================================================
+-- DEUX LIMITES À CONNAÎTRE, elles sont assumées et pas accidentelles
+--
+-- 1. Les scores sont déclarés par le navigateur. N'importe qui sachant ouvrir
+--    la console peut s'attribuer 10/10. Empêcher ça demanderait de rejouer la
+--    partie côté serveur — hors de proportion pour une app entre proches.
+--
+-- 2. Un défi encore libre est lisible par tout utilisateur connecté, pas
+--    seulement par le destinataire du lien. Concrètement : un inconnu inscrit
+--    pourrait accepter un défi qui ne lui était pas destiné. Pour fermer ça il
+--    faudrait une fonction Postgres "security definer" validant un jeton en
+--    plus de l'identifiant — faisable, mais incohérent avec le point 1.
+-- ============================================================

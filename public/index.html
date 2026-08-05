@@ -99,7 +99,120 @@
   #screen-home{padding:24px 22px;flex:1;}
   #screen-select{display:none;padding:24px 22px;flex:1;}
   #screen-select .intro{font-size:15.5px;color:#4c463c;line-height:1.5;margin:6px 0 20px;}
-  #screen-phrasebook, #screen-quiz, #screen-progress, #screen-account, #screen-basics{padding:24px 22px;flex:1;}
+  #screen-phrasebook, #screen-quiz, #screen-progress, #screen-account, #screen-basics, #screen-games, #screen-blitz{padding:24px 22px;flex:1;}
+
+  /* ---------- DÉFIS : accueil du mode jeu ---------- */
+  .game-card{
+    background:var(--card-bg);border:1px solid rgba(22,75,84,0.10);
+    border-bottom:5px solid var(--saffron-dark);
+    border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;
+    transition:transform .1s ease;
+  }
+  .game-card:active{transform:scale(0.985);}
+  .game-card.duel{border-bottom-color:var(--henna-dark);}
+  .game-card-title{font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--zellige);}
+  .game-card-desc{font-size:13.5px;color:#7a7266;margin-top:3px;line-height:1.4;}
+  .game-section-title{
+    font-family:var(--font-display);font-size:15px;color:var(--zellige);
+    margin:22px 0 10px;
+  }
+  .rank-row{
+    display:flex;align-items:center;gap:11px;
+    background:var(--card-bg);border:1px solid rgba(22,75,84,0.10);border-radius:12px;
+    padding:10px 13px;margin-bottom:7px;font-size:14.5px;
+  }
+  .rank-row.me{border-color:var(--saffron);background:rgba(255,178,56,0.12);}
+  .rank-pos{
+    flex-shrink:0;width:26px;height:26px;border-radius:50%;
+    background:var(--zellige);color:var(--cream);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;
+  }
+  .rank-row:nth-child(1) .rank-pos{background:var(--saffron);color:#4a3512;}
+  .rank-name{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .rank-score{font-family:var(--font-display);font-weight:800;color:var(--zellige);}
+  .rank-time{font-size:12px;color:#8a8272;margin-left:6px;}
+  .pseudo-row{display:flex;gap:8px;margin-top:8px;}
+  .pseudo-row input{
+    flex:1;min-width:0;padding:10px 12px;border-radius:10px;
+    border:1px solid rgba(22,75,84,0.25);font-size:15px;font-family:inherit;
+  }
+  .pseudo-row button{
+    background:var(--zellige);color:var(--cream);border:none;border-radius:10px;
+    padding:10px 14px;font-weight:700;font-size:14px;font-family:inherit;cursor:pointer;
+  }
+  .duel-row{
+    background:var(--card-bg);border:1px solid rgba(22,75,84,0.10);border-radius:12px;
+    padding:11px 13px;margin-bottom:7px;font-size:14px;
+  }
+  .duel-vs{font-weight:700;color:var(--zellige);}
+  .duel-state{font-size:12.5px;color:#8a8272;margin-top:2px;}
+  .duel-state.win{color:var(--palm-dark);font-weight:700;}
+  .duel-state.lose{color:var(--henna-dark);font-weight:700;}
+  .share-box{
+    display:flex;gap:8px;margin-top:10px;
+  }
+  .share-box input{
+    flex:1;min-width:0;padding:9px 11px;border-radius:10px;font-size:13px;
+    border:1px solid rgba(22,75,84,0.25);font-family:inherit;background:#fff;
+  }
+
+  /* ---------- PARTIE EN COURS ---------- */
+  .blitz-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;}
+  .blitz-count{font-size:13.5px;color:#7a7266;font-weight:600;}
+  .blitz-streak{font-family:var(--font-display);font-weight:800;color:var(--henna-dark);font-size:15px;}
+  .blitz-timer{
+    height:8px;border-radius:5px;background:rgba(22,75,84,0.12);
+    overflow:hidden;margin-bottom:22px;
+  }
+  .blitz-timer-fill{
+    height:100%;width:100%;border-radius:5px;
+    background:linear-gradient(90deg,var(--palm),var(--saffron));
+  }
+  .blitz-timer-fill.urgent{background:var(--henna);}
+  .blitz-ask{font-size:13.5px;color:#7a7266;margin-bottom:6px;}
+  .blitz-prompt{
+    font-family:var(--font-display);font-weight:800;font-size:27px;line-height:1.25;
+    color:var(--zellige);margin-bottom:6px;
+  }
+  .blitz-prompt-ar{
+    font-family:var(--font-arabic);font-size:24px;direction:rtl;color:var(--ink);margin-bottom:4px;
+  }
+  .blitz-options{display:flex;flex-direction:column;gap:10px;margin-top:24px;}
+  .blitz-opt{
+    text-align:left;background:var(--card-bg);color:var(--ink);
+    border:1.5px solid rgba(22,75,84,0.18);border-radius:14px;
+    padding:15px 16px;font-size:16.5px;font-family:inherit;font-weight:600;
+    cursor:pointer;transition:transform .08s ease,background .12s ease,border-color .12s ease;
+  }
+  .blitz-opt:active{transform:scale(0.985);}
+  .blitz-opt.good{background:rgba(47,190,143,0.22);border-color:var(--palm);}
+  .blitz-opt.bad{background:rgba(241,99,61,0.18);border-color:var(--henna);}
+  .blitz-opt:disabled{cursor:default;}
+  .blitz-quit{
+    display:block;margin:26px auto 0;background:none;border:none;
+    color:var(--zellige-light);font-size:13px;font-family:inherit;
+    text-decoration:underline;cursor:pointer;
+  }
+
+  /* ---------- ÉCRAN DE RÉSULTAT ---------- */
+  .result-score{
+    font-family:var(--font-display);font-weight:800;font-size:64px;line-height:1;
+    color:var(--zellige);text-align:center;
+  }
+  .result-total{font-size:22px;color:var(--zellige-light);}
+  .result-label{text-align:center;font-size:15px;color:#7a7266;margin-top:6px;}
+  .result-time{text-align:center;font-family:var(--font-display);font-weight:700;font-size:17px;margin-top:14px;}
+  .result-best{text-align:center;font-size:13.5px;color:var(--saffron-dark);font-weight:700;margin-top:4px;}
+  .duel-compare{
+    background:var(--card-bg);border:1px solid rgba(22,75,84,0.10);border-radius:14px;
+    padding:14px;margin-top:20px;
+  }
+  .duel-side{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:15px;}
+  .duel-side.winner{font-weight:800;color:var(--palm-dark);}
+  .duel-verdict{
+    text-align:center;font-family:var(--font-display);font-weight:800;font-size:20px;
+    margin-top:14px;color:var(--zellige);
+  }
 
   /* ---------- SCREEN: JE DÉBUTE ---------- */
   .basics-intro{font-size:15px;line-height:1.55;color:#4c463c;margin:4px 0 20px;}
@@ -652,6 +765,11 @@
         <div class="menu-title">Quiz images</div>
         <div class="menu-desc">Devine et prononce ce que tu vois</div>
       </div>
+      <div class="menu-card" id="menu-games">
+        <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/26a1.svg" alt="⚡" style="width:26px;height:26px;"></div>
+        <div class="menu-title">Défis</div>
+        <div class="menu-desc">Quiz chrono, classement, duels entre amis</div>
+      </div>
       <div class="menu-card" id="menu-scenarios">
         <div class="menu-icon"><img src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/1f3ac.svg" alt="🎬" style="width:26px;height:26px;"></div>
         <div class="menu-title">Discussions à la carte</div>
@@ -691,6 +809,17 @@
       <div id="phrasebook-list"></div>
       <button class="complete-btn" id="phrasebook-complete-btn">✓ J'ai appris ces mots (+10 ⭐)</button>
     </div>
+  </div>
+
+  <!-- SCREEN : défis (quiz chrono, classement, duels) -->
+  <div id="screen-games" style="display:none;">
+    <button class="back-inline" id="back-to-home-7">← Accueil</button>
+    <div id="games-body"></div>
+  </div>
+
+  <!-- SCREEN : partie en cours (chrono) -->
+  <div id="screen-blitz" style="display:none;">
+    <div id="blitz-body"></div>
   </div>
 
   <!-- SCREEN : je débute (pour ceux qui partent de zéro) -->
@@ -1257,6 +1386,7 @@ const BADGES = [
   { id:'b_first_convo', icon:'💬', name:'Premier échange', check:c => c.some(x=>x.startsWith('scenario_')) },
   { id:'b_five_convo', icon:'🗣️', name:'Bavard confirmé', check:c => c.filter(x=>x.startsWith('scenario_')).length >= 5 },
   { id:'b_streak3', icon:'🔥', name:'Série de 3 jours', check:(c,streak) => streak >= 3 },
+  { id:'b_blitz_perfect', icon:'⚡', name:'Sans faute au chrono', check:c => c.includes('blitz_perfect') },
 ];
 
 function getUnlockedBadges(){
@@ -1403,12 +1533,14 @@ async function initAuth(){
   currentUser = session ? session.user : null;
   if(currentUser) await syncFromServer();
   applyAuthGate({ initial:true });
+  checkPendingDuelLink();
 
   sb.auth.onAuthStateChange(async (event, session)=>{
     currentUser = session ? session.user : null;
     if(currentUser) await syncFromServer();
     applyAuthGate(); // pas 'initial' : un simple rafraîchissement de session ne doit
                      // pas ramener l'utilisateur à l'accueil en pleine conversation
+    checkPendingDuelLink(); // le lien peut avoir été ouvert avant de se connecter
   });
 }
 
@@ -2037,7 +2169,7 @@ document.getElementById('back-btn').onclick = ()=>{
 // ---------------------------------------------------------------
 // NAVIGATION ENTRE ÉCRANS PRINCIPAUX
 // ---------------------------------------------------------------
-const ALL_SCREENS = ['screen-home','screen-select','screen-convo','screen-phrasebook','screen-quiz','screen-progress','screen-account','screen-onboarding','screen-basics'];
+const ALL_SCREENS = ['screen-home','screen-select','screen-convo','screen-phrasebook','screen-quiz','screen-progress','screen-account','screen-onboarding','screen-basics','screen-games','screen-blitz'];
 // Le fil d'Ariane se cale juste sous l'en-tête collant : on mesure la hauteur réelle
 // plutôt que de la coder en dur, car les polices web la font varier au chargement.
 function syncHeaderHeight(){
@@ -2070,6 +2202,8 @@ document.getElementById('back-to-home-3').onclick = ()=> showScreen('screen-home
 document.getElementById('back-to-home-4').onclick = ()=> showScreen('screen-home');
 document.getElementById('back-to-home-5').onclick = ()=> showScreen('screen-home');
 document.getElementById('back-to-home-6').onclick = ()=> showScreen('screen-home');
+document.getElementById('back-to-home-7').onclick = ()=> showScreen('screen-home');
+document.getElementById('menu-games').onclick = ()=>{ showScreen('screen-games'); renderGames(); };
 
 // Le bandeau du haut (icône + titre) ramène à l'accueil depuis n'importe quel écran
 function goHome(){
@@ -2930,6 +3064,499 @@ function renderProgress(guidedMode){
     document.getElementById('guided-step-2').onclick = ()=>{ if(step1Done){ showScreen('screen-quiz'); startQuiz(); } };
     document.getElementById('guided-step-3').onclick = ()=>{ if(step2Done){ showScreen('screen-select'); renderScenarioGrid(); } };
   }
+}
+
+// ---------------------------------------------------------------
+// DÉFIS : QUIZ CHRONO, CLASSEMENT, DUELS 1V1
+// Les questions sont à choix multiples et corrigées LOCALEMENT. Ce n'est pas
+// une économie : un aller-retour réseau par réponse tuerait le rythme d'un jeu
+// au chrono. Conséquence heureuse, ce module ne consomme aucun token.
+// ---------------------------------------------------------------
+const BLITZ_QUESTIONS = 10;
+const BLITZ_SECONDS = 10;
+
+// PRNG déterministe (mulberry32) : à seed égal, les deux adversaires d'un duel
+// reçoivent exactement les mêmes questions, dans le même ordre, avec les mêmes
+// propositions. C'est ce qui rend la comparaison des scores honnête.
+function seededRandom(seed){
+  let a = seed >>> 0;
+  return function(){
+    a = (a + 0x6D2B79F5) >>> 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// « Le taxi » et « taxi » désignent la même chose : sans normalisation, les deux
+// pourraient figurer dans les propositions et rendre la question insoluble.
+function normFr(s){
+  return (s || '').toLowerCase().trim()
+    .replace(/^(le |la |les |l'|un |une |des )/, '')
+    .replace(/[()\.!?]/g, '').trim();
+}
+
+let questionPool = null;
+function getQuestionPool(){
+  if(questionPool) return questionPool;
+  const pool = [];
+  const seen = new Set();
+  const add = (p, cat)=>{
+    const key = normFr(p.fr);
+    if(!key || seen.has(key)) return;
+    seen.add(key);
+    pool.push({ ar:p.ar, latin:p.latin, fr:p.fr, cat });
+  };
+  BASICS_WORDS.forEach(p => add(p, 'bases'));
+  PHRASEBOOK_LEAVES.forEach(leaf => leaf.phrases.forEach(p => add(p, leaf.id)));
+  QUIZ_ITEMS.forEach(q => add({ ar:q.ar, latin:q.latin, fr:q.fr }, 'objets'));
+  questionPool = pool;
+  return pool;
+}
+
+function buildQuiz(seed){
+  const rnd = seededRandom(seed);
+  const pool = getQuestionPool();
+  const bag = pool.slice();
+  for(let i = bag.length - 1; i > 0; i--){
+    const j = Math.floor(rnd() * (i + 1));
+    [bag[i], bag[j]] = [bag[j], bag[i]];
+  }
+  return bag.slice(0, BLITZ_QUESTIONS).map((item, idx)=>{
+    const options = [item];
+    const used = new Set([normFr(item.fr)]);
+    let guard = 0;
+    while(options.length < 4 && guard++ < 300){
+      const cand = pool[Math.floor(rnd() * pool.length)];
+      if(used.has(normFr(cand.fr))) continue;
+      used.add(normFr(cand.fr));
+      options.push(cand);
+    }
+    for(let i = options.length - 1; i > 0; i--){
+      const j = Math.floor(rnd() * (i + 1));
+      [options[i], options[j]] = [options[j], options[i]];
+    }
+    return { item, options, answer: options.indexOf(item), askDarija: idx % 2 === 0 };
+  });
+}
+
+// ---------------------------------------------------------------
+// PARTIE EN COURS
+// ---------------------------------------------------------------
+let blitz = null;
+
+function startBlitz(seed, duel){
+  blitz = {
+    seed, duel: duel || null, quiz: buildQuiz(seed),
+    index:0, score:0, streak:0, bestStreak:0,
+    elapsed:0, questionStart:0, timerId:null, locked:false
+  };
+  showScreen('screen-blitz');
+  renderBlitzQuestion();
+}
+
+function clearBlitzTimer(){
+  if(blitz && blitz.timerId){ clearTimeout(blitz.timerId); blitz.timerId = null; }
+}
+
+function renderBlitzQuestion(){
+  const q = blitz.quiz[blitz.index];
+  const prompt = q.askDarija
+    ? `<div class="blitz-prompt">${q.item.fr}</div>`
+    : `<div class="blitz-prompt-ar">${q.item.ar}</div><div class="blitz-prompt">${q.item.latin}</div>`;
+  document.getElementById('blitz-body').innerHTML = `
+    <div class="blitz-top">
+      <div class="blitz-count">Question ${blitz.index + 1} / ${BLITZ_QUESTIONS}</div>
+      <div class="blitz-streak">${blitz.streak >= 2 ? '🔥 ' + blitz.streak : ''}</div>
+    </div>
+    <div class="blitz-timer"><div class="blitz-timer-fill" id="blitz-timer-fill"></div></div>
+    <div class="blitz-ask">${q.askDarija ? 'Comment dit-on…' : 'Que veut dire…'}</div>
+    ${prompt}
+    <div class="blitz-options" id="blitz-options"></div>
+    <button class="blitz-quit" id="blitz-quit">Abandonner la partie</button>`;
+
+  const optsEl = document.getElementById('blitz-options');
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'blitz-opt';
+    btn.textContent = q.askDarija ? opt.latin : opt.fr;
+    btn.onclick = ()=> answerBlitz(i, btn);
+    optsEl.appendChild(btn);
+  });
+  document.getElementById('blitz-quit').onclick = ()=>{
+    clearBlitzTimer();
+    blitz = null;
+    showScreen('screen-games');
+    renderGames();
+  };
+
+  // barre de temps confiée à une transition CSS : plus fluide qu'un rafraîchissement JS
+  const fill = document.getElementById('blitz-timer-fill');
+  fill.style.transition = 'none';
+  fill.style.width = '100%';
+  void fill.offsetWidth; // reflow forcé, sinon la transition ne démarre pas
+  fill.style.transition = `width ${BLITZ_SECONDS}s linear`;
+  fill.style.width = '0%';
+  setTimeout(()=>{ if(blitz && !blitz.locked) fill.classList.add('urgent'); }, (BLITZ_SECONDS - 3) * 1000);
+
+  blitz.locked = false;
+  blitz.questionStart = performance.now();
+  blitz.timerId = setTimeout(()=> answerBlitz(-1, null), BLITZ_SECONDS * 1000);
+}
+
+function answerBlitz(choice, btn){
+  if(!blitz || blitz.locked) return;
+  blitz.locked = true;
+  clearBlitzTimer();
+  const q = blitz.quiz[blitz.index];
+  blitz.elapsed += performance.now() - blitz.questionStart;
+
+  const buttons = [...document.querySelectorAll('.blitz-opt')];
+  buttons.forEach(b => b.disabled = true);
+  if(buttons[q.answer]) buttons[q.answer].classList.add('good');
+  const correct = choice === q.answer;
+  if(correct){
+    blitz.score++;
+    blitz.streak++;
+    blitz.bestStreak = Math.max(blitz.bestStreak, blitz.streak);
+    if(navigator.vibrate) navigator.vibrate(18);
+  } else {
+    blitz.streak = 0;
+    if(btn) btn.classList.add('bad');
+    if(navigator.vibrate) navigator.vibrate([12, 60, 12]);
+  }
+  // on laisse le temps de voir la bonne réponse quand on s'est trompé
+  setTimeout(()=>{
+    if(!blitz) return;
+    blitz.index++;
+    if(blitz.index >= BLITZ_QUESTIONS) finishBlitz();
+    else renderBlitzQuestion();
+  }, correct ? 420 : 950);
+}
+
+function blitzComment(score){
+  if(score === BLITZ_QUESTIONS) return 'Sans faute. Impressionnant !';
+  if(score >= 8) return 'Excellent, tu maîtrises.';
+  if(score >= 6) return 'Bien joué, ça rentre.';
+  if(score >= 4) return 'Ça progresse — encore un tour ?';
+  return 'Les débuts sont rudes, mais ça vient vite.';
+}
+
+async function finishBlitz(){
+  const score = blitz.score;
+  const timeMs = Math.round(blitz.elapsed);
+  const duel = blitz.duel;
+  const bestStreak = blitz.bestStreak;
+  const points = score * 2;
+
+  addPoints(points);
+  if(score === BLITZ_QUESTIONS){ markCompleted('blitz_perfect'); fireConfetti(); }
+  checkNewBadges();
+
+  document.getElementById('blitz-body').innerHTML = `
+    <div class="result-score">${score}<span class="result-total">/${BLITZ_QUESTIONS}</span></div>
+    <div class="result-label">${blitzComment(score)}</div>
+    <div class="result-time">⏱️ ${(timeMs/1000).toFixed(1)} s${bestStreak >= 3 ? ` · 🔥 série de ${bestStreak}` : ''}</div>
+    <div class="result-best">+${points} ⭐</div>
+    <div id="result-extra"></div>
+    <button class="basics-cta" id="blitz-again">🔁 Rejouer</button>
+    <button class="blitz-quit" id="blitz-back">Retour aux défis</button>`;
+  document.getElementById('blitz-again').onclick = ()=> startBlitz(Math.floor(Math.random() * 1e9), null);
+  document.getElementById('blitz-back').onclick = ()=>{ blitz = null; showScreen('screen-games'); renderGames(); };
+
+  const extra = document.getElementById('result-extra');
+  blitz = null;
+  if(duel) await settleDuel(duel, score, timeMs, extra);
+  else await submitScore(score, timeMs, extra);
+}
+
+// ---------------------------------------------------------------
+// PSEUDO — la seule chose de toi que les autres verront
+// ---------------------------------------------------------------
+function getPseudo(){ return localStorage.getItem('tkellem_pseudo') || ''; }
+
+async function savePseudo(pseudo){
+  localStorage.setItem('tkellem_pseudo', pseudo);
+  if(!sb || !currentUser) return;
+  try{
+    await sb.from('leaderboard').upsert({
+      user_id: currentUser.id, pseudo, updated_at: new Date().toISOString()
+    });
+  }catch(err){ console.warn('Pseudo non synchronisé :', err); }
+}
+
+// ---------------------------------------------------------------
+// CLASSEMENT
+// ---------------------------------------------------------------
+async function submitScore(score, timeMs, container){
+  if(!sb || !currentUser){
+    container.innerHTML = `<div class="result-label">Connecte-toi pour apparaître au classement.</div>`;
+    return;
+  }
+  if(!getPseudo()){
+    container.innerHTML = `
+      <div class="game-section-title">Choisis un pseudo pour entrer au classement</div>
+      <div class="pseudo-row">
+        <input type="text" id="pseudo-input" maxlength="18" placeholder="Ton pseudo">
+        <button id="pseudo-save">Valider</button>
+      </div>`;
+    document.getElementById('pseudo-save').onclick = async ()=>{
+      const val = document.getElementById('pseudo-input').value.trim();
+      if(val.length < 2) return;
+      await savePseudo(val);
+      await submitScore(score, timeMs, container);
+    };
+    return;
+  }
+  try{
+    const { data } = await sb.from('leaderboard').select('*').eq('user_id', currentUser.id).maybeSingle();
+    // à score égal, c'est le temps qui départage — même règle que pour les duels
+    const better = !data || score > data.best_score
+      || (score === data.best_score && timeMs < data.best_time_ms);
+    await sb.from('leaderboard').upsert({
+      user_id: currentUser.id,
+      pseudo: getPseudo(),
+      best_score: better ? score : data.best_score,
+      best_time_ms: better ? timeMs : data.best_time_ms,
+      games_played: (data ? data.games_played : 0) + 1,
+      updated_at: new Date().toISOString()
+    });
+    container.innerHTML = better
+      ? `<div class="result-best">🏅 Nouveau record personnel !</div>`
+      : `<div class="result-label">Ton record : ${data.best_score}/${BLITZ_QUESTIONS} en ${(data.best_time_ms/1000).toFixed(1)} s</div>`;
+  }catch(err){
+    console.warn('Classement indisponible :', err);
+    container.innerHTML = `<div class="result-label">Score non envoyé — le classement est injoignable.</div>`;
+  }
+}
+
+async function loadLeaderboard(){
+  const el = document.getElementById('rank-list');
+  if(!el) return;
+  if(!sb || !currentUser){
+    el.innerHTML = `<div class="result-label">Connecte-toi pour voir le classement.</div>`;
+    return;
+  }
+  try{
+    const { data, error } = await sb.from('leaderboard')
+      .select('user_id,pseudo,best_score,best_time_ms')
+      .order('best_score', { ascending:false })
+      .order('best_time_ms', { ascending:true })
+      .limit(20);
+    if(error) throw error;
+    if(!data || !data.length){
+      el.innerHTML = `<div class="result-label">Personne n'a encore joué. À toi l'honneur.</div>`;
+      return;
+    }
+    el.innerHTML = data.map((r, i)=>`
+      <div class="rank-row ${r.user_id === currentUser.id ? 'me' : ''}">
+        <div class="rank-pos">${i + 1}</div>
+        <div class="rank-name">${r.pseudo}</div>
+        <div><span class="rank-score">${r.best_score}/${BLITZ_QUESTIONS}</span><span class="rank-time">${(r.best_time_ms/1000).toFixed(1)} s</span></div>
+      </div>`).join('');
+  }catch(err){
+    console.warn('Classement indisponible :', err);
+    el.innerHTML = `<div class="result-label">Classement indisponible — la table n'existe peut-être pas encore côté Supabase (voir supabase.sql).</div>`;
+  }
+}
+
+// ---------------------------------------------------------------
+// DUELS 1V1 ASYNCHRONES
+// Le lanceur joue d'abord, partage un lien, et l'adversaire joue les mêmes
+// questions quand il veut. Personne n'attend personne.
+// ---------------------------------------------------------------
+function duelLink(id){ return `${location.origin}${location.pathname}?duel=${id}`; }
+
+function duelWinner(d){
+  if(d.challenger_score == null || d.opponent_score == null) return null;
+  if(d.challenger_score !== d.opponent_score){
+    return d.challenger_score > d.opponent_score ? 'challenger' : 'opponent';
+  }
+  if(d.challenger_time_ms === d.opponent_time_ms) return 'draw';
+  return d.challenger_time_ms < d.opponent_time_ms ? 'challenger' : 'opponent';
+}
+
+async function startDuelFlow(){
+  if(!sb || !currentUser){ alert("Connecte-toi pour défier quelqu'un."); return; }
+  if(!getPseudo()){
+    renderPseudoBlock("Choisis d'abord un pseudo, il servira à te reconnaître.");
+    document.getElementById('pseudo-block').scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+  try{
+    const { data, error } = await sb.from('duels').insert({
+      seed: Math.floor(Math.random() * 1e9),
+      challenger_id: currentUser.id,
+      challenger_pseudo: getPseudo()
+    }).select().single();
+    if(error) throw error;
+    startBlitz(data.seed, data);
+  }catch(err){
+    console.warn('Création du défi impossible :', err);
+    alert("Défi impossible à créer — la table 'duels' n'existe peut-être pas encore côté Supabase.");
+  }
+}
+
+async function settleDuel(duel, score, timeMs, container){
+  const iAmChallenger = duel.challenger_id === currentUser.id;
+  const patch = iAmChallenger
+    ? { challenger_score: score, challenger_time_ms: timeMs }
+    : { opponent_id: currentUser.id, opponent_pseudo: getPseudo(), opponent_score: score, opponent_time_ms: timeMs };
+  let fresh = null;
+  try{
+    const { data, error } = await sb.from('duels').update(patch).eq('id', duel.id).select().single();
+    if(error) throw error;
+    fresh = data;
+  }catch(err){ console.warn('Défi non enregistré :', err); }
+  renderDuelOutcome(fresh || { ...duel, ...patch }, container);
+}
+
+function renderDuelOutcome(d, container){
+  const winner = duelWinner(d);
+  if(!winner){
+    const link = duelLink(d.id);
+    container.innerHTML = `
+      <div class="duel-compare">
+        <div class="duel-verdict">Défi lancé !</div>
+        <div class="result-label">Envoie ce lien : ton adversaire joue les mêmes questions, et le résultat s'affiche dès qu'il a terminé.</div>
+        <div class="share-box">
+          <input type="text" id="duel-link" readonly value="${link}">
+          <button id="duel-copy">Copier</button>
+        </div>
+      </div>`;
+    document.getElementById('duel-copy').onclick = async ()=>{
+      const btn = document.getElementById('duel-copy');
+      try{
+        if(navigator.share){ await navigator.share({ title:'Tkellem', text:'Je te défie en darija !', url:link }); return; }
+        await navigator.clipboard.writeText(link);
+        btn.textContent = 'Copié ✓';
+      }catch(err){
+        document.getElementById('duel-link').select(); // repli : à copier à la main
+      }
+    };
+    return;
+  }
+  const me = d.challenger_id === currentUser.id ? 'challenger' : 'opponent';
+  const verdict = winner === 'draw'
+    ? '🤝 Égalité parfaite !'
+    : (winner === me ? '🏆 Tu gagnes !' : '😤 Battu cette fois');
+  container.innerHTML = `
+    <div class="duel-compare">
+      <div class="duel-side ${winner === 'challenger' ? 'winner' : ''}">
+        <span>${d.challenger_pseudo}</span>
+        <span>${d.challenger_score}/${BLITZ_QUESTIONS} · ${(d.challenger_time_ms/1000).toFixed(1)} s</span>
+      </div>
+      <div class="duel-side ${winner === 'opponent' ? 'winner' : ''}">
+        <span>${d.opponent_pseudo}</span>
+        <span>${d.opponent_score}/${BLITZ_QUESTIONS} · ${(d.opponent_time_ms/1000).toFixed(1)} s</span>
+      </div>
+      <div class="duel-verdict">${verdict}</div>
+    </div>`;
+}
+
+async function loadMyDuels(){
+  const el = document.getElementById('duel-list');
+  if(!el) return;
+  if(!sb || !currentUser){
+    el.innerHTML = `<div class="result-label">Connecte-toi pour lancer des défis.</div>`;
+    return;
+  }
+  try{
+    const { data, error } = await sb.from('duels').select('*')
+      .or(`challenger_id.eq.${currentUser.id},opponent_id.eq.${currentUser.id}`)
+      .order('created_at', { ascending:false })
+      .limit(10);
+    if(error) throw error;
+    if(!data || !data.length){
+      el.innerHTML = `<div class="result-label">Aucun défi pour l'instant.</div>`;
+      return;
+    }
+    el.innerHTML = data.map(d=>{
+      const winner = duelWinner(d);
+      const me = d.challenger_id === currentUser.id ? 'challenger' : 'opponent';
+      const other = me === 'challenger' ? (d.opponent_pseudo || 'adversaire en attente') : d.challenger_pseudo;
+      let state = '', cls = '';
+      if(!winner) state = me === 'challenger' ? 'En attente de son tour' : 'À toi de jouer !';
+      else if(winner === 'draw') state = 'Égalité';
+      else if(winner === me){ state = 'Gagné'; cls = 'win'; }
+      else { state = 'Perdu'; cls = 'lose'; }
+      return `<div class="duel-row">
+        <div class="duel-vs">Contre ${other}</div>
+        <div class="duel-state ${cls}">${state}</div>
+      </div>`;
+    }).join('');
+  }catch(err){
+    console.warn('Défis indisponibles :', err);
+    el.innerHTML = `<div class="result-label">Défis indisponibles — la table n'existe peut-être pas encore côté Supabase.</div>`;
+  }
+}
+
+// Un lien de défi ouvert depuis WhatsApp : on le traite après l'authentification
+async function checkPendingDuelLink(){
+  const id = new URLSearchParams(location.search).get('duel');
+  if(!id || !sb || !currentUser) return;
+  try{
+    const { data, error } = await sb.from('duels').select('*').eq('id', id).maybeSingle();
+    // window.history explicitement : `history` est déjà pris par le transcript de conversation
+    window.history.replaceState(null, '', location.pathname); // pas de rejeu au rafraîchissement
+    if(error || !data) return;
+    if(data.challenger_id === currentUser.id || data.opponent_score != null){
+      showScreen('screen-games'); renderGames(); return;
+    }
+    if(!confirm(`${data.challenger_pseudo} te défie sur ${BLITZ_QUESTIONS} questions. On y va ?`)) return;
+    if(!getPseudo()){
+      const val = (prompt('Choisis un pseudo pour ce défi :') || '').trim();
+      if(val.length < 2) return;
+      await savePseudo(val);
+    }
+    startBlitz(data.seed, data);
+  }catch(err){ console.warn('Défi introuvable :', err); }
+}
+
+// ---------------------------------------------------------------
+// ACCUEIL DU MODE DÉFIS
+// ---------------------------------------------------------------
+function renderPseudoBlock(msg){
+  const el = document.getElementById('pseudo-block');
+  if(!el) return;
+  const pseudo = getPseudo();
+  el.innerHTML = `
+    ${msg ? `<div class="result-label" style="color:var(--henna-dark);font-weight:700;">${msg}</div>` : ''}
+    <div class="pseudo-row">
+      <input type="text" id="pseudo-field" maxlength="18" placeholder="Ton pseudo" value="${pseudo}">
+      <button id="pseudo-set">${pseudo ? 'Changer' : 'Valider'}</button>
+    </div>
+    <div class="game-card-desc">Seuls ton pseudo et ton score sont visibles des autres joueurs — ni ton prénom, ni ta photo, ni ton email.</div>`;
+  document.getElementById('pseudo-set').onclick = async ()=>{
+    const val = document.getElementById('pseudo-field').value.trim();
+    if(val.length < 2) return;
+    await savePseudo(val);
+    renderPseudoBlock();
+    loadLeaderboard();
+  };
+}
+
+function renderGames(){
+  document.getElementById('games-body').innerHTML = `
+    <h2 style="font-family:var(--font-display);margin:0 0 14px;">⚡ Défis</h2>
+    <div class="game-card" id="game-solo">
+      <div class="game-card-title">Quiz chrono</div>
+      <div class="game-card-desc">${BLITZ_QUESTIONS} questions, ${BLITZ_SECONDS} secondes chacune. Vite et juste.</div>
+    </div>
+    <div class="game-card duel" id="game-duel">
+      <div class="game-card-title">Défier un ami</div>
+      <div class="game-card-desc">Tu joues, tu envoies le lien, il joue les mêmes questions. Le meilleur score gagne — à égalité, le plus rapide.</div>
+    </div>
+    <div class="game-section-title">🏆 Classement</div>
+    <div id="rank-list"><div class="result-label">Chargement…</div></div>
+    <div id="pseudo-block"></div>
+    <div class="game-section-title">⚔️ Mes défis</div>
+    <div id="duel-list"><div class="result-label">Chargement…</div></div>`;
+  document.getElementById('game-solo').onclick = ()=> startBlitz(Math.floor(Math.random() * 1e9), null);
+  document.getElementById('game-duel').onclick = startDuelFlow;
+  renderPseudoBlock();
+  loadLeaderboard();
+  loadMyDuels();
 }
 
 // ---------------------------------------------------------------
