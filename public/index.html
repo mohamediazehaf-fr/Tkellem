@@ -73,6 +73,14 @@
   .ic{width:22px;height:22px;flex:none;vertical-align:-4px;}
   .ic-lg{width:26px;height:26px;}
   .ic-sm{width:15px;height:15px;vertical-align:-2px;}
+  /* Porte-icône : c'est son contenu que setAudioLoading() échange contre le
+     spinner, pour que le libellé du bouton ne bouge pas d'un pixel. */
+  .btn-ic{display:inline-grid;place-items:center;}
+  /* boutons « icône + libellé » */
+  .bubble .replay, .coach-note .coach-replay, .pron-actions button{
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  header.top.hidden{display:none;} /* partie au chrono : plein écran */
 
   /* ------------------------------------------------------------
      MODE ENFANT — mêmes composants, tout est plus grand et plus franc.
@@ -291,7 +299,10 @@
 
   /* ---------- PARTIE EN COURS ---------- */
   .blitz-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;}
-  .blitz-count{font-size:13.5px;color:#7a7266;font-weight:600;}
+  .blitz-count{
+    font-size:12.5px;color:var(--zellige-light);font-weight:800;
+    text-transform:uppercase;letter-spacing:.07em;
+  }
   .blitz-streak{font-family:var(--font-display);font-weight:800;color:var(--henna-dark);font-size:15px;}
   .blitz-timer{
     height:8px;border-radius:5px;background:rgba(22,75,84,0.12);
@@ -565,11 +576,14 @@
   }
   .cat-note strong{color:var(--henna-dark);}
   .cat-note-icon{flex-shrink:0;font-size:16px;line-height:1.4;}
+  /* Collé au-dessus de la barre d'onglets : sur une catégorie de 13 phrases,
+     il fallait sinon atteindre le bas de la liste pour le trouver. */
   .complete-btn{
+    position:sticky;bottom:calc(var(--tab-h) + 10px);z-index:30;
     width:100%;background:var(--palm);color:#fff;border:none;border-radius:var(--r-lg);
     padding:14px;font-family:var(--font-display);font-weight:800;font-size:15.5px;
     cursor:pointer;margin-top:12px;
-    box-shadow:0 var(--edge) 0 var(--palm-dark);
+    box-shadow:0 var(--edge) 0 var(--palm-dark), 0 -8px 18px rgba(255,251,244,.9);
     transition:transform .07s ease,box-shadow .07s ease;
   }
   .complete-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--palm-dark);}
@@ -921,6 +935,8 @@
     <path d="M9.5 5.5l6.4 6.5-6.4 6.5"/></g>
   <g id="s-clock" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="12" cy="12" r="8.8"/><path d="M12 6.8v5.6l3.8 2.1"/></g>
+  <g id="s-stop" fill="currentColor">
+    <rect x="6.5" y="6.5" width="11" height="11" rx="2.4"/></g>
   <g id="s-sparkle" fill="currentColor">
     <path d="M12 2.6l1.5 4.2 4.2 1.5-4.2 1.5L12 14l-1.5-4.2L6.3 8.3l4.2-1.5L12 2.6z"/>
     <path d="M18.4 14.2l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"/></g>
@@ -943,10 +959,9 @@
   <!-- SCREEN 0 : accueil / menu principal -->
   <div id="screen-home" style="display:none;">
     <div id="home-greeting" class="home-greeting"></div>
-    <div id="home-progress"></div>
     <div class="menu-list">
       <button class="nav-tile press" id="menu-basics">
-        <span class="nav-ico ni-saf"><svg class="ic"><use href="#s-flag"/></svg></span>
+        <span class="nav-ico ni-saf"><svg class="ic"><use href="#s-sparkle"/></svg></span>
         <span class="nav-txt"><b>Je débute</b><small>Les sons, 12 mots-clés, ta première phrase</small></span>
         <span class="nav-tail"><svg class="ic-sm"><use href="#s-chev"/></svg></span>
       </button>
@@ -1013,7 +1028,11 @@
 
   <!-- SCREEN : je débute (pour ceux qui partent de zéro) -->
   <div id="screen-basics" style="display:none;">
-    <button class="back-inline" id="back-to-home-6">← Accueil</button>
+    <nav class="breadcrumb" id="basics-breadcrumb">
+      <button class="crumb" id="basics-crumb-home">Apprendre</button>
+      <span class="crumb-sep">›</span>
+      <span class="crumb current">Je débute</span>
+    </nav>
     <div id="basics-body"></div>
   </div>
 
@@ -1088,8 +1107,8 @@
      l'onboarding : ces trois écrans réclament l'attention entière. -->
 <nav class="tabbar" id="tabbar" aria-label="Navigation principale">
   <button class="tab" data-tab="home"><svg class="ic-lg"><use href="#s-book"/></svg>Apprendre</button>
+  <button class="tab" data-tab="progress"><svg class="ic-lg"><use href="#s-flag"/></svg>Parcours</button>
   <button class="tab" data-tab="games"><svg class="ic-lg"><use href="#s-bolt"/></svg>Défis</button>
-  <button class="tab" data-tab="progress"><svg class="ic-lg"><use href="#s-trophy"/></svg>Parcours</button>
   <button class="tab" data-tab="account"><svg class="ic-lg"><use href="#s-user"/></svg>Compte</button>
 </nav>
 
@@ -2192,17 +2211,19 @@ function playAudioUrl(url){
 // ---------------------------------------------------------------
 const SPINNER_HTML = '<span class="audio-spinner"></span>';
 
+// On ne remplace que le contenu de .btn-ic : le libellé du bouton reste en place,
+// donc aucun saut de mise en page pendant la génération.
 function setAudioLoading(btn, loading){
   if(!btn) return;
+  const slot = btn.querySelector('.btn-ic');
+  if(!slot) return;
   if(loading){
-    if(btn.dataset.audioIdle === undefined) btn.dataset.audioIdle = btn.innerHTML;
-    btn.innerHTML = btn.dataset.audioIdle.includes('🔊')
-      ? btn.dataset.audioIdle.replace('🔊', SPINNER_HTML)
-      : SPINNER_HTML;
+    if(slot.dataset.idle === undefined) slot.dataset.idle = slot.innerHTML;
+    slot.innerHTML = SPINNER_HTML;
     btn.disabled = true; // un double-clic relancerait une génération payante
     btn.classList.add('audio-loading');
-  } else if(btn.dataset.audioIdle !== undefined){
-    btn.innerHTML = btn.dataset.audioIdle;
+  } else if(slot.dataset.idle !== undefined){
+    slot.innerHTML = slot.dataset.idle;
     btn.disabled = false;
     btn.classList.remove('audio-loading');
   }
@@ -2400,7 +2421,9 @@ function scrollToTop(){ window.scrollTo(0, 0); }
 
 function showScreen(id){
   ALL_SCREENS.forEach(s => document.getElementById(s).style.display = (s === id ? ((s === 'screen-convo' || s === 'screen-onboarding') ? 'flex' : 'block') : 'none'));
-  if(id === 'screen-home'){ updatePointsBadge(); renderHomeProgress(); }
+  if(id === 'screen-home') updatePointsBadge();
+  // une partie au chrono se joue sans décor : l'en-tête s'efface aussi
+  document.querySelector('header.top').classList.toggle('hidden', id === 'screen-blitz');
   syncTabbar(id);
   scrollToTop();
 }
@@ -2451,10 +2474,10 @@ function syncTabbar(screenId){
   });
 }
 
-// Progression globale : les quatre étapes du parcours guidé, sous forme d'anneau
-function renderHomeProgress(){
-  const el = document.getElementById('home-progress');
-  if(!el) return;
+// L'anneau de progression vit dans l'onglet Parcours, pas sur l'accueil : le
+// parcours guidé y est déjà détaillé étape par étape, l'avoir aux deux endroits
+// faisait doublon.
+function guidedRingHtml(){
   const completed = getCompleted();
   const steps = [
     isCompleted('basics_done'),
@@ -2463,17 +2486,16 @@ function renderHomeProgress(){
     completed.some(c => c.startsWith('scenario_'))
   ];
   const done = steps.filter(Boolean).length;
-  const pct = Math.round(done / steps.length * 100);
   const circumference = 2 * Math.PI * 16; // r=16 dans le viewBox 40×40
   const labels = [
     'Commence par « Je débute »',
     'Apprends les phrases utiles',
     'Passe le quiz images',
     'Lance une vraie conversation',
-    'Parcours terminé — continue à t\'entraîner'
+    "Parcours terminé — continue à t'entraîner"
   ];
-  el.innerHTML = `
-    <button class="home-ring press" id="home-ring-btn">
+  return `
+    <div class="home-ring" style="cursor:default;">
       <svg class="ring" viewBox="0 0 40 40" aria-hidden="true">
         <circle class="bg" cx="20" cy="20" r="16"></circle>
         <circle class="fg" cx="20" cy="20" r="16"
@@ -2481,15 +2503,10 @@ function renderHomeProgress(){
           stroke-dashoffset="${(circumference * (1 - done / steps.length)).toFixed(1)}"></circle>
       </svg>
       <span class="ring-txt">
-        <b>Parcours guidé · ${pct} %</b>
+        <b>${Math.round(done / steps.length * 100)} % du parcours</b>
         <span>${labels[done]}</span>
       </span>
-      <span class="nav-tail"><svg class="ic-sm"><use href="#s-chev"/></svg></span>
-    </button>`;
-  document.getElementById('home-ring-btn').onclick = ()=>{
-    showScreen('screen-progress');
-    renderProgress(true);
-  };
+    </div>`;
 }
 
 document.getElementById('back-to-home-1').onclick = ()=> showScreen('screen-home');
@@ -2497,7 +2514,7 @@ document.getElementById('back-to-home-2').onclick = ()=> showScreen('screen-home
 document.getElementById('back-to-home-3').onclick = ()=> showScreen('screen-home');
 document.getElementById('back-to-home-4').onclick = ()=> showScreen('screen-home');
 document.getElementById('back-to-home-5').onclick = ()=> showScreen('screen-home');
-document.getElementById('back-to-home-6').onclick = ()=> showScreen('screen-home');
+document.getElementById('basics-crumb-home').onclick = ()=> showScreen('screen-home');
 document.getElementById('back-to-home-7').onclick = ()=> showScreen('screen-home');
 
 // Le bandeau du haut (icône + titre) ramène à l'accueil depuis n'importe quel écran
@@ -2528,7 +2545,7 @@ function addBubble(role, ar, latin, fr){
       <div class="ar">${ar}</div>
       <div class="latin">${latin}</div>
       <div class="fr">${fr}</div>
-      <button class="replay">🔊 Réécouter</button>
+      <button class="replay"><span class="btn-ic"><svg class="ic-sm"><use href="#s-speaker"/></svg></span> Réécouter</button>
     </div>`;
   const replayBtn = b.querySelector('.replay');
   replayBtn.onclick = ()=> speak(ar, latin, replayBtn);
@@ -2542,7 +2559,7 @@ function addCoachNote(message, phrase){
   const d = document.createElement('div');
   d.className = 'coach-note';
   const replayBtn = phrase && phrase.ar
-    ? `<button class="coach-replay">🔊 Écouter la bonne prononciation</button>`
+    ? `<button class="coach-replay"><span class="btn-ic"><svg class="ic-sm"><use href="#s-speaker"/></svg></span> Écouter la bonne prononciation</button>`
     : '';
   d.innerHTML = `<span class="coach-icon">📘</span><div><span>${message}</span>${replayBtn}</div>`;
   if(phrase && phrase.ar){
@@ -2867,9 +2884,10 @@ let pronRecorder = null; // un seul enregistrement à la fois dans toute l'appli
 function setPracticeState(btn, state){
   btn.classList.toggle('recording', state === 'recording');
   btn.disabled = state === 'grading';
-  if(state === 'grading') btn.innerHTML = SPINNER_HTML;
-  else if(state === 'recording') btn.textContent = '⏹';
-  else btn.textContent = '🎤';
+  const slot = btn.querySelector('.btn-ic') || btn;
+  if(state === 'grading') slot.innerHTML = SPINNER_HTML;
+  else if(state === 'recording') slot.innerHTML = '<svg class="ic"><use href="#s-stop"/></svg>';
+  else slot.innerHTML = '<svg class="ic"><use href="#s-mic"/></svg>';
 }
 
 function showPronNote(feedbackEl, cls, text){
@@ -2974,8 +2992,8 @@ function renderPronVerdict(verdict, heard, phrase, progressKey, feedbackEl, retr
       <div class="pron-heard">Entendu : <bdi>${heard}</bdi></div>
       ${earned}
       ${perfect ? '' : `<div class="pron-actions">
-        <button class="pron-listen">🔊 Réécouter le modèle</button>
-        <button class="pron-retry">🎤 Je réessaie</button>
+        <button class="pron-listen"><span class="btn-ic"><svg class="ic-sm"><use href="#s-speaker"/></svg></span> Réécouter le modèle</button>
+        <button class="pron-retry"><svg class="ic-sm"><use href="#s-mic"/></svg> Je réessaie</button>
       </div>`}
     </div>`;
   if(!perfect){
@@ -2997,8 +3015,8 @@ function buildPhraseRow(p, progressKey){
       <div class="fr">${p.fr}</div>
     </div>
     <div class="item-actions">
-      <button class="listen-btn" title="Écouter">🔊</button>
-      <button class="practice-btn" title="M'exercer à le prononcer">🎤</button>
+      <button class="listen-btn" title="Écouter"><span class="btn-ic"><svg class="ic"><use href="#s-speaker"/></svg></span></button>
+      <button class="practice-btn" title="M'exercer à le prononcer"><span class="btn-ic"><svg class="ic"><use href="#s-mic"/></svg></span></button>
     </div>
     <div class="pron-feedback"></div>`;
   const listenBtn = item.querySelector('.listen-btn');
@@ -3049,7 +3067,7 @@ function renderBasics(){
         <div class="sound-desc">${s.desc}</div>
         <div class="sound-ex"><bdi>${s.ar}</bdi> · ${s.latin} — ${s.fr}</div>
       </div>
-      <button class="listen-btn" title="Écouter">🔊</button>`;
+      <button class="listen-btn" title="Écouter"><span class="btn-ic"><svg class="ic"><use href="#s-speaker"/></svg></span></button>`;
     const btn = row.querySelector('.listen-btn');
     btn.onclick = ()=> speak(s.ar, s.latin, btn);
     soundsEl.appendChild(row);
@@ -3215,7 +3233,15 @@ function renderQuizItem(){
   }
   const item = quizOrder[quizIndex];
   body.innerHTML = `
-    <div class="quiz-progress">Question ${quizIndex + 1} / ${quizOrder.length}</div>
+    <div class="blitz-top">
+      <div class="blitz-count">Question ${quizIndex + 1} / ${quizOrder.length}</div>
+      <div class="blitz-streak">${quizScore > 0
+        ? `<svg class="ic-sm"><use href="#s-check"/></svg> ${quizScore}`
+        : ''}</div>
+    </div>
+    <div class="blitz-timer" style="margin-bottom:18px;">
+      <div class="blitz-timer-fill" style="width:${Math.round(quizIndex / quizOrder.length * 100)}%;transition:width .4s ease;"></div>
+    </div>
     <div class="quiz-card">
       <div class="quiz-emoji" id="quiz-emoji-el">${emojiImg(item.emoji,56)}</div>
       <p>Comment dit-on ça en darija ?</p>
@@ -3306,7 +3332,8 @@ function renderProgress(guidedMode){
   let guidedHtml = '';
   if(guidedMode){
     guidedHtml = `
-      <h2 style="font-family:var(--font-display);margin-top:0;">🎯 Parcours guidé</h2>
+      <h2 style="font-family:var(--font-display);margin-top:0;">Parcours guidé</h2>
+      ${guidedRingHtml()}
       <div class="phrase-item" style="cursor:pointer;" id="guided-step-0">
         <div class="txt"><div class="ar" style="direction:ltr;">0. Je débute ${isCompleted('basics_done') ? '✓' : ''}</div><div class="fr">Les sons, 12 mots-clés, ta première phrase — 10 minutes. À sauter si tu as déjà des bases.</div></div>
         <div>🌱</div>
