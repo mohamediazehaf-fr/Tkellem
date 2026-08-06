@@ -287,9 +287,20 @@
     font-family:var(--font-display);font-weight:800;font-size:25px;line-height:1.25;
     color:var(--zellige);margin:6px 0 4px;
   }
-  .review-answer{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);}
-  .review-verdict{display:flex;gap:10px;justify-content:center;margin-top:16px;}
-  .review-verdict .mini-btn{flex:1;max-width:170px;padding:12px;font-size:14px;}
+  .review-input-row{display:flex;gap:8px;margin-top:16px;}
+  .review-input-row input{
+    flex:1;min-width:0;padding:12px 13px;border-radius:var(--r-md);
+    border:1.5px solid var(--line);font-size:16px;font-family:inherit;text-align:center;
+  }
+  .review-answer{
+    margin-top:14px;padding:12px;border-radius:var(--r-md);
+    border:1.5px solid var(--line);
+  }
+  .review-answer.ok{background:rgba(47,190,143,.13);border-color:rgba(47,190,143,.5);}
+  .review-answer.ko{background:rgba(255,178,56,.14);border-color:rgba(255,178,56,.5);}
+  .review-verdict-line{font-weight:800;font-size:14px;margin-bottom:6px;}
+  .review-answer.ok .review-verdict-line{color:var(--palm-dark);}
+  .review-answer.ko .review-verdict-line{color:var(--saffron-dark);}
   /* de quoi ne pas passer sous la barre d'onglets */
   #screen-home, #screen-select, #screen-phrasebook, #screen-quiz,
   #screen-progress, #screen-account, #screen-basics, #screen-games{
@@ -3344,43 +3355,62 @@ function renderScenarioGrid(){
 // interlocuteur ordinaire plutôt qu'un rôle. Rien n'est enregistré côté serveur,
 // le persona est construit dans le navigateur au moment du clic.
 // ---------------------------------------------------------------
-const FREE_TOPICS = ['Le foot', 'Mon travail', 'La cuisine', 'Mes vacances', 'La musique', 'Ma famille', 'Le Maroc', 'Le temps qu\'il fait'];
+// Chaque sujet proposé a sa version darija : sans elle, le mot français se
+// retrouvait au milieu de la phrase arabe — et la voix le lisait tel quel.
+const FREE_TOPICS = [
+  { fr:'Le foot',              ar:'الكورة',   latin:'lkoura' },
+  { fr:'Mon travail',          ar:'الخدمة',   latin:'lkhedma' },
+  { fr:'La cuisine',           ar:'الماكلة',  latin:'lmakla' },
+  { fr:'Mes vacances',         ar:'العطلة',   latin:'l3otla' },
+  { fr:'La musique',           ar:'الموسيقى', latin:'lmousiqa' },
+  { fr:'Ma famille',           ar:'العائلة',  latin:'l3a2ila' },
+  { fr:'Le Maroc',             ar:'المغرب',   latin:'lmaghrib' },
+  { fr:"Le temps qu'il fait",  ar:'الجو',     latin:'jjaw' }
+];
 
-function freeTalkScenario(topic){
+function freeTalkScenario(topicFr, topicAr, topicLatin){
+  // Sujet libre saisi au clavier : on ne sait pas le traduire ici, donc on dit
+  // « ce sujet » en darija plutôt que d'insérer du français dans la phrase.
+  const ar = topicAr || 'هاد الموضوع';
+  const latin = topicLatin || 'had lmawdou3';
   return {
     mode: currentGridMode,
     id: 'libre',
     icon: '🗨️',
     name: 'Discussion libre',
-    role: `On parle de : ${topic}`,
-    desc: topic,
+    role: `On parle de : ${topicFr}`,
+    desc: topicFr,
     persona: `Tu es un Marocain ou une Marocaine de l'âge de l'apprenant, sympathique et curieux, qui discute avec lui de façon informelle. Il n'y a aucun rôle à jouer, aucun décor : vous bavardez simplement.
 
-Le sujet choisi par l'apprenant est : « ${topic} ». Reste sur ce sujet, mais laisse la conversation respirer comme une vraie discussion : réagis à ce qu'il dit, raconte brièvement ton propre point de vue, et relance avec une question ouverte.
+Le sujet choisi par l'apprenant est : « ${topicFr} ». Reste sur ce sujet, mais laisse la conversation respirer comme une vraie discussion : réagis à ce qu'il dit, raconte brièvement ton propre point de vue, et relance avec une question ouverte.
+
+Écris toujours en darija uniquement : ne laisse jamais de mot français dans le champ "darija_ar", même pour un nom de sujet — traduis-le ou contourne-le.
 
 Adapte-toi à son niveau : s'il écrit des phrases très simples, réponds simplement. S'il se débrouille bien, enrichis un peu ton vocabulaire.`,
     opening: {
-      ar: `واخا! نهضرو على ${topic}. أشنو بغيتي تقول ليا؟`,
-      latin: `Wakha! Nehedro 3la ${topic}. Achnou bghiti tqoul liya?`,
-      fr: `D'accord ! Parlons de ${topic}. Qu'est-ce que tu veux me dire ?`
+      ar: `واخا! نهضرو على ${ar}. أشنو بغيتي تقول ليا؟`,
+      latin: `Wakha! Nehedro 3la ${latin}. Achnou bghiti tqoul liya?`,
+      fr: `D'accord ! Parlons de ${topicFr}. Qu'est-ce que tu veux me dire ?`
     }
   };
 }
 
-function startFreeTalk(topic){
-  const clean = (topic || '').trim();
+function startFreeTalk(topicFr, topicAr, topicLatin){
+  const clean = (topicFr || '').trim();
   if(clean.length < 2) return;
   showScreen('screen-convo'); // startScenario ne masque que l'écran de sélection
-  startScenario(freeTalkScenario(clean), true); // toujours neuf : le sujet change
+  startScenario(freeTalkScenario(clean, topicAr, topicLatin), true); // toujours neuf
 }
 
 document.getElementById('free-talk-go').onclick = ()=> startFreeTalk(document.getElementById('free-topic').value);
 document.getElementById('free-topic').addEventListener('keydown', (e)=>{
   if(e.key === 'Enter') startFreeTalk(e.target.value);
 });
-document.getElementById('free-chips').innerHTML = FREE_TOPICS.map(t => `<button data-topic="${t}">${t}</button>`).join('');
+document.getElementById('free-chips').innerHTML =
+  FREE_TOPICS.map((t, i) => `<button data-topic="${i}">${t.fr}</button>`).join('');
 document.getElementById('free-chips').querySelectorAll('[data-topic]').forEach(b=>{
-  b.onclick = ()=> startFreeTalk(b.dataset.topic);
+  const t = FREE_TOPICS[Number(b.dataset.topic)];
+  b.onclick = ()=> startFreeTalk(t.fr, t.ar, t.latin);
 });
 
 // Le choix « Enfants » ne filtre pas seulement les scénarios : il agrandit toute
@@ -5466,6 +5496,44 @@ async function checkPendingDuelLink(){
 // jusqu'ici l'audio était toujours accompagné du texte.
 // ---------------------------------------------------------------
 const REVIEW_SESSION_SIZE = 12;
+
+// Comparaison locale et tolérante : gratuite, instantanée, et assez souple pour ne
+// pas refuser une réponse juste mal orthographiée. Un appel à l'IA par carte
+// coûterait douze appels par jour et par apprenant, pour un gain nul.
+function normAnswer(s){
+  return (s || '').toLowerCase().trim()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '') // accents
+    .replace(/[’'`\-\s.,!?]/g, '');                   // ponctuation et espaces
+}
+
+// distance de Levenshtein, bornée : on tolère d'autant plus que le mot est long
+function editDistance(a, b){
+  const m = a.length, n = b.length;
+  if(!m || !n) return Math.max(m, n);
+  let prev = Array.from({ length: n + 1 }, (_, j) => j);
+  for(let i = 1; i <= m; i++){
+    const cur = [i];
+    for(let j = 1; j <= n; j++){
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i-1] === b[j-1] ? 0 : 1));
+    }
+    prev = cur;
+  }
+  return prev[n];
+}
+
+// Accepte la translittération, l'arabe, et les variantes déclarées
+function answerMatches(input, phrase){
+  const given = normAnswer(input);
+  if(!given) return false;
+  const targets = [phrase.latin, phrase.ar, ...(phrase.alt || [])].filter(Boolean);
+  return targets.some(t=>{
+    const target = normAnswer(t);
+    if(!target) return false;
+    if(given === target) return true;
+    const tolerance = target.length <= 4 ? 0 : target.length <= 8 ? 1 : 2;
+    return editDistance(given, target) <= tolerance;
+  });
+}
 let reviewQueue = [];
 let reviewIndex = 0;
 let reviewScore = 0;
@@ -5509,15 +5577,17 @@ function renderReviewCard(){
     </div>
     <div class="blitz-timer"><div class="blitz-timer-fill" style="width:${Math.round(reviewIndex / reviewQueue.length * 100)}%;transition:width .4s ease;"></div></div>
     <div class="review-card">
-      <div class="blitz-ask">${listening ? 'Écoute, puis dis ce que ça veut dire' : 'Comment dit-on…'}</div>
+      <div class="blitz-ask">${listening ? 'Écoute, puis écris ce que tu entends' : 'Comment dit-on…'}</div>
       ${listening
         ? `<button class="mini-btn" id="review-listen" style="margin:10px 0 4px;">🔊 Réécouter</button>`
         : `<div class="review-prompt">${p.fr}</div>`}
-      <div id="review-answer" class="review-answer" hidden>
-        <div class="reveal-word">${p.ar}</div>
-        <div class="reveal-latin">${p.latin}</div>
-        ${listening ? `<div class="review-prompt" style="font-size:19px;margin-top:8px;">${p.fr}</div>` : ''}
+      <div class="review-input-row">
+        <input type="text" id="review-input" autocomplete="off" autocapitalize="off"
+               placeholder="Écris en lettres latines ou en arabe…">
+        <button class="mini-btn" id="review-check">Valider</button>
       </div>
+      <button class="give-up-btn" id="review-giveup">Je ne trouve pas — montre-moi</button>
+      <div id="review-answer" class="review-answer" hidden></div>
       <div id="review-actions"></div>
     </div>
     <button class="blitz-quit" id="review-quit">Arrêter la séance</button>`;
@@ -5529,21 +5599,38 @@ function renderReviewCard(){
     speak(p.ar, p.latin, lb); // on joue d'emblée : c'est l'énoncé de la question
   }
 
+  const input = document.getElementById('review-input');
+  input.focus();
+  const check = ()=> resolveReviewCard(p, listening, answerMatches(input.value, p), false);
+  document.getElementById('review-check').onclick = check;
+  input.addEventListener('keydown', e => { if(e.key === 'Enter') check(); });
+  document.getElementById('review-giveup').onclick = ()=> resolveReviewCard(p, listening, false, true);
+}
+
+// success décide de la programmation ; gaveUp ne change que le ton du message
+function resolveReviewCard(p, listening, success, gaveUp){
+  const answer = document.getElementById('review-answer');
   const actions = document.getElementById('review-actions');
-  actions.innerHTML = `<button class="basics-cta" id="review-show">Montrer la réponse</button>`;
-  document.getElementById('review-show').onclick = ()=>{
-    document.getElementById('review-answer').hidden = false;
-    if(!listening) speak(p.ar, p.latin);
-    // auto-évaluation : c'est la façon dont fonctionnent tous les systèmes de
-    // répétition espacée, et elle est plus honnête qu'un QCM où l'on devine
-    actions.innerHTML = `
-      <div class="review-verdict">
-        <button class="mini-btn ghost" id="review-hard">Pas vraiment</button>
-        <button class="mini-btn" id="review-easy">Je savais</button>
-      </div>`;
-    document.getElementById('review-hard').onclick = ()=> gradeReview(false);
-    document.getElementById('review-easy').onclick = ()=> gradeReview(true);
-  };
+  document.getElementById('review-input').disabled = true;
+  document.getElementById('review-check').disabled = true;
+  const giveUp = document.getElementById('review-giveup');
+  if(giveUp) giveUp.remove();
+
+  answer.hidden = false;
+  answer.className = 'review-answer ' + (success ? 'ok' : 'ko');
+  answer.innerHTML = `
+    <div class="review-verdict-line">${success
+      ? '✓ Exact'
+      : (gaveUp ? '👀 La voici' : '✗ Pas tout à fait')}</div>
+    <div class="reveal-word">${p.ar}</div>
+    <div class="reveal-latin">${p.latin}</div>
+    ${listening ? `<div class="review-prompt" style="font-size:19px;margin-top:8px;">${p.fr}</div>` : ''}
+    ${p.alt ? `<div class="reveal-alt">on dit aussi ${p.alt.join(', ')}</div>` : ''}`;
+  if(!listening) speak(p.ar, p.latin); // on l'entend, même quand on a trouvé
+
+  actions.innerHTML = `<button class="basics-cta" id="review-next">${
+    reviewIndex + 1 < reviewQueue.length ? 'Suivant →' : 'Terminer'}</button>`;
+  document.getElementById('review-next').onclick = ()=> gradeReview(success);
 }
 
 function gradeReview(success){
