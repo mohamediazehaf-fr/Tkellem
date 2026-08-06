@@ -242,7 +242,31 @@
   #screen-home{padding:24px 22px;flex:1;}
   #screen-select{display:none;padding:24px 22px;flex:1;}
   #screen-select .intro{font-size:15.5px;color:#4c463c;line-height:1.5;margin:6px 0 20px;}
-  #screen-phrasebook, #screen-quiz, #screen-progress, #screen-account, #screen-basics, #screen-games, #screen-blitz{padding:24px 22px;flex:1;}
+  #screen-phrasebook, #screen-quiz, #screen-progress, #screen-account, #screen-basics, #screen-games, #screen-blitz, #screen-review{padding:24px 22px;flex:1;}
+
+  /* ---------- SÉANCE DU JOUR ---------- */
+  .daily-tile{border-color:rgba(255,178,56,.55);background:rgba(255,178,56,.08);margin-bottom:14px;}
+  .daily-done{
+    font-size:13.5px;color:var(--palm-dark);font-weight:700;margin-bottom:14px;
+    display:flex;align-items:center;gap:7px;
+  }
+  .know-strip{
+    background:var(--card-bg);border:1.5px solid var(--line);border-radius:var(--r-md);
+    padding:11px 13px;margin-bottom:14px;
+  }
+  .know-strip b{display:block;font-family:var(--font-display);font-size:15px;color:var(--zellige);}
+  .know-strip span{font-size:12.5px;color:var(--muted);}
+  .review-card{
+    background:var(--card-bg);border:1.5px solid var(--line);border-radius:var(--r-lg);
+    padding:20px 16px;text-align:center;margin-top:18px;
+  }
+  .review-prompt{
+    font-family:var(--font-display);font-weight:800;font-size:25px;line-height:1.25;
+    color:var(--zellige);margin:6px 0 4px;
+  }
+  .review-answer{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);}
+  .review-verdict{display:flex;gap:10px;justify-content:center;margin-top:16px;}
+  .review-verdict .mini-btn{flex:1;max-width:170px;padding:12px;font-size:14px;}
   /* de quoi ne pas passer sous la barre d'onglets */
   #screen-home, #screen-select, #screen-phrasebook, #screen-quiz,
   #screen-progress, #screen-account, #screen-basics, #screen-games{
@@ -585,6 +609,22 @@
     color:var(--zellige);margin:6px 0 16px;
   }
   .drill-opts{display:flex;flex-direction:column;gap:9px;}
+
+  /* « Je ne trouve pas » : discret, jamais en concurrence avec l'action principale,
+     mais toujours là. Rester bloqué sans issue est le moment où l'on ferme l'app. */
+  .give-up-btn{
+    display:block;margin:14px auto 0;background:none;border:none;
+    color:var(--zellige-light);font-size:13.5px;font-family:inherit;font-weight:600;
+    text-decoration:underline;cursor:pointer;padding:6px;
+  }
+  .quiz-feedback.reveal{
+    background:rgba(255,178,56,.14);border:1px solid rgba(255,178,56,.5);
+    border-radius:var(--r-md);padding:14px;color:var(--ink);
+  }
+  .reveal-word{font-family:var(--font-arabic);font-size:26px;direction:rtl;font-weight:700;}
+  .reveal-latin{font-size:17px;font-style:italic;color:var(--zellige);font-weight:700;margin-top:2px;}
+  .reveal-alt{font-size:13px;color:var(--muted);margin-top:3px;}
+  .reveal-tip{font-size:13.5px;color:var(--saffron-dark);margin-top:9px;font-weight:600;}
   .drill-why{font-size:13.5px;line-height:1.45;margin-top:12px;}
   .drill-why.ok{color:var(--palm-dark);}
   .drill-why.ko{color:var(--henna-dark);}
@@ -1125,6 +1165,8 @@
   <!-- SCREEN 0 : accueil / menu principal -->
   <div id="screen-home" style="display:none;">
     <div id="home-greeting" class="home-greeting"></div>
+    <div id="daily-session"></div>
+    <div id="home-know"></div>
     <div class="menu-list">
       <button class="nav-tile press" id="menu-basics">
         <span class="nav-ico ni-saf"><svg class="ic"><use href="#s-sparkle"/></svg></span>
@@ -1196,6 +1238,16 @@
       <div id="phrasebook-drill"></div>
       <div id="phrasebook-next"></div>
     </div>
+  </div>
+
+  <!-- SCREEN : séance du jour (révisions espacées) -->
+  <div id="screen-review" style="display:none;">
+    <nav class="breadcrumb">
+      <button class="crumb" id="review-crumb-home">Apprendre</button>
+      <span class="crumb-sep">›</span>
+      <span class="crumb current">Séance du jour</span>
+    </nav>
+    <div id="review-body"></div>
   </div>
 
   <!-- SCREEN : défis (quiz chrono, classement, duels) -->
@@ -2941,6 +2993,77 @@ function setAudioLoading(btn, loading){
 }
 
 // ---------------------------------------------------------------
+// RÉPÉTITION ESPACÉE
+// Le défaut central du modèle précédent : une catégorie cochée ✓ ne réapparaissait
+// jamais, donc on empilait de l'acquis théorique sans jamais le réactiver.
+// Ici chaque phrase a une « boîte » et une date de réapparition. Réussie, elle
+// s'éloigne ; ratée, elle revient vite. Tout est local : aucun appel, aucun token.
+// ---------------------------------------------------------------
+const SRS_KEY = 'tkellem_srs';
+// intervalles en jours, un par boîte. La dernière vaut deux mois : à ce stade c'est su.
+const SRS_INTERVALS = [1, 2, 4, 8, 16, 32, 60];
+
+function loadSrs(){
+  try{ return JSON.parse(localStorage.getItem(SRS_KEY) || '{}'); }catch(e){ return {}; }
+}
+function saveSrs(data){ localStorage.setItem(SRS_KEY, JSON.stringify(data)); }
+
+function dayNumber(ts){ return Math.floor((ts || Date.now()) / 86400000); }
+
+// Identifiants stables : ils doivent survivre à un ajout de phrase dans la liste,
+// donc on s'appuie sur le texte arabe et non sur la position.
+function phraseId(leafId, phrase){ return leafId + '#' + phrase.ar; }
+function quizItemId(item){ return 'quiz#' + item.ar; }
+
+// Programme une phrase pour la première fois, sans écraser une progression existante
+function seedReview(id){
+  const srs = loadSrs();
+  if(srs[id]) return;
+  srs[id] = { box: 0, due: dayNumber() + 1 };
+  saveSrs(srs);
+}
+
+// success = l'apprenant a su. Sinon la carte redescend et revient dès demain.
+function noteReview(id, success){
+  const srs = loadSrs();
+  const card = srs[id] || { box: 0, due: dayNumber() };
+  card.box = success ? Math.min(card.box + 1, SRS_INTERVALS.length - 1) : 0;
+  card.due = dayNumber() + SRS_INTERVALS[card.box];
+  srs[id] = card;
+  saveSrs(srs);
+}
+
+// Toutes les phrases apprenables, à plat, avec leur identifiant
+function allReviewablePhrases(){
+  const out = [];
+  const walk = (nodes)=> nodes.forEach(n =>
+    n.children ? walk(n.children) : (n.phrases || []).forEach(p =>
+      out.push({ id: phraseId(n.id, p), phrase: p, leafId: n.id })));
+  walk(PHRASEBOOK);
+  walk(GRAMMAR);
+  // Les mots du quiz images aussi : sécher sur « chat » doit le faire revenir dans
+  // la séance, sinon l'échec ne mène nulle part.
+  Object.values(QUIZ_BANKS).forEach(bank => bank.forEach(item =>
+    out.push({ id: quizItemId(item), phrase: item, leafId: 'quiz' })));
+  return out;
+}
+
+// Les cartes dues aujourd'hui, les plus en retard d'abord
+function dueReviews(limit){
+  const srs = loadSrs();
+  const today = dayNumber();
+  return allReviewablePhrases()
+    .filter(r => srs[r.id] && srs[r.id].due <= today)
+    .sort((a, b) => srs[a.id].due - srs[b.id].due)
+    .slice(0, limit || 999);
+}
+
+// Quand une catégorie est validée, ses phrases entrent dans le cycle de révision
+function seedLeafReviews(leaf){
+  (leaf.phrases || []).forEach(p => seedReview(phraseId(leaf.id, p)));
+}
+
+// ---------------------------------------------------------------
 // MESURE DE CONSOMMATION
 // On accumule en mémoire et on envoie par lots : un enregistrement par appel
 // ferait plus de trafic que ce qu'il mesure. Envoi quand l'app passe en arrière-plan
@@ -3272,7 +3395,7 @@ document.getElementById('back-btn').onclick = ()=>{
 // ---------------------------------------------------------------
 // NAVIGATION ENTRE ÉCRANS PRINCIPAUX
 // ---------------------------------------------------------------
-const ALL_SCREENS = ['screen-home','screen-select','screen-convo','screen-phrasebook','screen-quiz','screen-progress','screen-account','screen-onboarding','screen-basics','screen-games','screen-blitz'];
+const ALL_SCREENS = ['screen-home','screen-select','screen-convo','screen-phrasebook','screen-quiz','screen-progress','screen-account','screen-onboarding','screen-basics','screen-games','screen-blitz','screen-review'];
 // Le fil d'Ariane se cale juste sous l'en-tête collant : on mesure la hauteur réelle
 // plutôt que de la coder en dur, car les polices web la font varier au chargement.
 function syncHeaderHeight(){
@@ -3289,7 +3412,7 @@ function scrollToTop(){ window.scrollTo(0, 0); }
 
 function showScreen(id){
   ALL_SCREENS.forEach(s => document.getElementById(s).style.display = (s === id ? ((s === 'screen-convo' || s === 'screen-onboarding') ? 'flex' : 'block') : 'none'));
-  if(id === 'screen-home') updatePointsBadge();
+  if(id === 'screen-home'){ updatePointsBadge(); renderDailySession(); renderKnowledge(); }
   // une partie au chrono et une conversation se jouent sans décor : l'en-tête s'efface
   document.querySelector('header.top').classList.toggle('hidden',
     id === 'screen-blitz' || id === 'screen-convo');
@@ -3385,6 +3508,7 @@ document.getElementById('back-to-home-3').onclick = ()=> showScreen('screen-home
 document.getElementById('back-to-home-4').onclick = ()=> showScreen('screen-home');
 document.getElementById('back-to-home-5').onclick = ()=> showScreen('screen-home');
 document.getElementById('basics-crumb-home').onclick = ()=> showScreen('screen-home');
+document.getElementById('review-crumb-home').onclick = ()=> showScreen('screen-home');
 document.getElementById('back-to-home-7').onclick = ()=> showScreen('screen-home');
 
 // Le bandeau du haut (icône + titre) ramène à l'accueil depuis n'importe quel écran
@@ -4123,6 +4247,7 @@ function runDrill(items, container, opts){
         <div class="blitz-count">Question ${i + 1} / ${items.length}</div>
         <div class="drill-q">${it.q}</div>
         <div class="drill-opts" id="drill-opts"></div>
+        <button class="give-up-btn" id="drill-giveup">Je ne trouve pas — montre-moi</button>
         <div class="drill-why" id="drill-why"></div>
       </div>`;
     const optsEl = document.getElementById('drill-opts');
@@ -4133,19 +4258,23 @@ function runDrill(items, container, opts){
       b.onclick = ()=> answer(idx, b);
       optsEl.appendChild(b);
     });
+    // -1 : aucune option choisie, on révèle sans compter de point
+    document.getElementById('drill-giveup').onclick = ()=> answer(-1, null);
   }
 
   function answer(choice, btn){
     const it = items[i];
+    const giveUp = document.getElementById('drill-giveup');
+    if(giveUp) giveUp.remove();
     const buttons = [...document.querySelectorAll('#drill-opts .blitz-opt')];
     buttons.forEach(b => b.disabled = true);
     buttons[it.answer].classList.add('good');
     const ok = choice === it.answer;
     if(ok){ score++; if(navigator.vibrate) navigator.vibrate(18); }
-    else btn.classList.add('bad');
+    else if(btn) btn.classList.add('bad'); // btn absent quand on a demandé la réponse
     const why = document.getElementById('drill-why');
     why.className = 'drill-why ' + (ok ? 'ok' : 'ko');
-    why.innerHTML = `${ok ? '✓' : '✗'} ${it.why || ''}
+    why.innerHTML = `${ok ? '✓' : (choice === -1 ? '👀' : '✗')} ${it.why || ''}
       <button class="mini-btn" id="drill-next">${i + 1 < items.length ? 'Suivant' : 'Terminer'}</button>`;
     document.getElementById('drill-next').onclick = ()=>{
       i++;
@@ -4267,6 +4396,7 @@ document.getElementById('phrasebook-complete-btn').onclick = ()=>{
   const key = 'phrasebook_' + currentPhrasebookCat.id;
   if(!isCompleted(key)){
     markCompleted(key);
+    seedLeafReviews(currentPhrasebookCat); // les phrases entrent dans le cycle de révision
     addPoints(10);
     fireConfetti();
     checkNewBadges();
@@ -4384,14 +4514,40 @@ function renderQuizItem(){
         <button id="quiz-submit-btn">Valider</button>
       </div>
       <div id="quiz-feedback"></div>
+      <button class="give-up-btn" id="quiz-giveup-btn">Je ne trouve pas — montre-moi</button>
     </div>
     <button class="blitz-quit" id="quiz-abandon-btn">Arrêter ce quiz</button>`;
   document.getElementById('quiz-abandon-btn').onclick = quitQuiz;
+  document.getElementById('quiz-giveup-btn').onclick = revealQuizAnswer;
   document.getElementById('quiz-submit-btn').onclick = submitQuizAnswer;
   document.getElementById('quiz-answer-input').addEventListener('keydown', (e)=>{
     if(e.key === 'Enter') submitQuizAnswer();
   });
   document.getElementById('quiz-answer-input').focus();
+}
+
+// Sécher fait partie de l'apprentissage : on montre la réponse, on la fait entendre,
+// et on passe. Aucun point, mais aucun reproche non plus — et le mot reviendra.
+function revealQuizAnswer(){
+  const item = quizOrder[quizIndex];
+  const feedback = document.getElementById('quiz-feedback');
+  document.getElementById('quiz-submit-btn').disabled = true;
+  document.getElementById('quiz-answer-input').disabled = true;
+  document.getElementById('quiz-giveup-btn').remove();
+
+  feedback.className = 'quiz-feedback reveal';
+  feedback.innerHTML = `<div class="reveal-word">${item.ar}</div>
+    <div class="reveal-latin">${item.latin}</div>
+    ${item.alt ? `<div class="reveal-alt">on dit aussi ${item.alt.join(', ')}</div>` : ''}
+    <div class="reveal-tip">Écoute-le, répète-le à voix haute — c'est comme ça qu'il rentrera.</div>`;
+  speak(item.ar, item.latin);
+  noteReview(quizItemId(item), false); // à revoir bientôt
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'quiz-next-btn';
+  nextBtn.textContent = quizIndex + 1 < quizOrder.length ? 'Suivant →' : 'Voir mon score →';
+  nextBtn.onclick = ()=>{ quizIndex++; renderQuizItem(); };
+  feedback.after(nextBtn);
 }
 
 async function submitQuizAnswer(){
@@ -5226,6 +5382,147 @@ async function checkPendingDuelLink(){
     }
     startBlitz(data.seed, data);
   }catch(err){ console.warn('Défi introuvable :', err); }
+}
+
+// ---------------------------------------------------------------
+// SÉANCE DU JOUR
+// Cinq minutes assemblées automatiquement à partir de ce qui est dû. Deux types
+// de cartes en alternance : rappel (on cherche, on se juge) et écoute pure —
+// parce que comprendre à l'oreille est la vraie difficulté du darija, et que
+// jusqu'ici l'audio était toujours accompagné du texte.
+// ---------------------------------------------------------------
+const REVIEW_SESSION_SIZE = 12;
+let reviewQueue = [];
+let reviewIndex = 0;
+let reviewScore = 0;
+
+function startReviewSession(){
+  reviewQueue = dueReviews(REVIEW_SESSION_SIZE);
+  reviewIndex = 0;
+  reviewScore = 0;
+  showScreen('screen-review');
+  renderReviewCard();
+}
+
+function renderReviewCard(){
+  const body = document.getElementById('review-body');
+  if(reviewIndex >= reviewQueue.length){
+    const gained = reviewScore * 2;
+    if(gained) addPoints(gained);
+    touchStreak();
+    checkNewBadges();
+    if(reviewScore === reviewQueue.length && reviewQueue.length) fireConfetti();
+    body.innerHTML = `
+      <div class="result-score">${reviewScore}<span class="result-total">/${reviewQueue.length}</span></div>
+      <div class="result-label">${reviewScore === reviewQueue.length
+        ? 'Séance parfaite. Ces phrases sont à toi.'
+        : 'Séance terminée — ce qui a résisté reviendra bientôt.'}</div>
+      ${gained ? `<div class="result-best">+${gained} ⭐</div>` : ''}
+      <div class="result-label" style="margin-top:14px;">Reviens demain : les cartes se représenteront au bon moment.</div>
+      <button class="basics-cta" id="review-home">Retour à l'accueil</button>`;
+    document.getElementById('review-home').onclick = ()=> showScreen('screen-home');
+    return;
+  }
+
+  const card = reviewQueue[reviewIndex];
+  const p = card.phrase;
+  // une carte sur trois se fait à l'oreille seule
+  const listening = reviewIndex % 3 === 2;
+
+  body.innerHTML = `
+    <div class="blitz-top">
+      <div class="blitz-count">Carte ${reviewIndex + 1} / ${reviewQueue.length}</div>
+    </div>
+    <div class="blitz-timer"><div class="blitz-timer-fill" style="width:${Math.round(reviewIndex / reviewQueue.length * 100)}%;transition:width .4s ease;"></div></div>
+    <div class="review-card">
+      <div class="blitz-ask">${listening ? 'Écoute, puis dis ce que ça veut dire' : 'Comment dit-on…'}</div>
+      ${listening
+        ? `<button class="mini-btn" id="review-listen" style="margin:10px 0 4px;">🔊 Réécouter</button>`
+        : `<div class="review-prompt">${p.fr}</div>`}
+      <div id="review-answer" class="review-answer" hidden>
+        <div class="reveal-word">${p.ar}</div>
+        <div class="reveal-latin">${p.latin}</div>
+        ${listening ? `<div class="review-prompt" style="font-size:19px;margin-top:8px;">${p.fr}</div>` : ''}
+      </div>
+      <div id="review-actions"></div>
+    </div>
+    <button class="blitz-quit" id="review-quit">Arrêter la séance</button>`;
+
+  document.getElementById('review-quit').onclick = ()=> showScreen('screen-home');
+  if(listening){
+    const lb = document.getElementById('review-listen');
+    lb.onclick = ()=> speak(p.ar, p.latin, lb);
+    speak(p.ar, p.latin, lb); // on joue d'emblée : c'est l'énoncé de la question
+  }
+
+  const actions = document.getElementById('review-actions');
+  actions.innerHTML = `<button class="basics-cta" id="review-show">Montrer la réponse</button>`;
+  document.getElementById('review-show').onclick = ()=>{
+    document.getElementById('review-answer').hidden = false;
+    if(!listening) speak(p.ar, p.latin);
+    // auto-évaluation : c'est la façon dont fonctionnent tous les systèmes de
+    // répétition espacée, et elle est plus honnête qu'un QCM où l'on devine
+    actions.innerHTML = `
+      <div class="review-verdict">
+        <button class="mini-btn ghost" id="review-hard">Pas vraiment</button>
+        <button class="mini-btn" id="review-easy">Je savais</button>
+      </div>`;
+    document.getElementById('review-hard').onclick = ()=> gradeReview(false);
+    document.getElementById('review-easy').onclick = ()=> gradeReview(true);
+  };
+}
+
+function gradeReview(success){
+  noteReview(reviewQueue[reviewIndex].id, success);
+  if(success) reviewScore++;
+  reviewIndex++;
+  renderReviewCard();
+}
+
+// « Confirmé 🌟 » à 200 points ne dit rien à personne. Un nombre de phrases sues et
+// une situation concrète, si. On ne compte que les cartes ancrées (boîte 2+), pas
+// celles simplement vues une fois.
+const CAN_DO = [
+  { need:0,   text:"Bientôt de quoi dire bonjour et te présenter" },
+  { need:15,  text:"De quoi saluer quelqu'un et te présenter" },
+  { need:40,  text:"De quoi te débrouiller chez l'épicier et dans un taxi" },
+  { need:80,  text:"De quoi commander au restaurant et demander ton chemin" },
+  { need:140, text:"De quoi tenir une conversation courte sur toi et ta journée" },
+  { need:220, text:"De quoi discuter sans préparer tes phrases à l'avance" }
+];
+
+function renderKnowledge(){
+  const el = document.getElementById('home-know');
+  if(!el) return;
+  const srs = loadSrs();
+  const anchored = Object.values(srs).filter(c => c.box >= 2).length;
+  if(!anchored){ el.innerHTML = ''; return; }
+  const step = [...CAN_DO].reverse().find(s => anchored >= s.need) || CAN_DO[0];
+  el.innerHTML = `<div class="know-strip">
+    <b>${anchored} phrase${anchored > 1 ? 's' : ''} bien ancrée${anchored > 1 ? 's' : ''}</b>
+    <span>${step.text}</span>
+  </div>`;
+}
+
+// Tuile d'accueil : n'apparaît que s'il y a quelque chose à réviser
+function renderDailySession(){
+  const el = document.getElementById('daily-session');
+  if(!el) return;
+  const due = dueReviews(REVIEW_SESSION_SIZE);
+  if(!due.length){
+    const total = Object.keys(loadSrs()).length;
+    el.innerHTML = total
+      ? `<div class="daily-done"><svg class="ic-sm"><use href="#s-check"/></svg> Révisions à jour — reviens demain</div>`
+      : '';
+    return;
+  }
+  el.innerHTML = `
+    <button class="nav-tile press daily-tile" id="daily-go">
+      <span class="nav-ico ni-saf"><svg class="ic"><use href="#s-flame"/></svg></span>
+      <span class="nav-txt"><b>Ta séance du jour</b><small>${due.length} phrase${due.length > 1 ? 's' : ''} à revoir · environ 5 minutes</small></span>
+      <span class="nav-tail"><svg class="ic-sm"><use href="#s-chev"/></svg></span>
+    </button>`;
+  document.getElementById('daily-go').onclick = startReviewSession;
 }
 
 // ---------------------------------------------------------------

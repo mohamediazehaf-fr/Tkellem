@@ -194,6 +194,20 @@ Cap `history` before sending; a scenario arc is 5 steps, so ~20 messages is alre
 - **Don't lower `max_tokens` expecting savings.** Output bills on tokens actually produced, not on the ceiling. `max_tokens: 1000` is a runaway guard; tightening it to ~200 on the utility calls is harmless, doing it on the role-play turn risks truncated JSON — which costs a retry.
 - **Don't switch to `claude-sonnet-5` for cost.** It tokenizes the same text into ~30% more tokens, so at list price ($3/$15) it is a net increase over Sonnet 4.6; the intro pricing that currently offsets that ends 2026-08-31, which is too short a window to design around. Worse, its adaptive thinking is **on** when `thinking` is omitted, which would add reasoning tokens to every turn. It is the right move for *quality* (and unlocks structured outputs, killing the regex parsing), but then pass `thinking: {type: 'disabled'}` explicitly and re-measure everything.
 
+## Spaced repetition and the daily session
+
+**The retention layer, and it costs nothing to run** — pure `localStorage`, no API call, no token. `tkellem_srs` maps a card id to `{box, due}` in day numbers; `SRS_INTERVALS` grows 1→2→4→8→16→32→60 days. `noteReview(id, success)` promotes on success and resets the box to 0 on failure, so a phrase that resists comes back tomorrow.
+
+- Card ids are **derived from the arabic text**, not from a list position (`phraseId()` = `leafId#ar`), so inserting a phrase into a category never shifts anyone's schedule.
+- A phrase enters the cycle when its category is validated (`seedLeafReviews`), never before — reviewing what was never learned is noise. Quiz words enter when the learner asks to be shown the answer.
+- `allReviewablePhrases()` walks `PHRASEBOOK`, `GRAMMAR` *and* `QUIZ_BANKS`; a word failed in the quiz must resurface in the session, otherwise failure leads nowhere.
+- The session grades by **self-assessment** ("Je savais" / "Pas vraiment"), which is how every spaced-repetition system works and is more honest than a multiple choice where you can guess. Every third card is **listening-only** — audio first, meaning hidden — because understanding by ear is the real difficulty of darija and everywhere else the audio comes with the text.
+- Finishing a session calls `touchStreak()`: this is what finally gives the streak counter something to feed on.
+
+`renderKnowledge()` counts only cards in **box ≥ 2** — seen once is not known — and maps the total to a can-do statement. "140 phrases bien ancrées · de quoi tenir une conversation courte" tells a learner something that "Confirmé 🌟 à 200 points" never did.
+
+**"Je ne trouve pas — montre-moi"** exists in the image quiz and the grammar drills, deliberately *not* in the timed blitz where the countdown already resolves being stuck. The wording avoids "je ne sais pas": it describes a momentary search, not a deficiency. Giving up reveals the word, speaks it, and schedules it for early review — it is a learning path, not a penalty.
+
 ## Games: blitz quiz, leaderboard, duels
 
 **No Claude call anywhere in this module, by design.** Questions are multiple-choice and graded locally — mandatory for a timed game (a network round-trip per answer would kill the rhythm), and free as a side effect. Keep it that way: the moment a question needs LLM grading it stops being a game.
