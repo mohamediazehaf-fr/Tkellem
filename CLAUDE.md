@@ -32,6 +32,12 @@ The app was renamed from *Tkellem* to **Beldi** (بلدي, "of the country, auth
   Renaming them logs every existing learner back to zero progress with no migration path.
 - `AUDIO_CACHE_NAME`, the `Tkellem/` directory and the GitHub remote — cosmetic, but changing them buys nothing.
 
+**Two live origins, deliberately.** The canonical address is `https://beldi-darija.fr` (OVH domain, apex `A` → Render's
+`216.24.57.1`, `www` → `CNAME` to the service host). The Render service is still *named* `tkellem`, so
+`tkellem.onrender.com` keeps serving the same app — that is the point: renaming the service would change the origin,
+and `localStorage` is per-origin, so every learner would lose streak, SRS schedule and quiz records. Both hostnames
+work; only the canonical tag, OG tags and JSON-LD name the domain.
+
 Note also that the many `public/index.html#L…` anchors below still point at the pre-split filename; the code they
 describe now lives in `public/app.html`, and the line numbers have drifted. Trust the symbol names, not the anchors.
 
