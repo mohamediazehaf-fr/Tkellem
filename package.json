@@ -1,7 +1,7 @@
 {
-  "name": "tkellem-darija-backend",
+  "name": "beldi-darija-backend",
   "version": "1.0.0",
-  "description": "Backend pour l'app d'apprentissage du Darija Tkellem — protège les clés API et sert le prototype",
+  "description": "Backend pour l'app d'apprentissage du Darija Beldi — protège les clés API et sert le prototype",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

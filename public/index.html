@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Tkellem — Apprendre le darija marocain en le parlant</title>
-<meta name="description" content="Apprends le darija marocain en conversation : 288 phrases avec audio, correction de ta prononciation au micro, grammaire expliquée simplement et mises en situation réelles. Gratuit, sur mobile et ordinateur.">
+<title>Beldi — Apprendre le darija marocain en le parlant</title>
+<meta name="description" content="Apprends le darija marocain en le parlant : tu prononces au micro, l'application t'écoute et te corrige. Conversations en situation, 288 phrases avec audio, grammaire expliquée simplement. Gratuit, sur mobile et ordinateur.">
 <link rel="canonical" href="https://tkellem.onrender.com/">
 
 <!-- Aperçu au partage : c'est ce qui s'affiche quand un lien est envoyé sur WhatsApp -->
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Tkellem">
-<meta property="og:title" content="Tkellem — Apprendre le darija marocain en le parlant">
-<meta property="og:description" content="288 phrases avec audio, correction de la prononciation au micro, conversations avec un interlocuteur marocain. Gratuit.">
+<meta property="og:site_name" content="Beldi">
+<meta property="og:title" content="Beldi — Apprendre le darija marocain en le parlant">
+<meta property="og:description" content="Tu prononces au micro, l'application t'écoute et te corrige. Conversations avec un interlocuteur marocain, 288 phrases avec audio. Gratuit.">
 <meta property="og:url" content="https://tkellem.onrender.com/">
 <meta property="og:image" content="https://tkellem.onrender.com/icons/icon-512.png">
 <meta property="og:locale" content="fr_FR">
@@ -28,13 +28,13 @@
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "Tkellem",
+  "name": "Beldi",
   "url": "https://tkellem.onrender.com/",
   "applicationCategory": "EducationalApplication",
   "inLanguage": "fr",
   "teaches": "Darija marocain",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
-  "description": "Application gratuite pour apprendre le darija marocain par la conversation, avec correction de la prononciation."
+  "description": "Application gratuite pour apprendre le darija marocain en le parlant : reconnaissance vocale, correction de la prononciation et conversations en situation."
 }
 </script>
 
@@ -123,6 +123,11 @@
     background:var(--zellige);color:var(--cream);font-size:16px;
   }
   .demo-note{font-size:13.5px;color:var(--muted);text-align:center;margin:0 0 46px;}
+  /* la ligne qui montre la correction : c'est elle qui porte la différence */
+  .demo-mic{background:rgba(47,190,143,.10);border-radius:14px;margin:4px;border-bottom:none;}
+  .demo-mic .demo-fr{color:#3B4644;font-size:14.5px;}
+  .demo-said{font-size:14px;color:var(--muted);font-style:italic;margin-bottom:2px;}
+  .ico-mic{background:var(--palm);}
 
   /* ---------- sections ---------- */
   section{padding:38px 0;border-top:1px solid var(--line);}
@@ -180,16 +185,16 @@
 <body>
 
 <header class="top">
-  <div class="mark">ت</div>
-  <div class="brand">Tkellem</div>
+  <div class="mark">ب</div>
+  <div class="brand">Beldi</div>
   <a class="btn" href="/app">Ouvrir l'app</a>
 </header>
 
 <main>
   <div class="wrap hero">
-    <h1>Apprends le darija marocain en le parlant</h1>
-    <p class="lede">La plupart des méthodes t'apprennent à lire l'arabe. Tkellem t'apprend à <strong>tenir une conversation</strong> — chez l'épicier, dans un taxi, avec ta belle-famille.</p>
-    <p class="lede-2">Tu parles au micro, l'application écoute ta prononciation et te corrige. Tout est en darija marocain, celui qu'on entend vraiment dans la rue — pas en arabe standard.</p>
+    <h1>Apprends le darija en le parlant, et fais-toi corriger</h1>
+    <p class="lede">Tu prononces chaque phrase au micro. L'application écoute, compare, et te dit précisément quel son reprendre — jusqu'à ce que ça sonne juste.</p>
+    <p class="lede-2">Ensuite tu tiens une vraie conversation : chez l'épicier, dans un taxi, avec ta belle-famille. En darija marocain, celui qu'on entend vraiment dans la rue.</p>
     <div class="hero-actions">
       <a class="btn btn-saf btn-lg" href="/app">Commencer maintenant</a>
       <span class="free">Gratuit · sans installation · mobile et ordinateur</span>
@@ -222,18 +227,25 @@
         </div>
         <div class="demo-ico">🔊</div>
       </div>
+      <div class="demo-row demo-mic">
+        <div class="demo-txt">
+          <div class="demo-said">Tu as dit : « chal hada »</div>
+          <div class="demo-fr">Presque. Il y a deux sons à enchaîner : <strong>ch‑hal</strong>, en marquant bien le h. Réessaie.</div>
+        </div>
+        <div class="demo-ico ico-mic">🎤</div>
+      </div>
     </div>
-    <p class="demo-note">Un aperçu du carnet — chaque phrase s'écoute et se répète au micro.</p>
+    <p class="demo-note">Chaque phrase s'écoute, puis se répète au micro : l'application compare et te corrige.</p>
   </div>
 
   <div class="wrap">
     <section>
-      <h2>Ce qui rend Tkellem différent</h2>
-      <p class="sub">Trois choses qu'on ne trouve pas dans une liste de vocabulaire.</p>
+      <h2>Ce que tu trouves dans Beldi</h2>
+      <p class="sub">Trois façons d'avancer, de la première syllabe à la vraie conversation.</p>
       <div class="grid">
         <div class="card">
           <span class="pill">Prononciation</span>
-          <h3>On t'écoute vraiment</h3>
+          <h3>Tu parles, on te corrige</h3>
           <p>Tu prononces la phrase au micro. L'app compare ce qu'elle a entendu au modèle et te dit ce qui cloche — le son précis à reprendre, pas juste « faux ».</p>
         </div>
         <div class="card">
@@ -264,11 +276,19 @@
       <h2>Questions fréquentes</h2>
       <details>
         <summary>Est-ce vraiment gratuit ?</summary>
-        <p>Oui, entièrement, et sans publicité. Il n'y a rien à payer ni à installer : Tkellem s'ouvre dans le navigateur, sur téléphone comme sur ordinateur.</p>
+        <p>Oui, entièrement, et sans publicité. Il n'y a rien à payer ni à installer : Beldi s'ouvre dans le navigateur, sur téléphone comme sur ordinateur.</p>
+      </details>
+      <details>
+        <summary>Comment ma prononciation est-elle corrigée ?</summary>
+        <p>Tu enregistres la phrase au micro. L'application transcrit ce qu'elle a entendu, le compare à la phrase visée, et te dit ce qui manque — le son précis à reprendre, pas seulement « juste » ou « faux ». Tu peux réécouter le modèle et réessayer autant de fois que tu veux. À savoir : cette correction mesure si tu es <em>compris</em>, pas la finesse phonétique que t'apporterait un professeur.</p>
+      </details>
+      <details>
+        <summary>Pourquoi « Beldi » ?</summary>
+        <p>Beldi (بلدي) veut dire « du pays », « du terroir » — ce qui est local et authentique, par opposition à l'importé. Au Maroc, on parle de pain beldi, d'œufs beldi, de savon beldi. C'est exactement l'esprit : le darija tel qu'on le parle réellement, pas la version de manuel.</p>
       </details>
       <details>
         <summary>C'est du darija ou de l'arabe classique ?</summary>
-        <p>Du darija marocain, uniquement — la langue parlée au quotidien au Maroc. Elle diffère nettement de l'arabe standard qu'on enseigne habituellement, et c'est justement pour ça qu'elle est si peu couverte par les applications existantes.</p>
+        <p>Du darija marocain, uniquement — la langue parlée au quotidien au Maroc. Elle diffère nettement de l'arabe standard : c'est celle qu'on entend au souk, dans un taxi ou en famille, et c'est celle qui te permet d'être compris tout de suite.</p>
       </details>
       <details>
         <summary>Faut-il savoir lire l'arabe ?</summary>
@@ -276,7 +296,7 @@
       </details>
       <details>
         <summary>Ça marche sur iPhone et Android ?</summary>
-        <p>Oui. Tkellem fonctionne dans le navigateur, et tu peux l'ajouter à ton écran d'accueil pour l'utiliser comme une application : sur iPhone via le bouton Partager, sur Android via le menu de Chrome.</p>
+        <p>Oui. Beldi fonctionne dans le navigateur, et tu peux l'ajouter à ton écran d'accueil pour l'utiliser comme une application : sur iPhone via le bouton Partager, sur Android via le menu de Chrome.</p>
       </details>
       <details>
         <summary>Peut-on apprendre à plusieurs ?</summary>
@@ -286,14 +306,14 @@
 
     <section class="final">
       <h2>Prêt à dire ton premier mot ?</h2>
-      <p class="sub">Aucune inscription n'est nécessaire pour regarder. Deux minutes suffisent pour la première phrase.</p>
-      <a class="btn btn-saf btn-lg" href="/app">Ouvrir Tkellem</a>
+      <p class="sub">La création du compte prend quelques secondes — c'est ce qui te permet de retrouver ta progression sur tous tes appareils. Deux minutes suffisent pour la première phrase.</p>
+      <a class="btn btn-saf btn-lg" href="/app">Ouvrir Beldi</a>
     </section>
   </div>
 </main>
 
 <footer>
-  <div class="wrap">Tkellem — apprendre le darija marocain en le parlant</div>
+  <div class="wrap">Beldi — apprendre le darija marocain en le parlant</div>
 </footer>
 
 </body>

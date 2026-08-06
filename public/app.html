@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Tkellem — Apprends le Darija</title>
+<title>Beldi — Apprends le Darija</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/icons/icon-192.png">
 <link rel="apple-touch-icon" href="/icons/icon-180.png">
 <meta name="theme-color" content="#164B54">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Tkellem">
+<meta name="apple-mobile-web-app-title" content="Beldi">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
@@ -1186,9 +1186,9 @@
 
   <header class="top">
     <div class="brand" id="brand-home" title="Revenir à l'accueil">
-      <div class="brand-mark">ت</div>
+      <div class="brand-mark">ب</div>
       <div>
-        <h1>Tkellem</h1>
+        <h1>Beldi</h1>
         <div class="sub">Apprends le Darija en le parlant</div>
       </div>
     </div>
@@ -5254,7 +5254,7 @@ function renderDuelOutcome(d, container, failed){
     document.getElementById('duel-copy').onclick = async ()=>{
       const btn = document.getElementById('duel-copy');
       try{
-        if(navigator.share){ await navigator.share({ title:'Tkellem', text:'Je te défie en darija !', url:link }); return; }
+        if(navigator.share){ await navigator.share({ title:'Beldi', text:'Je te défie en darija !', url:link }); return; }
         await navigator.clipboard.writeText(link);
         btn.textContent = 'Copié ✓';
       }catch(err){
@@ -5529,7 +5529,7 @@ async function loadMyDuels(){
       btn.onclick = async ()=>{
         const link = duelLink(btn.dataset.share);
         try{
-          if(navigator.share){ await navigator.share({ title:'Tkellem', text:'Je te défie en darija !', url:link }); return; }
+          if(navigator.share){ await navigator.share({ title:'Beldi', text:'Je te défie en darija !', url:link }); return; }
           await navigator.clipboard.writeText(link);
           btn.textContent = 'Lien copié ✓';
         }catch(err){ prompt('Copie ce lien et envoie-le :', link); }
@@ -5909,7 +5909,7 @@ function renderGames(){
 // ONBOARDING IMMERSIF (première utilisation uniquement)
 // ---------------------------------------------------------------
 const ONBOARDING_SLIDES = [
-  { icon:'👋', title:'Bienvenue sur Tkellem !', text:"Apprends le darija marocain en le parlant vraiment, pas en le lisant sur des fiches." },
+  { icon:'👋', title:'Bienvenue sur Beldi !', text:"Beldi (بلدي), c'est ce qui vient du pays, l'authentique. Ici tu apprends le darija en le parlant : tu prononces, on t'écoute, on te corrige." },
   { icon:'🎭', title:'Mets-toi en situation', text:"Discute avec un avatar qui joue l'épicier, le taxi, un ami... comme dans la vraie vie, à l'oral." },
   { icon:'📖', title:'Apprends à ton rythme', text:"Le carnet de phrases et les quiz images t'aident à construire ton vocabulaire avant de te lancer." },
   { icon:'🏅', title:'Progresse et gagne des badges', text:"Chaque catégorie apprise, chaque quiz réussi te fait gagner des points et débloquer des badges." },

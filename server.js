@@ -394,4 +394,4 @@ app.post('/api/speak', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('Tkellem backend démarré sur le port ' + PORT));
+app.listen(PORT, () => console.log('Beldi backend démarré sur le port ' + PORT));

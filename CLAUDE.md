@@ -8,15 +8,32 @@ The application is **not** at the workspace root — it lives in this directory 
 
 ```
 Tkellem/
-  server.js              # Express API-key proxy (~230 lines) — the entire backend
+  server.js              # Express API-key proxy (~400 lines) — the entire backend
   package.json           # express only; node >= 18
   public/
-    index.html           # the entire frontend: HTML + CSS + JS inline (~2530 lines)
-    index[1].html        # STALE earlier prototype — see Gotchas
+    index.html           # public landing page (SEO) — redirects a signed-in visitor to /app
+    app.html             # the entire frontend: HTML + CSS + JS inline (~5200 lines)
     manifest.json        # PWA manifest
     icons/               # 180/192/512 png
+  supabase.sql           # tables, RLS and operational notes — run once in the SQL editor
+  relecture-darija.csv   # phrasebook export for native-speaker review (UTF-8 BOM, ";")
   README.md              # step-by-step Render deployment walkthrough (French, non-technical)
 ```
+
+## The product is called Beldi; the code still says Tkellem
+
+The app was renamed from *Tkellem* to **Beldi** (بلدي, "of the country, authentic") in August 2026, after
+[tkellem.fr](https://tkellem.fr/) turned out to be an existing darija product. Only user-visible strings moved.
+**Three families of identifier deliberately kept the old name, and renaming them would break production:**
+
+- `TKELLEM_*` environment variables — their values live in the Render dashboard, not in the repo. Renaming the
+  code side alone silently reverts every optimisation lever to its default.
+- `localStorage` keys `tkellem_*` — they hold points, streak, pseudo, quiz records, SRS boxes and the voice id.
+  Renaming them logs every existing learner back to zero progress with no migration path.
+- `AUDIO_CACHE_NAME`, the `Tkellem/` directory and the GitHub remote — cosmetic, but changing them buys nothing.
+
+Note also that the many `public/index.html#L…` anchors below still point at the pre-split filename; the code they
+describe now lives in `public/app.html`, and the line numbers have drifted. Trust the symbol names, not the anchors.
 
 ## Commands
 

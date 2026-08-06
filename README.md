@@ -1,4 +1,4 @@
-# Tkellem — Déploiement
+# Beldi — Déploiement
 
 Ce dossier contient tout le nécessaire pour héberger l'app en ligne, avec les clés API protégées côté serveur.
 

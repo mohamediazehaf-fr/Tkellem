@@ -1,5 +1,5 @@
 -- ============================================================
--- Tkellem — tables nécessaires au classement et aux défis 1v1
+-- Beldi — tables nécessaires au classement et aux défis 1v1
 --
 -- À exécuter UNE FOIS dans Supabase : dashboard → SQL Editor → New query
 -- → coller tout ce fichier → Run. Le script est idempotent : le relancer
