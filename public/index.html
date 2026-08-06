@@ -3224,21 +3224,43 @@ async function loadVoices(){
     const data = await res.json();
     ttsCacheInfo = data.tts_cache || null; // où chercher l'audio déjà généré
     if(!data.voices || !data.voices.length){
-      status.textContent = 'Voix serveur non configurée — voix du navigateur utilisée';
+      // ElevenLabs est injoignable ou refuse la clé. On repêche la dernière voix
+      // connue : le stock audio déjà généré reste alors lisible, puisqu'il ne
+      // dépend que de Supabase. Tout le contenu fixe continue de parler juste —
+      // seules les phrases inédites tomberont sur la voix du navigateur.
+      const remembered = localStorage.getItem('tkellem_voice_id');
+      if(remembered){
+        elevenLabsVoiceId = remembered;
+        status.textContent = '⚠ Service vocal injoignable — les phrases déjà enregistrées restent disponibles';
+        status.className = 'voice-status error';
+        return;
+      }
+      status.textContent = 'Aucune voix disponible sur le compte — voix du navigateur utilisée';
       status.className = 'voice-status error';
       return;
     }
-    // Voix figée : on cherche uniquement "Ghizlane" (ou une voix darija/marocaine à défaut), jamais de choix utilisateur
-    const ghizlaneVoice = data.voices.find(v => /ghizlane/i.test(v.name))
-      || data.voices.find(v => /darija|moroccan|maroc/i.test(v.name));
-    if(!ghizlaneVoice){
-      status.textContent = 'Voix Ghizlane introuvable sur ce compte — voix du navigateur utilisée';
-      status.className = 'voice-status error';
-      return;
-    }
-    elevenLabsVoiceId = ghizlaneVoice.voice_id;
-    status.textContent = '✓ Voix Ghizlane prête';
-    status.className = 'voice-status connected';
+    // Cascade de repli. Le dernier échelon compte plus qu'il n'en a l'air : n'IMPORTE
+    // QUELLE voix ElevenLabs lit l'arabe correctement avec un modèle multilingue,
+    // alors que la voix du navigateur le rend inaudible. Mieux vaut donc une voix
+    // inattendue que pas de voix du tout.
+    const pref = data.voice_pref || { name: 'ghizlane' };
+    const byName = new RegExp(pref.name, 'i');
+    const voice =
+         (pref.id && data.voices.find(v => v.voice_id === pref.id))
+      || data.voices.find(v => byName.test(v.name || ''))
+      || data.voices.find(v => /darija|moroccan|maroc|arab/i.test(
+           (v.name || '') + ' ' + JSON.stringify(v.labels || {})))
+      || data.voices[0];
+
+    elevenLabsVoiceId = voice.voice_id;
+    localStorage.setItem('tkellem_voice_id', voice.voice_id); // filet pour les pannes
+    const expected = byName.test(voice.name || '');
+    // On nomme toujours la voix réellement utilisée : un repli silencieux, c'est
+    // une app qui parle avec la mauvaise voix sans que personne ne comprenne pourquoi.
+    status.textContent = expected
+      ? `✓ Voix ${voice.name} prête`
+      : `⚠ Voix « ${pref.name} » absente du compte — ${voice.name} utilisée à la place`;
+    status.className = expected ? 'voice-status connected' : 'voice-status error';
   }catch(err){
     status.textContent = 'Impossible de charger la voix — voix du navigateur utilisée';
     status.className = 'voice-status error';

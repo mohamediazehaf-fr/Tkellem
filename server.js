@@ -235,7 +235,14 @@ app.get('/api/voices', async (req, res) => {
     // chercher l'audio déjà généré. Sans ça il ne peut pas calculer la même clé.
     res.json({
       ...data,
-      tts_cache: TTS_CACHE ? { base: ttsPublicBase(), prefix: TTS_MODEL } : null
+      tts_cache: TTS_CACHE ? { base: ttsPublicBase(), prefix: TTS_MODEL } : null,
+      // Voix souhaitée, réglable sans toucher au code. L'identifiant l'emporte sur
+      // le nom : c'est le seul moyen sûr si deux voix portent un nom proche, ou si
+      // la voix est renommée sur le compte.
+      voice_pref: {
+        id: process.env.ELEVENLABS_VOICE_ID || null,
+        name: process.env.ELEVENLABS_VOICE_NAME || 'ghizlane'
+      }
     });
   } catch (err) {
     console.error('Erreur /api/voices:', err);
