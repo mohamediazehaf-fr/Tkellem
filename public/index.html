@@ -3852,16 +3852,13 @@ async function callAvatarAPI(){
     });
     const raw = data.content.map(b => b.text || '').join('').trim();
     console.log('Réponse brute de l\'API :', raw);
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    let parsed;
-    try{
-      parsed = JSON.parse(jsonMatch ? jsonMatch[0] : raw);
-    }catch(parseErr){
-      // Dégradation douce : plutôt qu'une erreur technique en pleine conversation,
-      // on affiche le darija tel quel. L'apprenant perd la translittération et la
-      // traduction pour ce tour, mais l'échange continue.
-      console.warn('Réponse hors format, affichée telle quelle :', parseErr);
-      parsed = { darija_ar: raw.replace(/^[{"\s]+|[}"\s]+$/g, ''), darija_latin: '', french: '', feedback: null };
+    const parsed = parseAvatarReply(raw);
+    if(!parsed){
+      // Illisible même après extraction champ par champ. On le dit sobrement et on
+      // propose de relancer, plutôt que de déverser du JSON dans la conversation.
+      removeThinking();
+      addErrorBubble("La réponse est arrivée abîmée. Réessaie, ça repart en général du premier coup.");
+      return;
     }
 
     removeThinking();
@@ -3901,6 +3898,62 @@ function addErrorBubble(message){
   t.scrollTop = t.scrollHeight;
 }
 
+// ---------------------------------------------------------------
+// LECTURE DE LA RÉPONSE DE L'AVATAR
+// Quatre tentatives, de la plus propre à la plus obstinée. La dernière compte le
+// plus : même sur un JSON cassé, on récupère les champs un par un à la regex.
+// Règle absolue : ne JAMAIS afficher de JSON brut à l'apprenant — c'était le
+// défaut du repli précédent, qui déversait la réponse entière dans la bulle.
+// ---------------------------------------------------------------
+function parseAvatarReply(raw){
+  const attempts = [
+    raw,                                              // déjà du JSON propre
+    (raw.match(/\{[\s\S]*\}/) || [])[0],              // du bruit autour
+    '{' + raw.replace(/^[\s,]+/, ''),                 // accolade ouvrante manquante
+    '{' + raw.replace(/^[\s,]+/, '') + '}'            // et fermante aussi
+  ];
+  for(const candidate of attempts){
+    if(!candidate) continue;
+    try{
+      const obj = JSON.parse(candidate);
+      if(obj && typeof obj === 'object' && obj.darija_ar) return normalizeReply(obj);
+    }catch(e){ /* on essaie le suivant */ }
+  }
+  // Rien n'a été analysable : on va chercher les champs à la main. Une réponse
+  // tronquée ou mal échappée reste presque toujours exploitable de cette façon.
+  const field = (name)=>{
+    const m = raw.match(new RegExp('"' + name + '"\\s*:\\s*"((?:[^"\\\\]|\\\\.)*)"'));
+    return m ? m[1].replace(/\\"/g, '"').replace(/\\n/g, ' ') : '';
+  };
+  const ar = field('darija_ar');
+  if(ar) return normalizeReply({
+    darija_ar: ar, darija_latin: field('darija_latin'), french: field('french')
+  });
+  return null; // vraiment inexploitable
+}
+
+// Le modèle renvoie parfois feedback sous forme d'objet {ar, latin} au lieu d'une
+// phrase : sans ça on affichait « [object Object] » à l'apprenant.
+function normalizeReply(obj){
+  let fb = obj.feedback;
+  if(fb && typeof fb === 'object') fb = fb.fr || fb.french || fb.latin || fb.ar || null;
+  // Deux formats acceptés : les champs à plat imposés par le schéma, et l'objet
+  // imbriqué que produisait l'ancien prompt — les conversations en cours continuent.
+  let phrase = obj.feedback_phrase && typeof obj.feedback_phrase === 'object'
+    ? obj.feedback_phrase : null;
+  if(!phrase && (obj.feedback_ar || obj.feedback_latin)){
+    phrase = { ar: String(obj.feedback_ar || ''), latin: String(obj.feedback_latin || '') };
+  }
+  if(phrase && !phrase.ar) phrase = null; // chaîne vide = rien à corriger
+  return {
+    darija_ar: String(obj.darija_ar || ''),
+    darija_latin: String(obj.darija_latin || ''),
+    french: String(obj.french || ''),
+    feedback: fb && String(fb).trim() ? String(fb) : null,
+    feedback_phrase: phrase
+  };
+}
+
 function buildSystemPrompt(){
   const kidsRules = currentScenario.mode === 'kids' ? `
 
@@ -3911,10 +3964,9 @@ RÈGLES SUPPLÉMENTAIRES MODE ENFANT (prioritaires) :
 - "feedback_phrase" doit rester un mot ou une expression très courte (2-3 mots maximum), jamais une phrase complexe.
 - Ne mets JAMAIS "feedback" à une remarque négative — reste toujours dans l'encouragement, même si la réponse n'a aucun rapport.` : '';
 
+  // Le format n'est plus décrit ici : il est imposé par le schéma côté serveur, et
+  // le modèle ne peut pas s'en écarter. Ce prompt ne porte plus que la pédagogie.
   return `${currentScenario.persona}
-
-Tu dois répondre UNIQUEMENT en JSON valide, sans markdown, sans backticks, sans texte avant ou après, au format exact suivant :
-{"darija_ar": "réponse en darija marocain écrite en alphabet arabe", "darija_latin": "la même réponse transcrite en alphabet latin (arabizi/darija)", "french": "traduction française naturelle de la réponse", "feedback": null, "feedback_phrase": null}
 
 Règles pour la réponse en darija (rôle-play) :
 - Réponds en Darija marocain authentique et courant, JAMAIS en arabe standard (fusha).

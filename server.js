@@ -67,6 +67,32 @@ const CHEAP_MODELS  = process.env.TKELLEM_CHEAP_MODELS !== 'off'; // levier 3 : 
 const BASELINE_MODEL = 'claude-sonnet-4-6'; // modèle d'origine, seul utilisé si OPTIMIZE=off
 const BASELINE_MAX_TOKENS = 1000;
 
+// Modèle du rôle-play, réglable sans redéployer. Sonnet 5 est là pour une raison
+// précise : il accepte les SORTIES STRUCTURÉES, où l'API impose elle-même le format
+// de la réponse. Un JSON invalide devient alors impossible — on ne colmate plus.
+// Repli immédiat en cas de souci : ANTHROPIC_CHAT_MODEL=claude-sonnet-4-6
+const CHAT_MODEL = process.env.ANTHROPIC_CHAT_MODEL || 'claude-sonnet-5';
+const STRUCTURED = process.env.TKELLEM_STRUCTURED !== 'off';
+
+// Modèles capables d'imposer un schéma de sortie
+const MODELS_WITH_SCHEMA = ['claude-sonnet-5', 'claude-opus-5', 'claude-haiku-4-5'];
+
+// Champs à plat plutôt qu'un objet imbriqué pour le feedback : les schémas stricts
+// n'aiment ni les types nullables ni l'imbrication. Une chaîne vide vaut « rien à dire ».
+const AVATAR_SCHEMA = {
+  type: 'object',
+  properties: {
+    darija_ar:      { type: 'string', description: "La réponse en darija, en alphabet arabe. Jamais un mot de français ici." },
+    darija_latin:   { type: 'string', description: "La même réponse en alphabet latin (arabizi)." },
+    french:         { type: 'string', description: "Traduction française naturelle de la réponse." },
+    feedback:       { type: 'string', description: "Remarque pédagogique en français sur le dernier message de l'apprenant, 20 mots maximum. Chaîne vide si sa phrase était correcte — ne commente pas systématiquement." },
+    feedback_ar:    { type: 'string', description: "La formulation correcte en alphabet arabe, ou chaîne vide s'il n'y a pas de remarque." },
+    feedback_latin: { type: 'string', description: "La même formulation correcte en alphabet latin, ou chaîne vide." }
+  },
+  required: ['darija_ar', 'darija_latin', 'french', 'feedback', 'feedback_ar', 'feedback_latin'],
+  additionalProperties: false
+};
+
 // 'high' est le défaut du modèle ; 'medium' réduit la dépense sans casser le rôle-play.
 // À passer à 'low' si la qualité tient sur tes scénarios.
 const CHAT_EFFORT = ['low','medium','high','max'].includes(process.env.TKELLEM_CHAT_EFFORT)
@@ -78,16 +104,20 @@ const CHAT_EFFORT = ['low','medium','high','max'].includes(process.env.TKELLEM_C
 // modèle hors de cette table (sinon n'importe qui pourrait faire facturer le
 // compte sur le modèle le plus cher).
 const TASK_PROFILES = {
-  chat:      { model: BASELINE_MODEL,     maxTokens: 1000, effort: CHAT_EFFORT, cache: true  },
+  chat:      { model: CHAT_MODEL,         maxTokens: 1000, effort: CHAT_EFFORT, cache: true,
+               schema: AVATAR_SCHEMA },
   hint:      { model: 'claude-haiku-4-5', maxTokens: 300,  effort: 'low',       cache: false },
   translate: { model: 'claude-haiku-4-5', maxTokens: 300,  effort: 'low',       cache: false },
   quiz:      { model: 'claude-haiku-4-5', maxTokens: 200,  effort: 'low',       cache: false },
   pron:      { model: 'claude-haiku-4-5', maxTokens: 250,  effort: 'low',       cache: false }
 };
 
-// Sonnet 4.6 accepte thinking + effort ; Haiku 4.5 renvoie une erreur 400 si on les
-// envoie. On ne les ajoute donc que pour les modèles listés ici.
-const MODELS_WITH_EFFORT = ['claude-sonnet-4-6'];
+// Sonnet 4.6 et Sonnet 5 acceptent thinking + effort ; Haiku 4.5 renvoie une erreur
+// 400 si on les envoie. On ne les ajoute donc que pour les modèles listés ici.
+// Pour Sonnet 5 le « thinking: disabled » n'est pas optionnel : sans lui, il active
+// son raisonnement adaptatif par défaut et facture des tokens de réflexion à
+// chaque tour, pour une tâche qui n'en a aucun besoin.
+const MODELS_WITH_EFFORT = ['claude-sonnet-4-6', 'claude-sonnet-5'];
 
 // hasOwn et pas TASK_PROFILES[task] : sinon task='constructor' remonterait une
 // propriété héritée d'Object.prototype et fabriquerait un profil bancal.
@@ -104,8 +134,15 @@ function buildChatPayload({ system, messages, task }){
   const payload = { model, max_tokens: profile.maxTokens, system, messages };
 
   if(USE_EFFORT && MODELS_WITH_EFFORT.includes(model)){
-    payload.thinking = { type: 'disabled' };           // déjà le défaut, rendu explicite
+    payload.thinking = { type: 'disabled' };           // obligatoire sur Sonnet 5
     payload.output_config = { effort: profile.effort }; // sans ça le modèle part sur 'high'
+  }
+  // Schéma imposé par l'API : le modèle ne peut plus produire un JSON invalide.
+  if(STRUCTURED && profile.schema && MODELS_WITH_SCHEMA.includes(model)){
+    payload.output_config = {
+      ...(payload.output_config || {}),
+      format: { type: 'json_schema', schema: profile.schema }
+    };
   }
   // Le cache ne paie que là où un long préfixe identique est renvoyé à chaque tour.
   if(USE_CACHE && profile.cache){
@@ -202,7 +239,10 @@ app.post('/api/chat', async (req, res) => {
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
+        'anthropic-version': '2023-06-01',
+        // en-tête requis tant que les sorties structurées sont en bêta ; sans effet
+        // si la fonctionnalité est passée en disponibilité générale
+        ...(payload.output_config?.format ? { 'anthropic-beta': 'structured-outputs-2025-11-13' } : {})
       },
       body: JSON.stringify(payload)
     });
