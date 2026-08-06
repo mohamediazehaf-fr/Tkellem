@@ -8,6 +8,10 @@ app.set('trust proxy', true); // Render place un proxy devant : sans ça toutes 
 app.use(express.json({ limit: '8mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// La racine sert la page de présentation, indexable par Google ; l'app vit sur /app.
+// Une adresse propre sans .html : c'est celle qu'on partage et qu'on référence.
+app.get('/app', (req, res) => res.sendFile(path.join(__dirname, 'public', 'app.html')));
+
 // ---------------------------------------------------------------
 // GARDE-FOU DE DÉBIT (par adresse IP, en mémoire)
 // Ce n'est pas de l'anti-fraude : c'est le filet qui évite qu'un onglet laissé
