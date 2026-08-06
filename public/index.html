@@ -244,6 +244,29 @@
   #screen-select .intro{font-size:15.5px;color:#4c463c;line-height:1.5;margin:6px 0 20px;}
   #screen-phrasebook, #screen-quiz, #screen-progress, #screen-account, #screen-basics, #screen-games, #screen-blitz, #screen-review{padding:24px 22px;flex:1;}
 
+  /* ---------- CARTE DE RETOUR ---------- */
+  .comeback{
+    position:relative;
+    background:linear-gradient(160deg, rgba(14,79,86,.09), rgba(255,178,56,.13));
+    border:1.5px solid rgba(14,79,86,.18);border-radius:var(--r-lg);
+    padding:15px 16px;margin-bottom:14px;
+  }
+  .comeback-title{
+    font-family:var(--font-display);font-weight:800;font-size:17px;
+    color:var(--zellige);margin-bottom:7px;padding-right:22px;
+  }
+  .comeback-lines div{font-size:14px;line-height:1.5;color:var(--ink);}
+  .comeback-lines b{color:var(--henna-dark);}
+  .comeback-close{
+    position:absolute;top:9px;right:10px;background:none;border:none;
+    color:var(--muted);font-size:15px;cursor:pointer;padding:4px 6px;line-height:1;
+  }
+  .comeback-never{
+    display:block;margin:9px auto 0;background:none;border:none;
+    color:var(--muted);font-size:12px;font-family:inherit;
+    text-decoration:underline;cursor:pointer;
+  }
+
   /* ---------- SÉANCE DU JOUR ---------- */
   .daily-tile{border-color:rgba(255,178,56,.55);background:rgba(255,178,56,.08);margin-bottom:14px;}
   .daily-done{
@@ -3463,7 +3486,7 @@ function scrollToTop(){ window.scrollTo(0, 0); }
 
 function showScreen(id){
   ALL_SCREENS.forEach(s => document.getElementById(s).style.display = (s === id ? ((s === 'screen-convo' || s === 'screen-onboarding') ? 'flex' : 'block') : 'none'));
-  if(id === 'screen-home'){ updatePointsBadge(); renderDailySession(); renderKnowledge(); }
+  if(id === 'screen-home'){ updatePointsBadge(); renderComeback(); renderDailySession(); renderKnowledge(); }
   // une partie au chrono et une conversation se jouent sans décor : l'en-tête s'efface
   document.querySelector('header.top').classList.toggle('hidden',
     id === 'screen-blitz' || id === 'screen-convo');
