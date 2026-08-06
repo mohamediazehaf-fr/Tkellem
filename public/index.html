@@ -1165,6 +1165,7 @@
   <!-- SCREEN 0 : accueil / menu principal -->
   <div id="screen-home" style="display:none;">
     <div id="home-greeting" class="home-greeting"></div>
+    <div id="comeback"></div>
     <div id="daily-session"></div>
     <div id="home-know"></div>
     <div class="menu-list">
@@ -3062,6 +3063,34 @@ function dueReviews(limit){
 function seedLeafReviews(leaf){
   (leaf.phrases || []).forEach(p => seedReview(phraseId(leaf.id, p)));
 }
+
+// Reprise de l'historique. Sans ça, les apprenants les plus avancés — ceux qui ont
+// déjà validé dix catégories — n'auraient rien à réviser, puisque le cycle ne
+// démarrait qu'aux validations postérieures à cette fonctionnalité. C'est l'inverse
+// de ce qu'il faut. On étale les échéances pour ne pas servir 200 cartes demain.
+const SRS_BACKFILL_PER_DAY = 12;
+
+function backfillReviews(){
+  if(localStorage.getItem('tkellem_srs_backfilled')) return;
+  const completed = getCompleted();
+  const srs = loadSrs();
+  let placed = 0;
+  const leaves = [...phrasebookLeaves(PHRASEBOOK), ...phrasebookLeaves(GRAMMAR)];
+  leaves.forEach(leaf=>{
+    if(!completed.includes('phrasebook_' + leaf.id)) return;
+    (leaf.phrases || []).forEach(p=>{
+      const id = phraseId(leaf.id, p);
+      if(srs[id]) return;
+      // boîte 1 : déjà vues, donc on ne repart pas de zéro, mais elles reviennent vite
+      srs[id] = { box: 1, due: dayNumber() + Math.floor(placed / SRS_BACKFILL_PER_DAY) };
+      placed++;
+    });
+  });
+  saveSrs(srs);
+  localStorage.setItem('tkellem_srs_backfilled', '1');
+  if(placed) console.log(`[révisions] ${placed} phrases déjà apprises reprises dans le cycle`);
+}
+backfillReviews();
 
 // ---------------------------------------------------------------
 // MESURE DE CONSOMMATION
@@ -5524,6 +5553,54 @@ function renderKnowledge(){
     <b>${anchored} phrase${anchored > 1 ? 's' : ''} bien ancrée${anchored > 1 ? 's' : ''}</b>
     <span>${step.text}</span>
   </div>`;
+}
+
+// ---------------------------------------------------------------
+// CARTE DE RETOUR
+// Ce que l'accueil ne dit pas : ce qui a changé pendant l'absence. Volontairement
+// une carte et non un écran — elle ne bloque rien, donc pas besoin d'un bouton
+// « passer ». Et elle ne s'affiche qu'après une absence d'au moins un jour : c'est
+// la rareté, plus qu'un réglage, qui l'empêche de devenir une corvée.
+// ---------------------------------------------------------------
+function renderComeback(){
+  const el = document.getElementById('comeback');
+  if(!el) return;
+  el.innerHTML = '';
+  if(localStorage.getItem('tkellem_comeback_off')) return;
+
+  const today = dayNumber();
+  const lastSeen = parseInt(localStorage.getItem('tkellem_last_seen') || '0', 10);
+  localStorage.setItem('tkellem_last_seen', String(today));
+  if(!lastSeen || today - lastSeen < 1) return; // même journée : rien à raconter
+
+  const due = dueReviews(REVIEW_SESSION_SIZE).length;
+  const invites = social.incoming.length;
+  const duels = social.pendingDuels || 0;
+  const streak = getStreak();
+  if(!due && !invites && !duels && !streak) return; // rien à dire, on se tait
+
+  const lines = [];
+  if(streak >= 2) lines.push(`<b>${streak} jours d'affilée</b> — ne casse pas la série aujourd'hui`);
+  if(due) lines.push(`${due} phrase${due > 1 ? 's' : ''} à revoir`);
+  if(duels) lines.push(`${duels} défi${duels > 1 ? 's' : ''} t'attend${duels > 1 ? 'ent' : ''}`);
+  if(invites) lines.push(`${invites} demande${invites > 1 ? 's' : ''} d'ami`);
+
+  const days = today - lastSeen;
+  el.innerHTML = `
+    <div class="comeback">
+      <button class="comeback-close" id="comeback-close" title="Masquer">✕</button>
+      <div class="comeback-title">${days === 1 ? 'Content de te revoir 👋' : `Ça fait ${days} jours — content de te revoir 👋`}</div>
+      <div class="comeback-lines">${lines.map(l => `<div>${l}</div>`).join('')}</div>
+      ${due ? `<button class="basics-cta" id="comeback-go" style="margin-top:12px;">Commencer ma séance</button>` : ''}
+      <button class="comeback-never" id="comeback-never">Ne plus afficher</button>
+    </div>`;
+  document.getElementById('comeback-close').onclick = ()=>{ el.innerHTML = ''; };
+  document.getElementById('comeback-never').onclick = ()=>{
+    localStorage.setItem('tkellem_comeback_off', '1');
+    el.innerHTML = '';
+  };
+  const go = document.getElementById('comeback-go');
+  if(go) go.onclick = startReviewSession;
 }
 
 // Tuile d'accueil : n'apparaît que s'il y a quelque chose à réviser
