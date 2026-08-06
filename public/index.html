@@ -2157,9 +2157,12 @@ const QUIZ_BANKS = {
     { emoji:'🥛', latin:'hlib', ar:'الحليب', fr:'lait' },
     { emoji:'💧', latin:'lma', ar:'الما', fr:'eau' },
     { emoji:'🥚', latin:'beid', ar:'البيض', fr:'œufs' },
-    { emoji:'🐱', latin:'mouch', ar:'موش', fr:'chat' },
+    // "alt" : autres formes également correctes. Le darija emprunte à l'arabe
+    // standard et au français, plusieurs mots coexistent souvent pour une même
+    // chose — le quiz doit accepter celui auquel l'apprenant pense.
+    { emoji:'🐱', latin:'mouch', ar:'موش', fr:'chat', alt:['qett','qatt','mech'] },
     { emoji:'🐶', latin:'kelb', ar:'كلب', fr:'chien' },
-    { emoji:'🚗', latin:'ssiyara', ar:'السيارة', fr:'voiture' },
+    { emoji:'🚗', latin:'ssiyara', ar:'السيارة', fr:'voiture', alt:['tomobil','tonobil'] },
     { emoji:'🚕', latin:'taxi', ar:'الطاكسي', fr:'taxi' },
     { emoji:'🚌', latin:'tobis', ar:'الطوبيس', fr:'bus' },
     { emoji:'🏠', latin:'ddar', ar:'الدار', fr:'maison' },
@@ -2181,7 +2184,7 @@ const QUIZ_BANKS = {
     { emoji:'🥕', latin:'khizzou', ar:'الخيزو', fr:'carotte' },
     { emoji:'🔑', latin:'sarout', ar:'الساروت', fr:'clé' },
     { emoji:'🚪', latin:'lbab', ar:'الباب', fr:'porte' },
-    { emoji:'🪑', latin:'chelya', ar:'الشلية', fr:'chaise' },
+    { emoji:'🪑', latin:'chelya', ar:'الشلية', fr:'chaise', alt:['kursi'] },
     { emoji:'👕', latin:'qamija', ar:'القاميجة', fr:'chemise' },
     { emoji:'👟', latin:'sebbat', ar:'الصباط', fr:'chaussures' },
     { emoji:'💰', latin:'flous', ar:'الفلوس', fr:'argent' },
@@ -4405,6 +4408,7 @@ async function submitQuizAnswer(){
 
   try{
     const prompt = `Un apprenant de darija marocain doit deviner le mot darija pour "${item.fr}" (le mot correct est "${item.latin}" en transcription latine, "${item.ar}" en arabe).
+${item.alt ? `Ces formes sont tout aussi correctes et doivent être acceptées sans réserve : ${item.alt.join(', ')}.\n` : ''}Accepte aussi toute autre variante réellement employée au Maroc pour ce mot, y compris l'emprunt à l'arabe standard ou au français, même si elle ne figure pas ci-dessus.
 Sa réponse : "${answer}"
 Est-ce que sa réponse est correcte ou suffisamment proche (tolère les variantes d'orthographe et les fautes de frappe mineures, qu'elle soit écrite en latin ou en arabe, ou même juste en français s'il connaît le mot autrement) ?
 Réponds UNIQUEMENT en JSON : {"correct": true ou false, "message": "courte phrase d'encouragement en français, max 15 mots"}`;
@@ -4426,7 +4430,10 @@ Réponds UNIQUEMENT en JSON : {"correct": true ou false, "message": "courte phra
       fireConfetti();
     } else {
       feedback.className = 'quiz-feedback incorrect';
-      feedback.textContent = `✗ ${parsed.message} — la réponse était "${item.latin}" (${item.ar})`;
+      // on montre aussi les autres formes : découvrir qu'il y en a plusieurs fait
+      // partie de l'apprentissage
+      feedback.textContent = `✗ ${parsed.message} — la réponse était "${item.latin}" (${item.ar})`
+        + (item.alt ? ` — on dit aussi ${item.alt.join(', ')}` : '');
       emojiEl.classList.add('shake');
     }
     speak(item.ar, item.latin);
