@@ -279,6 +279,7 @@ app.get('/api/voices', async (req, res) => {
       // Voix souhaitée, réglable sans toucher au code. L'identifiant l'emporte sur
       // le nom : c'est le seul moyen sûr si deux voix portent un nom proche, ou si
       // la voix est renommée sur le compte.
+      // Voix de référence de toute l'app : Ghizlane, native darija.
       voice_pref: {
         id: process.env.ELEVENLABS_VOICE_ID || null,
         name: process.env.ELEVENLABS_VOICE_NAME || 'ghizlane'

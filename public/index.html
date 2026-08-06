@@ -1392,7 +1392,7 @@
 const SCENARIOS = [
   {
     mode:'standard',
-    id:'epicerie', icon:'🛒', name:'Chez l\'épicier', role:'Le "bqal" du quartier',
+    id:'epicerie', voice:'jawad', icon:'🛒', name:'Chez l\'épicier', role:'Le "bqal" du quartier',
     desc:"Acheter des produits du quotidien",
     persona:`Tu joues le rôle d'un épicier marocain ("bqal") chaleureux et bavard dans sa petite épicerie de quartier. Registre familier et chaleureux, tu plaisantes un peu.
 
@@ -1437,7 +1437,7 @@ Fais avancer l'étape après 1-2 échanges. Reste digne et un peu bureaucratique
     opening:{ar:"صباح الخير، مرحبا بيك. أشنو خدمة بغيتي؟",latin:"Sbah lkhir, marhba bik. Achno khedma bghiti?",fr:"Bonjour, bienvenue. Quel service désirez-vous ?"}
   },
   {
-    id:'taxi', icon:'🚕', name:'Dans un taxi', role:'Chauffeur de taxi',
+    id:'taxi', voice:'jawad', icon:'🚕', name:'Dans un taxi', role:'Chauffeur de taxi',
     desc:"Donner une destination, discuter du prix",
     persona:`Tu joues un chauffeur de taxi marocain sympathique et bavard. Registre familier, détendu.
 
@@ -1452,7 +1452,7 @@ Fais avancer l'étape après 1-2 échanges.`,
     opening:{ar:"مرحبا، فين غادي؟",latin:"Marhba, fin ghadi?",fr:"Bonjour, où allez-vous ?"}
   },
   {
-    id:'police', icon:'👮', name:'Contrôle policier', role:'Agent de police',
+    id:'police', voice:'jawad', icon:'👮', name:'Contrôle policier', role:'Agent de police',
     desc:"Contrôle de papiers sur la route",
     persona:`Tu joues un policier marocain lors d'un contrôle routier de routine. Registre respectueux, ferme mais poli, un peu formel.
 
@@ -1482,7 +1482,7 @@ Fais avancer l'étape après 1-2 échanges, dans un ton toujours affectueux.`,
     opening:{ar:"واه شحال هاد الوقت ما تشافينا! كيداير راسك؟",latin:"Waah chhal had lwaqt ma tchafina! Kidayer rassek?",fr:"Waouh, ça fait si longtemps qu'on ne s'est pas vus ! Comment vas-tu ?"}
   },
   {
-    id:'docteur', icon:'🩺', name:'Chez le docteur', role:'Médecin généraliste',
+    id:'docteur', voice:'jawad', icon:'🩺', name:'Chez le docteur', role:'Médecin généraliste',
     desc:"Décrire des symptômes, consultation",
     persona:`Tu joues un médecin généraliste marocain, bienveillant et rassurant, à l'écoute. Registre professionnel mais chaleureux.
 
@@ -1512,7 +1512,7 @@ Fais avancer l'étape après 1-2 échanges. Ton ton doit être vivant, spontané
     opening:{ar:"أهلا خويتي! شحال هادي ما تلاقينا، أشنو خبارك؟",latin:"Ahlan khouiti! Chhal hadi ma tlaqina, achno khbarek?",fr:"Salut ma belle ! Ça fait un moment qu'on s'est pas vues, quelles nouvelles ?"}
   },
   {
-    id:'coiffeur', icon:'💇', name:'Chez le coiffeur', role:'Coiffeur/coiffeuse',
+    id:'coiffeur', voice:'jawad', icon:'💇', name:'Chez le coiffeur', role:'Coiffeur/coiffeuse',
     desc:"Demander une coupe, discuter",
     persona:`Tu joues un coiffeur (ou coiffeuse) marocain dans son salon, bavard et sociable comme c'est souvent le cas. Registre familier, décontracté.
 
@@ -1527,7 +1527,7 @@ Fais avancer l'étape après 1-2 échanges.`,
     opening:{ar:"أهلا بيك! أشنو بغيتي نصاوبلك اليوم؟",latin:"Ahlan bik! Achno bghiti nsawablek lyoum?",fr:"Bienvenue ! Qu'est-ce que je te fais aujourd'hui ?"}
   },
   {
-    id:'restaurant', icon:'🍽️', name:'Au restaurant', role:'Serveur',
+    id:'restaurant', voice:'jawad', icon:'🍽️', name:'Au restaurant', role:'Serveur',
     desc:"Commander un plat, demander l'addition",
     persona:`Tu joues un serveur dans un restaurant marocain, professionnel et avenant. Registre poli, service-orienté.
 
@@ -3189,17 +3189,31 @@ function takeQuota(kind){
 const AUDIO_CACHE_NAME = 'tkellem-audio-v1';
 let ttsCacheInfo = null; // { base, prefix }, transmis par /api/voices
 
+// Distribution des voix. La voix de référence porte tout le contenu d'apprentissage
+// et n'est donc générée qu'une fois pour tous ; les scénarios masculins passent par
+// Jawad. Ça ne fragmente pas le stock : l'audio de conversation n'est jamais mis en
+// cache, puisque chaque réplique est un texte unique.
+const VOICE_IDS = {
+  jawad: 'PmGnwGtnBs40iau7JfoF' // voix d'homme marocaine, naturelle et posée
+};
+
+// Voix du personnage de la scène en cours, ou rien = voix de référence
+function scenarioVoiceId(){
+  return (currentScenario && VOICE_IDS[currentScenario.voice]) || null;
+}
+
 async function sha1Hex(str){
   const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(str));
   return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 // Même formule que ttsKey() côté serveur, sinon les deux ne se retrouvent pas
-async function ttsCacheUrl(text){
-  if(!ttsCacheInfo || !elevenLabsVoiceId || !window.crypto?.subtle) return null;
+async function ttsCacheUrl(text, voiceId){
+  const voice = voiceId || elevenLabsVoiceId;
+  if(!ttsCacheInfo || !voice || !window.crypto?.subtle) return null;
   try{
     const hex = await sha1Hex(ttsCacheInfo.prefix + '|' + text);
-    return `${ttsCacheInfo.base}/${elevenLabsVoiceId}/${hex}.mp3`;
+    return `${ttsCacheInfo.base}/${voice}/${hex}.mp3`;
   }catch(err){ return null; }
 }
 
@@ -3221,8 +3235,8 @@ async function writeAudioCache(url, response){
 
 // quality === 'fast' : audio de conversation, texte unique. Ni stock partagé (il ne
 // serait jamais relu) ni modèle de qualité (le rythme de l'échange primer).
-async function fetchSpeechBlob(text, quality){
-  const remote = quality === 'fast' ? null : await ttsCacheUrl(text);
+async function fetchSpeechBlob(text, quality, voiceId){
+  const remote = quality === 'fast' ? null : await ttsCacheUrl(text, voiceId);
   if(remote){
     const stored = await readAudioCache(remote);
     if(stored) return await stored.blob();
@@ -3237,7 +3251,11 @@ async function fetchSpeechBlob(text, quality){
   const res = await fetch('/api/speak', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ text, voice_id: elevenLabsVoiceId, quality: quality || 'high' })
+    body: JSON.stringify({
+      text,
+      voice_id: voiceId || elevenLabsVoiceId,
+      quality: quality || 'high'
+    })
   });
   if(!res.ok) throw new Error((await res.text()).slice(0, 200));
   noteUsage({ tts_calls: 1 }); // on ne compte que les vraies générations, cache exclu
@@ -3246,18 +3264,21 @@ async function fetchSpeechBlob(text, quality){
   return blob;
 }
 
-async function speak(text, latinText, btn, quality){
+// voiceId : voix du personnage, uniquement en conversation. Ailleurs on garde la
+// voix de référence, celle dont le catalogue est déjà en stock.
+async function speak(text, latinText, btn, quality, voiceId){
   setAudioLoading(btn, true);
   try{
-    if(elevenLabsVoiceId){
-      const key = elevenLabsVoiceId + '|' + text;
+    const voice = voiceId || elevenLabsVoiceId;
+    if(voice){
+      const key = voice + '|' + text;
       const cached = audioCache.get(key);
       if(cached){
         await playAudioUrl(cached);
         return;
       }
       try{
-        const blob = await fetchSpeechBlob(text, quality);
+        const blob = await fetchSpeechBlob(text, quality, voice);
         const url = URL.createObjectURL(blob);
         cacheAudio(key, url);
         await playAudioUrl(url);
@@ -3376,6 +3397,7 @@ function freeTalkScenario(topicFr, topicAr, topicLatin){
   return {
     mode: currentGridMode,
     id: 'libre',
+    voice: 'jawad',
     icon: '🗨️',
     name: 'Discussion libre',
     role: `On parle de : ${topicFr}`,
@@ -3477,7 +3499,7 @@ function startScenario(s, forceRestart){
     const openingBtn = addBubble('avatar', s.opening.ar, s.opening.latin, s.opening.fr);
     history.push({role:'avatar', ...s.opening});
     saveHistory();
-    speak(s.opening.ar, s.opening.latin, openingBtn, 'fast');
+    speak(s.opening.ar, s.opening.latin, openingBtn, 'fast', VOICE_IDS[s.voice] || null);
   }
   setupSpeechRecognition();
 }
@@ -3646,8 +3668,9 @@ function addBubble(role, ar, latin, fr){
       <button class="replay"><span class="btn-ic"><svg class="ic-sm"><use href="#s-speaker"/></svg></span> Réécouter</button>
     </div>`;
   const replayBtn = b.querySelector('.replay');
-  // 'fast' : le fil d'une conversation est du texte unique, jamais mis en stock
-  replayBtn.onclick = ()=> speak(ar, latin, replayBtn, 'fast');
+  // 'fast' : le fil d'une conversation est du texte unique, jamais mis en stock.
+  // La voix est celle du personnage de la scène, pas la voix de référence.
+  replayBtn.onclick = ()=> speak(ar, latin, replayBtn, 'fast', scenarioVoiceId());
   t.appendChild(b);
   t.scrollTop = t.scrollHeight;
   return replayBtn; // sert aussi d'indicateur de chargement pour la lecture automatique
@@ -3868,7 +3891,7 @@ async function callAvatarAPI(){
     const replayBtn = addBubble('avatar', parsed.darija_ar, parsed.darija_latin, parsed.french);
     history.push({role:'avatar', ar:parsed.darija_ar, latin:parsed.darija_latin, fr:parsed.french});
     saveHistory();
-    speak(parsed.darija_ar, parsed.darija_latin, replayBtn, 'fast');
+    speak(parsed.darija_ar, parsed.darija_latin, replayBtn, 'fast', scenarioVoiceId());
 
     // première fois que cette conversation atteint une longueur significative : on la compte comme "pratiquée"
     const scenarioProgressKey = 'scenario_' + currentScenario.id;
