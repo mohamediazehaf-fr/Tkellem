@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bannière de partage — Beldi</title>
+
+<!-- Page outil, jamais destinée aux visiteurs : elle ne doit pas être indexée. -->
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:#E9E4D8;color:#17211F;
+    font-family:'Nunito',system-ui,sans-serif;padding:28px;
+  }
+  .notice{max-width:1200px;margin:0 auto 22px;font-size:15px;line-height:1.6;color:#3B4644}
+  .notice h1{font-family:'Baloo 2',sans-serif;font-size:22px;color:#0E4F56;margin:0 0 8px}
+  .notice code{background:#fff;padding:1px 6px;border-radius:5px;font-size:13.5px}
+  .notice ol{margin:8px 0 0;padding-left:20px}
+  .notice li{margin-bottom:5px}
+
+  /* ---- la bannière : dimensions exactes attendues par les réseaux ---- */
+  #banner{
+    width:1200px;height:630px;flex:none;
+    display:flex;align-items:center;gap:56px;
+    padding:0 76px;
+    background:
+      radial-gradient(circle at 8% 0%,   rgba(255,178,56,.20), transparent 42%),
+      radial-gradient(circle at 96% 104%, rgba(14,79,86,.14),  transparent 46%),
+      #FFFBF4;
+    font-family:'Nunito',sans-serif;
+  }
+  .left{flex:1;min-width:0}
+  .brandline{display:flex;align-items:center;gap:16px;margin-bottom:30px}
+  .mark{
+    width:74px;height:74px;border-radius:21px;background:#0E4F56;color:#FFFBF4;
+    display:grid;place-items:center;font-family:'Cairo',serif;font-size:38px;font-weight:700;
+  }
+  .name{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:46px;color:#0E4F56}
+  .title{
+    font-family:'Baloo 2',sans-serif;font-weight:800;font-size:70px;line-height:1.04;
+    letter-spacing:-.02em;color:#0E4F56;margin:0 0 22px;
+  }
+  .sub{font-size:29px;line-height:1.4;color:#3B4644;margin:0 0 30px;font-weight:600}
+  .url{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:24px;color:#B87A0F}
+
+  /* carte de démonstration : elle montre le produit en un coup d'œil */
+  .card{
+    width:392px;flex:none;background:#fff;border:2px solid #EDE6D8;border-radius:26px;
+    padding:12px;box-shadow:0 8px 0 #EDE6D8;
+  }
+  .row{display:flex;align-items:center;gap:14px;padding:16px 15px;border-bottom:1.5px solid #EDE6D8}
+  .row:last-child{border-bottom:none;background:rgba(47,190,143,.11);border-radius:17px}
+  .txt{flex:1;min-width:0}
+  .ar{font-family:'Cairo',serif;font-size:27px;direction:rtl;font-weight:700;color:#17211F}
+  .la{font-size:17px;font-style:italic;color:#186E77}
+  .fr{font-size:16px;color:#7C8A88}
+  .said{font-size:16px;font-style:italic;color:#7C8A88;margin-bottom:3px}
+  .fix{font-size:17px;color:#3B4644;line-height:1.35}
+  .ico{
+    width:50px;height:50px;border-radius:15px;flex:none;display:grid;place-items:center;
+    background:#0E4F56;font-size:22px;
+  }
+  .ico-mic{background:#2FBE8F}
+</style>
+</head>
+<body>
+
+<div class="notice">
+  <h1>Bannière de partage — 1200 × 630</h1>
+  <p>Cette page sert à produire l'image d'aperçu affichée quand le lien est partagé sur WhatsApp,
+     LinkedIn ou X. Elle n'est pas destinée aux visiteurs et n'est pas indexée.</p>
+  <ol>
+    <li><strong>Méthode exacte, recommandée</strong> — clic droit sur la bannière →
+        <em>Inspecter</em> → dans le panneau, clic droit sur la ligne
+        <code>&lt;div id="banner"&gt;</code> → <em>Capture node screenshot</em>.
+        Chrome enregistre un PNG de 1200 × 630 exactement.</li>
+    <li><strong>Méthode simple</strong> — capture d'écran classique, puis recadrage sur la bannière.
+        Moins précis, mais suffisant.</li>
+    <li>Enregistre le fichier sous <code>public/og-image.png</code> et préviens-moi :
+        je repointe la balise <code>og:image</code> dessus et je réactive le grand format.</li>
+  </ol>
+  <p>Si la bannière dépasse de l'écran, dézoome avec <code>Ctrl</code> + <code>-</code> —
+     la capture restera à la bonne taille.</p>
+</div>
+
+<div id="banner">
+  <div class="left">
+    <div class="brandline">
+      <div class="mark">ب</div>
+      <div class="name">Beldi</div>
+    </div>
+    <div class="title">Le darija,<br>simplement</div>
+    <p class="sub">Tu écoutes, tu parles, on te corrige.<br>Puis tu joues, et tu défies tes amis.</p>
+    <div class="url">beldi-darija.fr</div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div class="txt">
+        <div class="ar">شحال هادا؟</div>
+        <div class="la">Chhal hada ?</div>
+        <div class="fr">Combien coûte ceci ?</div>
+      </div>
+      <div class="ico">🔊</div>
+    </div>
+    <div class="row">
+      <div class="txt">
+        <div class="ar">بغيت نمشي للمحطة</div>
+        <div class="la">Bghit nemchi l lmahatta</div>
+        <div class="fr">Je voudrais aller à la gare</div>
+      </div>
+      <div class="ico">🔊</div>
+    </div>
+    <div class="row">
+      <div class="txt">
+        <div class="said">Tu as dit : « chal hada »</div>
+        <div class="fix">Presque — marque bien le <strong>ch‑hal</strong>.</div>
+      </div>
+      <div class="ico ico-mic">🎤</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
