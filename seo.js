@@ -161,7 +161,8 @@ function layout({ title, description, canonical, crumbs, body }) {
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${esc(canonical)}">
-<meta property="og:image" content="${SITE}/icons/icon-512.png">
+<meta property="og:image" content="${SITE}/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
 <meta property="og:locale" content="fr_FR">
 <link rel="icon" href="/icons/icon-192.png">
 <meta name="theme-color" content="#0E4F56">
