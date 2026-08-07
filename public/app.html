@@ -3916,6 +3916,27 @@ function buildVocabDrill(cat, combien){
   });
 }
 
+// Mélange les propositions d'une question et recalcule l'index de la bonne réponse.
+// Ce n'est pas cosmétique : les questions de grammaire ont été écrites avec la bonne
+// réponse en première position dans six règles sur dix. Sans ce mélange, on peut faire
+// un sans-faute en cliquant toujours en haut, sans rien lire.
+function shuffleOptions(q){
+  const bonne = q.options[q.answer];
+  const options = shuffled(q.options);
+  return { q: q.q, options: options, answer: options.indexOf(bonne), why: q.why };
+}
+
+// Tirage dans le réservoir d'une règle : quatre questions parmi les neuf disponibles,
+// donc deux passages consécutifs ne se ressemblent pas.
+const GRAMMAR_DRILL_LENGTH = 4;
+
+function pickGrammarDrill(regle, combien){
+  const pool = (regle && regle.drill) || [];
+  if(!pool.length) return [];
+  const nb = Math.min(combien || GRAMMAR_DRILL_LENGTH, pool.length);
+  return shuffled(pool).slice(0, nb).map(shuffleOptions);
+}
+
 // ---------------------------------------------------------------
 // EXERCICE DE CONSTRUCTION
 // Choix multiple corrigé localement : aucun appel réseau, donc gratuit et immédiat.
@@ -4084,8 +4105,12 @@ function renderPhrasebookLeaf(cat){
       ${isCompleted(key) ? 'Refaire le test de ce palier' : 'Teste ce palier'}
     </button>`;
     document.getElementById('drill-start').onclick = ()=>{
-      runDrill(cat.drill, drillHost, {
+      // Les +10 restent acquis une seule fois : markCompleted est déjà protégé, donc
+      // relancer le tirage à volonté ne permet pas de récolter des points en boucle.
+      runDrill(pickGrammarDrill(cat), drillHost, {
         progressKey: key,
+        regenerate: ()=> pickGrammarDrill(cat),
+        againLabel: 'Encore, avec d’autres questions',
         onDone: ()=> renderPhrasebookLeaf(cat) // retour à la liste de phrases
       });
     };
@@ -4165,10 +4190,11 @@ function startGrammarQuiz(){
     .filter(l => l.drill && l.drill.length)
     .flatMap(l => l.drill);
   if(!pool.length) return;
-  const items = [...pool].sort(()=> Math.random() - 0.5).slice(0, QUIZ_LENGTH);
+  const tirage = ()=> shuffled(pool).slice(0, QUIZ_LENGTH).map(shuffleOptions);
+  const items = tirage();
   const host = document.getElementById('quiz-drill-host');
   document.getElementById('quiz-body').scrollIntoView({ behavior:'smooth', block:'start' });
-  runDrill(items, host, { onDone: renderQuizLevels });
+  runDrill(items, host, { regenerate: tirage, onDone: renderQuizLevels });
 }
 
 function startQuiz(levelId){

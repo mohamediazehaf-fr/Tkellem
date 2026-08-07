@@ -386,7 +386,12 @@ const GRAMMAR = [
       { q:'___ men Fransa. (moi, je viens de France)', options:['Ana','Nta','Houwa'], answer:0, why:'Ana = moi.' },
       { q:'Tu parles à une femme. Tu dis :', options:['Nta','Nti','Ntouma'], answer:1, why:'Nti au féminin, Nta au masculin.' },
       { q:'« nous » se dit :', options:['Hna','Houma','Ntouma'], answer:0, why:'Hna = nous. Houma = eux.' },
-      { q:'___ katakol. (elle mange)', options:['Houwa','Hiya','Hna'], answer:1, why:'Hiya = elle.' }
+      { q:'___ katakol. (elle mange)', options:['Houwa','Hiya','Hna'], answer:1, why:'Hiya = elle.' },
+      { q:'« vous » se dit :', options:['Ntouma','Houma','Hna'], answer:0, why:'Ntouma = vous, Houma = eux.' },
+      { q:'« eux, elles » :', options:['Houma','Ntouma','Hiya'], answer:0, why:'Houma pour la troisième personne du pluriel.' },
+      { q:'Tu parles à un homme. Tu dis :', options:['Nta','Nti','Houwa'], answer:0, why:'Nta au masculin, Nti au féminin.' },
+      { q:'Le verbe contient déjà la personne. Alors pourquoi ajouter le pronom ?', options:['pour insister',"c'est obligatoire",'pour marquer le passé'], answer:0, why:"On l'ajoute pour insister ou lever une ambiguïté." },
+      { q:'« lui » :', options:['Houwa','Hiya','Houma'], answer:0, why:'Houwa = lui, Hiya = elle.' }
     ]
   },
   { id:'gram_possessifs', icon:'🔑', name:'2. À qui c\'est ?',
@@ -405,7 +410,12 @@ const GRAMMAR = [
       { q:'« ma maison » :', options:['Dari','Darek','Daro'], answer:0, why:'Le suffixe -i marque la première personne.' },
       { q:'« sa maison, à elle » :', options:['Daro','Darha','Darna'], answer:1, why:'-ha pour elle, -ou pour lui.' },
       { q:'Autre façon de dire « mon livre » :', options:['Lktab dyali','Lktab dari','Dyali lktab'], answer:0, why:'dyal + pronom se place après le nom.' },
-      { q:'« notre maison » :', options:['Darna','Darhoum','Darek'], answer:0, why:'-na pour nous.' }
+      { q:'« notre maison » :', options:['Darna','Darhoum','Darek'], answer:0, why:'-na pour nous.' },
+      { q:'« ta maison » :', options:['Darek','Dari','Darha'], answer:0, why:'-ek marque la deuxième personne.' },
+      { q:'« sa maison, à lui » :', options:['Daro','Darha','Darna'], answer:0, why:'-ou pour lui, -ha pour elle.' },
+      { q:'« mon nom » :', options:['Smiti','Smitek','Smito'], answer:0, why:'Le même suffixe -i que dans dari.' },
+      { q:'« ton livre » :', options:['Lktab dyalek','Lktab dyali','Dyalek lktab'], answer:0, why:'dyal + pronom se place toujours après le nom.' },
+      { q:'Le suffixe -na marque :', options:['nous','vous','eux'], answer:0, why:'darna, notre maison.' }
     ]
   },
   { id:'gram_present', icon:'⚙️', name:'3. Le présent en ka-',
@@ -424,7 +434,12 @@ const GRAMMAR = [
       { q:'Ana ___ atay. (je bois du thé)', options:['kancherb','katcherb','kaycherb'], answer:0, why:'ana → préfixe n- : kan-.' },
       { q:'Houwa ___ lkhobz. (il mange le pain)', options:['kanakol','katakol','kayakol'], answer:2, why:'houwa → préfixe y- : kay-.' },
       { q:'Le « ka- » marque :', options:['le présent','le passé','le futur'], answer:0, why:'ka- = action en cours ou habituelle.' },
-      { q:'Nta ___ ddarija. (tu parles darija)', options:['kanhder','katehder','kayhder'], answer:1, why:'nta → préfixe t- : kat-.' }
+      { q:'Nta ___ ddarija. (tu parles darija)', options:['kanhder','katehder','kayhder'], answer:1, why:'nta → préfixe t- : kat-.' },
+      { q:'« nous mangeons » :', options:['Kanaklou','Kataklou','Kayaklou'], answer:0, why:'Préfixe n- et terminaison -ou au pluriel.' },
+      { q:'« ils mangent » :', options:['Kayaklou','Kanaklou','Kataklou'], answer:0, why:'Préfixe y- au pluriel : kay…ou.' },
+      { q:'Le préfixe de « je » est :', options:['n-','t-','y-'], answer:0, why:'kan- se décompose en ka + n.' },
+      { q:'« Katakol » peut vouloir dire :', options:['tu manges ou elle mange','il mange','nous mangeons'], answer:0, why:'Le préfixe t- sert au tu comme au elle.' },
+      { q:'« je parle le darija » :', options:['Kanhder ddarija','Kathder ddarija','Kayhder ddarija'], answer:0, why:'Première personne : kan-.' }
     ]
   },
   { id:'gram_negation', icon:'🚫', name:'4. Dire non',
@@ -443,7 +458,12 @@ const GRAMMAR = [
       { q:'Négation de « kanakol » :', options:['ma kanakoulch','ma kanakoul','kanakoulch'], answer:0, why:'ma devant ET ch derrière : les deux sont obligatoires.' },
       { q:'« je ne veux pas » :', options:['ma bghitch','bghitch','ma bghit'], answer:0, why:'Même encadrement au passé.' },
       { q:'Devant un nom ou un pronom, on utilise :', options:['machi','ma…ch','bla'], answer:0, why:'machi nie un mot, ma…ch nie un verbe.' },
-      { q:'« il n\'y a pas » :', options:['ma kaynch','ma kayn','kaynch'], answer:0, why:'kayn (il y a) → ma kaynch.' }
+      { q:'« il n\'y a pas » :', options:['ma kaynch','ma kayn','kaynch'], answer:0, why:'kayn (il y a) → ma kaynch.' },
+      { q:'« je n\'ai pas compris » :', options:['Ma fhemtch','Ma fhemt','Fhemtch'], answer:0, why:'Les deux éléments sont indispensables.' },
+      { q:'« je n\'ai pas » :', options:['Ma 3andich','Ma 3andi','3andich'], answer:0, why:'3andi (j\'ai) devient ma 3andich.' },
+      { q:'« ce n\'est pas lui » :', options:['Machi houwa','Ma houwach','Ma houwa'], answer:0, why:'Devant un pronom, c\'est machi.' },
+      { q:'« je ne bois pas » :', options:['Ma kancherbch','Ma kancherb','Kancherbch'], answer:0, why:'ma devant, ch derrière.' },
+      { q:'« je ne sais pas » :', options:['Ma 3reftch','Ma 3reft','3reftch'], answer:0, why:'Le même encadrement fonctionne au passé.' }
     ]
   },
   { id:'gram_passe', icon:'⏪', name:'5. Le passé',
@@ -462,7 +482,12 @@ const GRAMMAR = [
       { q:'« j\'ai mangé » :', options:['Klit','Kanakol','Ghadi nakol'], answer:0, why:'Suffixe -t pour la première personne.' },
       { q:'Au passé, la personne est marquée par :', options:['un suffixe','le préfixe ka-','rien'], answer:0, why:'Le passé suffixe, le présent préfixe.' },
       { q:'Houwa ___ l souk. (il est allé au souk)', options:['mchit','mcha','kaymchi'], answer:1, why:'À la 3e personne masculine, pas de suffixe.' },
-      { q:'« nous avons mangé » :', options:['Klina','Klitou','Klaw'], answer:0, why:'-na pour nous, -tou pour vous, -w pour eux.' }
+      { q:'« nous avons mangé » :', options:['Klina','Klitou','Klaw'], answer:0, why:'-na pour nous, -tou pour vous, -w pour eux.' },
+      { q:'« tu as mangé » :', options:['Kliti','Klit','Klat'], answer:0, why:'-ti pour la deuxième personne.' },
+      { q:'« elle a mangé » :', options:['Klat','Kla','Klina'], answer:0, why:'Le -t final marque le féminin.' },
+      { q:'« j\'ai vu » :', options:['Cheft','Chaft','Kanchouf'], answer:0, why:'Le même suffixe -t que dans klit.' },
+      { q:'« je suis allé » :', options:['Mchit','Mcha','Ghadi nemchi'], answer:0, why:'-t pour la première personne.' },
+      { q:'Au passé, garde-t-on le ka- ?', options:['non','oui','seulement au pluriel'], answer:0, why:'ka- appartient au présent.' }
     ]
   },
   { id:'gram_futur', icon:'⏩', name:'6. Le futur avec ghadi',
@@ -481,7 +506,12 @@ const GRAMMAR = [
       { q:'« je vais manger » :', options:['Ghadi nakol','Kanakol','Klit'], answer:0, why:'ghadi + verbe sans ka-.' },
       { q:'Après ghadi, le verbe garde-t-il le ka- ?', options:['non','oui','parfois'], answer:0, why:'ka- et ghadi ne cohabitent jamais.' },
       { q:'Ana ___ nchouf. (je vais voir)', options:['ghadi','kan','ma'], answer:0, why:'ghadi marque l\'intention, le futur proche.' },
-      { q:'Négation du futur :', options:['Ma ghadich nemchi','Ma nemchich','Ghadi ma nemchi'], answer:0, why:'C\'est ghadi qu\'on encadre, pas le verbe.' }
+      { q:'Négation du futur :', options:['Ma ghadich nemchi','Ma nemchich','Ghadi ma nemchi'], answer:0, why:'C\'est ghadi qu\'on encadre, pas le verbe.' },
+      { q:'« tu vas aller » :', options:['Ghadi temchi','Ghadi nemchi','Ghadi ymchi'], answer:0, why:'Le verbe garde son préfixe de présent, sans le ka-.' },
+      { q:'« elle va aller » :', options:['Ghadya temchi','Ghadi ymchi','Ghadi nemchi'], answer:0, why:'ghadi s\'accorde : ghadya au féminin.' },
+      { q:'« demain je vais partir » :', options:['Ghedda ghadi nemchi','Ghadi ghedda nemchi','Ghedda kanemchi'], answer:0, why:'Le mot de temps ouvre la phrase.' },
+      { q:'« je vais te voir » :', options:['Ghadi nchoufek','Ghadi tchoufek','Kanchoufek'], answer:0, why:'Première personne : préfixe n-.' },
+      { q:'À l\'oral, ghadi se réduit souvent en :', options:['gha-','ka-','ma-'], answer:0, why:'On entend « gha nemchi ».' }
     ]
   },
   { id:'gram_ordre', icon:'🔀', name:"7. L'ordre des mots",
@@ -500,7 +530,12 @@ const GRAMMAR = [
       { q:'« la grande maison » :', options:['Ddar kbira','Kbira ddar','Ddar dyal kbira'], answer:0, why:"L'adjectif suit toujours le nom." },
       { q:'Pour « je suis content », faut-il un verbe être ?', options:['non, on le sous-entend','oui, kan','oui, kayn'], answer:0, why:'Au présent, la phrase se passe du verbe être.' },
       { q:'« l\'eau est froide » :', options:['Lma bared','Bared lma','Lma kayn bared'], answer:0, why:'Nom puis adjectif, rien entre les deux.' },
-      { q:'« cette maison » :', options:['Had ddar','Ddar had','Ddar hadi kbira'], answer:0, why:'Le démonstratif, lui, précède le nom.' }
+      { q:'« cette maison » :', options:['Had ddar','Ddar had','Ddar hadi kbira'], answer:0, why:'Le démonstratif, lui, précède le nom.' },
+      { q:'« le tajine est bon » :', options:['Tajine bnin','Bnin tajine','Tajine kayn bnin'], answer:0, why:'Nom puis adjectif, sans verbe être.' },
+      { q:'« il est à la maison » :', options:['Houwa f ddar','Houwa kayn f ddar','F ddar houwa'], answer:0, why:'Pas de verbe être au présent.' },
+      { q:'Le démonstratif se place :', options:['avant le nom','après le nom','à la fin de la phrase'], answer:0, why:'had ddar — contrairement à l\'adjectif.' },
+      { q:'« un homme bien » :', options:['Wahed rajel mezyan','Wahed mezyan rajel','Rajel wahed mezyan'], answer:0, why:'wahed devant, l\'adjectif derrière.' },
+      { q:'« ceci est le livre » :', options:['Hada lktab','Lktab hada','Hada kayn lktab'], answer:0, why:'Le démonstratif ouvre, et aucun verbe ne relie.' }
     ]
   },
   { id:'gram_questions', icon:'❔', name:'8. Poser une question',
@@ -519,7 +554,12 @@ const GRAMMAR = [
       { q:'Pour une question fermée, on peut mettre devant :', options:['wach','achnou','kifach'], answer:0, why:'wach = est-ce que.' },
       { q:'« Où est la gare ? »', options:['Fin kayna lmahatta?','Lmahatta fin kayn?','Wach lmahatta?'], answer:0, why:'Le mot interrogatif ouvre la phrase.' },
       { q:'Sans mot interrogatif, la question se marque par :', options:["l'intonation",'un suffixe','rien du tout'], answer:0, why:'La même phrase devient question à la voix.' },
-      { q:'« qui est-ce ? »', options:['Chkoun hada?','Achnou hada?','Fin hada?'], answer:0, why:'chkoun pour une personne, achnou pour une chose.' }
+      { q:'« qui est-ce ? »', options:['Chkoun hada?','Achnou hada?','Fin hada?'], answer:0, why:'chkoun pour une personne, achnou pour une chose.' },
+      { q:'« Que dis-tu ? »', options:['Chnou katqoul?','Chkoun katqoul?','Fin katqoul?'], answer:0, why:'chnou interroge sur une chose.' },
+      { q:'« Comment t\'appelles-tu ? »', options:['Kifach smitek?','Chkoun smitek?','Fin smitek?'], answer:0, why:'kifach interroge la manière.' },
+      { q:'« As-tu le temps ? »', options:['Wach 3andek lweqt?','Fin 3andek lweqt?','3lach 3andek lweqt?'], answer:0, why:'wach ouvre une question fermée.' },
+      { q:'chkoun sert à interroger sur :', options:['une personne','une chose','un lieu'], answer:0, why:'chkoun qui, chnou quoi, fin où.' },
+      { q:'« Pourquoi ? »', options:['3lach?','Kifach?','Chkoun?'], answer:0, why:'3lach interroge la cause.' }
     ]
   },
   { id:'gram_liaison', icon:'🔗', name:'9. Les mots de liaison',
@@ -538,7 +578,12 @@ const GRAMMAR = [
       { q:'« mais » se dit :', options:['Walakin','Wla','Bach'], answer:0, why:'wla = ou, bach = pour.' },
       { q:'« parce que » :', options:['Hit','Bach','Lli'], answer:0, why:'hit introduit la cause.' },
       { q:'« l\'homme qui parle » :', options:['Rajel lli kayhder','Rajel bach kayhder','Rajel hit kayhder'], answer:0, why:'lli est le relatif, invariable.' },
-      { q:'« pour apprendre » :', options:['Bach nt3ellem','Hit nt3ellem','Lli nt3ellem'], answer:0, why:'bach exprime le but.' }
+      { q:'« pour apprendre » :', options:['Bach nt3ellem','Hit nt3ellem','Lli nt3ellem'], answer:0, why:'bach exprime le but.' },
+      { q:'« ou » se dit :', options:['Wla','Walakin','W'], answer:0, why:'wla marque le choix, w relie simplement.' },
+      { q:'« si » :', options:['Ila','Melli','Hit'], answer:0, why:'ila introduit la condition.' },
+      { q:'« quand, dès que » :', options:['Melli','Ila','Bach'], answer:0, why:'melli situe dans le temps.' },
+      { q:'Le relatif « qui, que » :', options:['Lli','Hit','Wla'], answer:0, why:'lli est invariable, quel que soit le nom.' },
+      { q:'« et » se dit :', options:['W','Wla','Walakin'], answer:0, why:'Une seule lettre, et le mot le plus fréquent de la langue.' }
     ]
   },
   { id:'gram_nombres', icon:'🔢', name:'10. Compter avec les noms',
@@ -557,7 +602,12 @@ const GRAMMAR = [
       { q:'À partir de 11, le nom se met :', options:['au singulier','au pluriel','au duel'], answer:0, why:'hdachen 3am, et non hdachen snin.' },
       { q:'« trois cafés » :', options:['Tlata d lqhawi','Tlata lqahwa','Lqahwa tlata'], answer:0, why:'De 3 à 10 : pluriel, souvent avec « d ».' },
       { q:'« onze ans » :', options:['Hdachen 3am','Hdach 3am','Hdach snin'], answer:0, why:'Le -n de liaison est obligatoire.' },
-      { q:'De 3 à 10, le nom est :', options:['au pluriel','au singulier','invariable'], answer:0, why:"C'est l'inverse d'à partir de 11." }
+      { q:'De 3 à 10, le nom est :', options:['au pluriel','au singulier','invariable'], answer:0, why:"C'est l'inverse d'à partir de 11." },
+      { q:'« un café » :', options:['Wahed lqahwa','Wahed qhawi','Qahwa wahed'], answer:0, why:'Avec 1, le nom reste au singulier.' },
+      { q:'« deux cafés » :', options:['Jouj qhawi','Jouj lqahwa','Qhawi jouj'], answer:0, why:'Dès 2, le nom passe au pluriel.' },
+      { q:'« cinq dirhams » :', options:['Khamsa drahem','Khamsa derhem','Drahem khamsa'], answer:0, why:'De 3 à 10 : nom au pluriel.' },
+      { q:'« vingt ans » :', options:['3ichrin 3am','3ichrin snin','3ichrin d l3am'], answer:0, why:'Au-delà de 11, le nom repasse au singulier.' },
+      { q:'Le « d » de « tlata d lqhawi » sert à :', options:['relier le nombre au nom','marquer le pluriel','marquer le passé'], answer:0, why:'On l\'intercale souvent de 3 à 10.' }
     ]
   }
 ];
