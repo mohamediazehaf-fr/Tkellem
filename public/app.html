@@ -668,6 +668,8 @@
   .drill-why{font-size:13.5px;line-height:1.45;margin-top:12px;}
   .drill-why.ok{color:var(--palm-dark);}
   .drill-why.ko{color:var(--henna-dark);}
+  /* l'arabe rappelé dans la correction : sans police dédiée il s'affiche en fallback système */
+  .drill-ar{font-family:var(--font-arabic);font-size:16px;direction:rtl;unicode-bidi:isolate;}
   .drill-why .mini-btn{display:block;margin-top:11px;}
 
   /* ---------- EXERCICE DE PRONONCIATION ---------- */
@@ -3864,13 +3866,62 @@ function renderPhrasebookGrid(nodes){
   });
 }
 
+// Mélange de Fisher-Yates. Le `sort(() => Math.random() - 0.5)` employé ailleurs dans
+// ce fichier suffit pour tirer dix items parmi cinquante, mais il est franchement biaisé
+// sur trois éléments : la bonne réponse retomberait trop souvent au même rang, et un
+// apprenant le remarque au bout de quelques questions.
+function shuffled(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ---------------------------------------------------------------
+// QUIZ ENGENDRÉ DEPUIS UNE LISTE DE VOCABULAIRE
+//
+// Les paliers de grammaire portent des questions écrites à la main, parce qu'elles
+// testent une règle et méritent une explication. Les fiches de vocabulaire, elles,
+// contiennent déjà tout ce qu'il faut : on demande la traduction d'une phrase et on
+// puise les deux leurres dans la MÊME fiche — donc des leurres plausibles, du même
+// registre, et non un mot de transport glissé dans une liste de nourriture.
+//
+// Conséquence importante : le stock ne s'épuise pas. Chaque appel produit un tirage
+// différent, là où quatre questions figées sont mémorisées au troisième passage.
+// Et tout se calcule dans le navigateur : aucun appel réseau, aucun coût.
+// ---------------------------------------------------------------
+const VOCAB_DRILL_LENGTH = 5;
+
+function buildVocabDrill(cat, combien){
+  const source = (cat.phrases || []).filter(p => p.fr && p.latin);
+  if(source.length < 3) return []; // moins de trois phrases : pas de leurre crédible
+  const nb = Math.min(combien || VOCAB_DRILL_LENGTH, source.length);
+  return shuffled(source).slice(0, nb).map(bonne => {
+    const leurres = shuffled(source.filter(p => p.latin !== bonne.latin)).slice(0, 2);
+    const options = shuffled([bonne].concat(leurres));
+    // Les fiches de chiffres annotent leur traduction après un tiret cadratin
+    // (« Vingt (20) — nouvelle forme ») : utile dans le tableau, parasite dans une question.
+    const libelle = bonne.fr.split(' — ')[0];
+    return {
+      q: `Comment dit-on « ${libelle} » ?`,
+      options: options.map(p => p.latin),
+      answer: options.indexOf(bonne),
+      why: `<strong>${bonne.latin}</strong> · <span class="drill-ar">${bonne.ar}</span>`
+    };
+  });
+}
+
 // ---------------------------------------------------------------
 // EXERCICE DE CONSTRUCTION
 // Choix multiple corrigé localement : aucun appel réseau, donc gratuit et immédiat.
 // Un seul moteur sert le test de fin de palier et le quiz grammaire global.
 // ---------------------------------------------------------------
-function runDrill(items, container, opts){
+function runDrill(itemsDepart, container, opts){
   const options = opts || {};
+  // réassignable : avec `regenerate`, « Encore » repart sur un tirage neuf
+  let items = itemsDepart;
   let i = 0, score = 0;
 
   function question(){
@@ -3927,17 +3978,30 @@ function runDrill(items, container, opts){
       checkNewBadges();
       earned = '<div class="pron-earned">+10 ⭐</div>';
     }
+    // Verdicts surchargeables : « relis la règle » n'a pas de sens sur une liste de mots.
+    const verdicts = options.verdicts || [
+      'Sans faute — la règle est acquise.',
+      'Bien vu. Relis la règle et retente.',
+      'Relis la règle en haut, puis retente.'
+    ];
     container.innerHTML = `
       <div class="drill">
         <div class="result-score" style="font-size:44px;">${score}<span class="result-total">/${items.length}</span></div>
-        <div class="result-label">${perfect ? 'Sans faute — la règle est acquise.' : score >= items.length / 2 ? 'Bien vu. Relis la règle et retente.' : 'Relis la règle en haut, puis retente.'}</div>
+        <div class="result-label">${perfect ? verdicts[0] : score >= items.length / 2 ? verdicts[1] : verdicts[2]}</div>
         ${earned}
         <div class="pron-actions" style="justify-content:center;">
-          <button class="mini-btn" id="drill-again">Refaire</button>
+          <button class="mini-btn" id="drill-again">${options.againLabel || 'Refaire'}</button>
           ${options.onDone ? '<button class="mini-btn ghost" id="drill-close">Fermer</button>' : ''}
         </div>
       </div>`;
-    document.getElementById('drill-again').onclick = ()=>{ i = 0; score = 0; question(); };
+    document.getElementById('drill-again').onclick = ()=>{
+      // sans `regenerate` on rejoue les mêmes questions, comportement d'origine
+      if(options.regenerate){
+        const frais = options.regenerate();
+        if(frais && frais.length) items = frais;
+      }
+      i = 0; score = 0; question();
+    };
     const close = document.getElementById('drill-close');
     if(close) close.onclick = options.onDone;
   }
@@ -4007,7 +4071,8 @@ function renderPhrasebookLeaf(cat){
   completeBtn.disabled = doneAlready;
   renderPhrasebookNext(doneAlready);
 
-  // Test de fin de palier, quand le palier en propose un (les paliers de grammaire)
+  // Test de fin de palier. Deux sources : des questions écrites à la main pour les
+  // paliers de grammaire, sinon un tirage engendré depuis la liste de mots elle-même.
   const drillHost = document.getElementById('phrasebook-drill');
   drillHost.innerHTML = '';
   if(cat.drill && cat.drill.length){
@@ -4019,6 +4084,23 @@ function renderPhrasebookLeaf(cat){
       runDrill(cat.drill, drillHost, {
         progressKey: key,
         onDone: ()=> renderPhrasebookLeaf(cat) // retour à la liste de phrases
+      });
+    };
+  } else if(buildVocabDrill(cat).length){
+    // Volontairement SANS progressKey : le tirage étant renouvelable à l'infini, des
+    // points ici seraient récoltables sans fin. Les +10 du palier restent sur le bouton
+    // « J'ai appris ces mots », qui lui ne se déclenche qu'une fois.
+    drillHost.innerHTML = `<button class="basics-cta" id="drill-start">Teste-toi sur ces mots</button>`;
+    document.getElementById('drill-start').onclick = ()=>{
+      runDrill(buildVocabDrill(cat), drillHost, {
+        regenerate: ()=> buildVocabDrill(cat),
+        againLabel: 'Encore, avec d’autres mots',
+        verdicts: [
+          'Sans faute. Ces mots sont à toi.',
+          'Bon score. Une autre série pour consolider ?',
+          'Reprends la liste au-dessus, puis retente.'
+        ],
+        onDone: ()=> renderPhrasebookLeaf(cat)
       });
     };
   }
