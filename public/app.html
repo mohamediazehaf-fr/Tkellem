@@ -11,6 +11,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Beldi">
+
+<!-- L'application ne doit pas être indexée : un robot n'y voit qu'un écran de connexion,
+     donc une page sans contenu, qui affaiblirait le référencement du reste du site.
+     Volontairement PAS de Disallow dans robots.txt : une page bloquée au parcours ne
+     peut pas être lue, donc ce noindex ne serait jamais vu. -->
+<meta name="robots" content="noindex, follow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
 <style>

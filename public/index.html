@@ -20,7 +20,10 @@
 <meta property="og:url" content="https://beldi-darija.fr/">
 <meta property="og:image" content="https://beldi-darija.fr/icons/icon-512.png">
 <meta property="og:locale" content="fr_FR">
-<meta name="twitter:card" content="summary_large_image">
+<!-- « summary » et non « summary_large_image » : l'aperçu large attend une image
+     d'environ 1200×630, or og:image est une icône carrée de 512 px, qui serait rognée.
+     À rebasculer le jour où une vraie image de partage existera. -->
+<meta name="twitter:card" content="summary">
 
 <link rel="icon" href="/icons/icon-192.png">
 <link rel="apple-touch-icon" href="/icons/icon-180.png">
@@ -39,6 +42,53 @@
   "teaches": "Darija marocain",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
   "description": "Application gratuite pour apprendre le darija marocain en le parlant : reconnaissance vocale, correction de la prononciation et conversations en situation."
+}
+</script>
+
+<!-- Les mêmes questions que la section « Questions fréquentes » plus bas, à l'identique.
+     Google exige que le balisage corresponde au texte visible : toute divergence fait
+     perdre le résultat enrichi, et une réponse modifiée ici doit l'être là aussi. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Est-ce vraiment gratuit ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Oui, entièrement, et sans publicité. Il n'y a rien à payer ni à installer : Beldi s'ouvre dans le navigateur, sur téléphone comme sur ordinateur." }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment ma prononciation est-elle corrigée ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Tu enregistres la phrase au micro. L'application transcrit ce qu'elle a entendu, le compare à la phrase visée, et te dit ce qui manque — le son précis à reprendre, pas seulement « juste » ou « faux ». Tu peux réécouter le modèle et réessayer autant de fois que tu veux. À savoir : cette correction mesure si tu es compris, pas la finesse phonétique que t'apporterait un professeur." }
+    },
+    {
+      "@type": "Question",
+      "name": "Pourquoi « Beldi » ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Beldi (بلدي) veut dire « du pays », « du terroir » — ce qui est local et authentique, par opposition à l'importé. Au Maroc, on parle de pain beldi, d'œufs beldi, de savon beldi. C'est exactement l'esprit : le darija tel qu'on le parle réellement, pas la version de manuel." }
+    },
+    {
+      "@type": "Question",
+      "name": "C'est du darija ou de l'arabe classique ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Du darija marocain, uniquement — la langue parlée au quotidien au Maroc. Elle diffère nettement de l'arabe standard : c'est celle qu'on entend au souk, dans un taxi ou en famille, et c'est celle qui te permet d'être compris tout de suite." }
+    },
+    {
+      "@type": "Question",
+      "name": "Faut-il savoir lire l'arabe ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Non. Chaque phrase est donnée en alphabet arabe, en écriture latine et en français. Tu peux tout faire sans jamais lire l'arabe — et l'apprendre en chemin si tu le souhaites." }
+    },
+    {
+      "@type": "Question",
+      "name": "Ça marche sur iPhone et Android ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Oui. Beldi fonctionne dans le navigateur, et tu peux l'ajouter à ton écran d'accueil pour l'utiliser comme une application : sur iPhone via le bouton Partager, sur Android via le menu de Chrome." }
+    },
+    {
+      "@type": "Question",
+      "name": "Peut-on apprendre à plusieurs ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Oui. Il y a un classement, et tu peux défier tes amis sur un quiz : vous répondez aux mêmes questions, le meilleur score gagne, et à égalité c'est le plus rapide." }
+    }
+  ]
 }
 </script>
 

@@ -15,7 +15,21 @@
 // robot d'indexation parcourt beaucoup d'URL d'affilée et se ferait bloquer.
 // ===============================================================
 
+const fs = require('fs');
+const path = require('path');
 const { PHRASEBOOK, GRAMMAR } = require('./public/data/content.js');
+
+// Date de dernière modification du contenu, pour le plan de site. On lit la date du
+// fichier source : elle avance à chaque déploiement qui touche au contenu, et
+// jamais autrement — ce qui est exactement le signal attendu par un moteur.
+function dateContenu() {
+  try {
+    return fs.statSync(path.join(__dirname, 'public', 'data', 'content.js'))
+             .mtime.toISOString().slice(0, 10);
+  } catch (e) {
+    return null; // plutôt aucune date qu'une date fausse
+  }
+}
 
 // Origine utilisée pour les URL canoniques et le plan de site. En variable
 // d'environnement pour qu'un changement de domaine ne demande pas de toucher au code.
@@ -112,7 +126,28 @@ footer{border-top:1px solid #EDE6D8;margin-top:44px;padding:22px 0 40px;font-siz
 @media(max-width:620px){body{font-size:16px}.ar{white-space:normal}th,td{padding:10px}}
 `;
 
-function layout({ title, description, canonical, breadcrumb, body }) {
+// Le fil d'Ariane est décrit une seule fois, sous forme de données, puis rendu deux
+// fois : en HTML pour le lecteur, en JSON-LD pour Google — qui l'affiche alors dans
+// ses résultats à la place de l'URL brute. Une seule source, donc pas de divergence.
+// Le dernier maillon est la page courante : il n'a pas de lien.
+function filHtml(crumbs) {
+  return crumbs.map(c => c.url ? `<a href="${esc(c.url)}">${esc(c.nom)}</a>` : esc(c.nom)).join(' › ');
+}
+function filJsonLd(crumbs) {
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: crumbs.map((c, i) => {
+      const e = { '@type': 'ListItem', position: i + 1, name: c.nom };
+      if (c.url) e.item = SITE + c.url;
+      return e;
+    })
+  };
+  // `<` échappé : un contenu contenant </script> couperait le bloc en deux.
+  return JSON.stringify(data).replace(/</g, '\\u003c');
+}
+
+function layout({ title, description, canonical, crumbs, body }) {
   return `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -132,6 +167,7 @@ function layout({ title, description, canonical, breadcrumb, body }) {
 <meta name="theme-color" content="#0E4F56">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script type="application/ld+json">${filJsonLd(crumbs)}</script>
 <style>${CSS}</style>
 </head>
 <body>
@@ -141,7 +177,7 @@ function layout({ title, description, canonical, breadcrumb, body }) {
   <a class="btn" href="/app">Ouvrir l'app</a>
 </header>
 <main class="wrap">
-  <nav class="fil">${breadcrumb}</nav>
+  <nav class="fil">${filHtml(crumbs)}</nav>
   ${body}
   <div class="cta">
     <p><strong>Ces phrases s'écoutent et se répètent.</strong> Dans l'application, tu entends la
@@ -202,7 +238,7 @@ ${autresLiens('Comprendre la langue', GRAMMAR.map(r => ({ url: urlRegle(r), nom:
       title: 'Apprendre le darija marocain : vocabulaire et grammaire',
       description: `Toutes les fiches pour apprendre le darija marocain : ${LEAVES.length} listes de vocabulaire par situation et ${GRAMMAR.length} règles expliquées, avec écriture arabe, prononciation et traduction.`,
       canonical: `${SITE}/darija`,
-      breadcrumb: '<a href="/">Accueil</a> › Fiches de darija',
+      crumbs: [{ nom: 'Accueil', url: '/' }, { nom: 'Fiches de darija' }],
       body
     }));
   });
@@ -229,7 +265,7 @@ ${autresLiens('À lire ensuite', voisins.concat([{ url: '/darija', nom: 'Toutes 
       title: titre,
       description: `${nb} expressions de darija marocain : ${e.leaf.phrases.slice(0, 3).map(p => p.fr).join(', ')}… Écriture arabe, prononciation et traduction française.`,
       canonical: `${SITE}${urlFeuille(e)}`,
-      breadcrumb: '<a href="/">Accueil</a> › <a href="/darija">Fiches de darija</a> › ' + esc(cleanName(e.leaf.name)),
+      crumbs: [{ nom: 'Accueil', url: '/' }, { nom: 'Fiches de darija', url: '/darija' }, { nom: cleanName(e.leaf.name) }],
       body
     }));
   });
@@ -256,7 +292,7 @@ ${autresLiens('À lire ensuite', voisins.concat([{ url: '/darija', nom: 'Toutes 
       title: titre,
       description: `${cleanName(r.name)} en darija marocain : la règle expliquée simplement, avec ${r.phrases.length} exemples en écriture arabe, prononciation et traduction.`,
       canonical: `${SITE}${urlRegle(r)}`,
-      breadcrumb: '<a href="/">Accueil</a> › <a href="/darija">Fiches de darija</a> › ' + esc(cleanName(r.name)),
+      crumbs: [{ nom: 'Accueil', url: '/' }, { nom: 'Fiches de darija', url: '/darija' }, { nom: cleanName(r.name) }],
       body
     }));
   });
@@ -266,9 +302,11 @@ ${autresLiens('À lire ensuite', voisins.concat([{ url: '/darija', nom: 'Toutes 
     const urls = ['/', '/darija']
       .concat(LEAVES.map(urlFeuille))
       .concat(GRAMMAR.map(urlRegle));
+    const maj = dateContenu();
+    const lastmod = maj ? `<lastmod>${maj}</lastmod>` : '';
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map(u => `  <url><loc>${SITE}${u}</loc></url>`).join('\n')}
+${urls.map(u => `  <url><loc>${SITE}${u}</loc>${lastmod}</url>`).join('\n')}
 </urlset>`;
     res.type('application/xml').send(xml);
   });
