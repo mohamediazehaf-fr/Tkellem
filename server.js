@@ -12,6 +12,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Une adresse propre sans .html : c'est celle qu'on partage et qu'on référence.
 app.get('/app', (req, res) => res.sendFile(path.join(__dirname, 'public', 'app.html')));
 
+// Pages de contenu lisibles par les moteurs de recherche (/darija, /grammaire,
+// sitemap, robots). Enregistrées ICI, avant le limiteur de débit : un robot
+// parcourt des dizaines d'URL d'affilée et se ferait bloquer par le garde-fou.
+require('./seo.js').registerSeoRoutes(app);
+
 // ---------------------------------------------------------------
 // GARDE-FOU DE DÉBIT (par adresse IP, en mémoire)
 // Ce n'est pas de l'anti-fraude : c'est le filet qui évite qu'un onglet laissé

@@ -1,453 +1,453 @@
-﻿"Section";"Categorie";"ID";"Arabe";"Translitteration";"Francais";"Variantes";"Verdict (OK ou A CORRIGER)";"Arabe corrige";"Translitteration corrigee";"Commentaire"
-"1. Je debute - les sons";"Les sons";"basics_sounds#حوت";"حوت";"Hout";"poisson";"";"";"";"";""
-"1. Je debute - les sons";"Les sons";"basics_sounds#خمسة";"خمسة";"Khamsa";"cinq";"";"";"";"";""
-"1. Je debute - les sons";"Les sons";"basics_sounds#عافاك";"عافاك";"3afak";"s'il te plaît";"";"";"";"";""
-"1. Je debute - les sons";"Les sons";"basics_sounds#قريب";"قريب";"Qrib";"proche";"";"";"";"";""
-"1. Je debute - les sons";"Les sons";"basics_sounds#طاجين";"طاجين";"Tajine";"le tajine";"";"";"";"";""
-"1. Je debute - les sons";"Les sons";"basics_sounds#شكرا";"شكرا";"Choukran";"merci";"";"";"";"";""
-"1. Je debute - les sons";"Les sons";"basics_sounds#واخا";"واخا";"Wakha";"d'accord";"";"";"";"";""
-"1. Je debute - les sons";"Les sons";"basics_sounds#بغيت";"بغيت";"Bghit";"je veux";"";"";"";"";""
-"1. Je debute - les sons";"Les sons";"basics_sounds#قهوة";"قهوة";"Qahwa";"café";"";"";"";"";""
-"2. Je debute - mots";"12 premiers mots";"basics_words#سلام";"سلام";"Salam";"Salut";"";"";"";"";""
-"2. Je debute - mots";"12 premiers mots";"basics_words#بغيت";"بغيت";"Bghit";"Je veux";"";"";"";"";""
-"2. Je debute - mots";"12 premiers mots";"basics_words#صباح الخير";"صباح الخير";"Sbah lkhir";"Bonjour (le matin)";"";"";"";"";""
-"2. Je debute - mots";"12 premiers mots";"basics_words#ما فهمتش";"ما فهمتش";"Ma fhemtch";"Je n'ai pas compris";"";"";"";"";""
-"2. Je debute - mots";"12 premiers mots";"basics_words#سمح لي";"سمح لي";"Smah li";"Pardon, excuse-moi";"";"";"";"";""
-"2. Je debute - mots";"12 premiers mots";"basics_words#شحال";"شحال";"Chhal";"Combien";"";"";"";"";""
-"2. Je debute - mots";"12 premiers mots";"basics_words#عاود عافاك";"عاود عافاك";"3awed 3afak";"Répète, s'il te plaît";"";"";"";"";""
-"2. Je debute - mots";"12 premiers mots";"basics_words#نعم / لا";"نعم / لا";"Ih / Lla";"Oui / Non";"";"";"";"";""
-"2. Je debute - mots";"12 premiers mots";"basics_words#شكرا";"شكرا";"Choukran";"Merci";"";"";"";"";""
-"2. Je debute - mots";"12 premiers mots";"basics_words#بسلامة";"بسلامة";"Bslama";"Au revoir";"";"";"";"";""
-"2. Je debute - mots";"12 premiers mots";"basics_words#واخا";"واخا";"Wakha";"D'accord";"";"";"";"";""
-"2. Je debute - mots";"12 premiers mots";"basics_words#عافاك";"عافاك";"3afak";"S'il te plaît";"";"";"";"";""
-"2. Je debute - mots";"Premiere phrase";"basics_phrase";"سلام، سميتي كريم و أنا من فرنسا";"Salam, smiti Karim w ana men Fransa";"Salut, je m'appelle Karim et je viens de France";"";"";"";"";""
-"3. Carnet de phrases";"1 à 10";"chiffres#سبعة";"سبعة";"Seb3a";"Sept (7)";"";"";"";"";""
-"3. Carnet de phrases";"1 à 10";"chiffres#ستة";"ستة";"Setta";"Six (6)";"";"";"";"";""
-"3. Carnet de phrases";"1 à 10";"chiffres#تمنية";"تمنية";"Tmnya";"Huit (8)";"";"";"";"";""
-"3. Carnet de phrases";"1 à 10";"chiffres#عشرة";"عشرة";"3achra";"Dix (10)";"";"";"";"";""
-"3. Carnet de phrases";"1 à 10";"chiffres#تسعة";"تسعة";"Tes3a";"Neuf (9)";"";"";"";"";""
-"3. Carnet de phrases";"1 à 10";"chiffres#خمسة";"خمسة";"Khamsa";"Cinq (5)";"";"";"";"";""
-"3. Carnet de phrases";"1 à 10";"chiffres#واحد";"واحد";"Wahed";"Un (1)";"";"";"";"";""
-"3. Carnet de phrases";"1 à 10";"chiffres#صفر";"صفر";"Sifr";"Zéro (0)";"";"";"";"";""
-"3. Carnet de phrases";"1 à 10";"chiffres#جوج";"جوج";"Jouj";"Deux (2)";"";"";"";"";""
-"3. Carnet de phrases";"1 à 10";"chiffres#ربعة";"ربعة";"Rab3a";"Quatre (4)";"";"";"";"";""
-"3. Carnet de phrases";"1 à 10";"chiffres#تلاتة";"تلاتة";"Tlata";"Trois (3)";"";"";"";"";""
-"3. Carnet de phrases";"1. À table";"nourriture#الكسكسو";"الكسكسو";"Kesksou";"Le couscous";"";"";"";"";""
-"3. Carnet de phrases";"1. À table";"nourriture#الطاجين";"الطاجين";"Tajine";"Le tajine";"";"";"";"";""
-"3. Carnet de phrases";"1. À table";"nourriture#الفاكية";"الفاكية";"Lfakya";"Les fruits";"";"";"";"";""
-"3. Carnet de phrases";"1. À table";"nourriture#اللحم";"اللحم";"Llham";"La viande";"";"";"";"";""
-"3. Carnet de phrases";"1. À table";"nourriture#الحوت";"الحوت";"Lhout";"Le poisson";"";"";"";"";""
-"3. Carnet de phrases";"1. À table";"nourriture#الخبز";"الخبز";"Lkhobz";"Le pain";"";"";"";"";""
-"3. Carnet de phrases";"1. À table";"nourriture#الحليب";"الحليب";"Lhlib";"Le lait";"";"";"";"";""
-"3. Carnet de phrases";"1. À table";"nourriture#قهوة";"قهوة";"Qahwa";"Café";"";"";"";"";""
-"3. Carnet de phrases";"1. À table";"nourriture#الما";"الما";"Lma";"L'eau";"";"";"";"";""
-"3. Carnet de phrases";"1. À table";"nourriture#أتاي";"أتاي";"Atay";"Thé à la menthe";"";"";"";"";""
-"3. Carnet de phrases";"1. La politesse essentielle";"expressions#ما فهمتش";"ما فهمتش";"Ma fhemtch";"Je n'ai pas compris";"";"";"";"";""
-"3. Carnet de phrases";"1. La politesse essentielle";"expressions#عاود عافاك";"عاود عافاك";"3awed 3afak";"Répète s'il te plaît";"";"";"";"";""
-"3. Carnet de phrases";"1. La politesse essentielle";"expressions#نعم / لا";"نعم / لا";"Ih / Lla";"Oui / Non";"";"";"";"";""
-"3. Carnet de phrases";"1. La politesse essentielle";"expressions#بلا جميل";"بلا جميل";"Bla jmil";"De rien";"";"";"";"";""
-"3. Carnet de phrases";"1. La politesse essentielle";"expressions#شكرا";"شكرا";"Choukran";"Merci";"";"";"";"";""
-"3. Carnet de phrases";"1. La politesse essentielle";"expressions#عافاك";"عافاك";"3afak";"S'il te plaît";"";"";"";"";""
-"3. Carnet de phrases";"1. La politesse essentielle";"expressions#سمح لي";"سمح لي";"Smah li";"Excuse-moi / pardon";"";"";"";"";""
-"3. Carnet de phrases";"1. La politesse essentielle";"expressions#ماشي مشكل";"ماشي مشكل";"Machi mouchkil";"Pas de souci";"";"";"";"";""
-"3. Carnet de phrases";"1. La politesse essentielle";"expressions#إن شاء الله";"إن شاء الله";"Inchallah";"Si Dieu le veut";"";"";"";"";""
-"3. Carnet de phrases";"1. La politesse essentielle";"expressions#واخا";"واخا";"Wakha";"D'accord";"";"";"";"";""
-"3. Carnet de phrases";"1. Les bases";"salutations#مسا الخير";"مسا الخير";"Msa lkhir";"Bonsoir";"";"";"";"";""
-"3. Carnet de phrases";"1. Les bases";"salutations#بسلامة";"بسلامة";"Bslama";"Au revoir";"";"";"";"";""
-"3. Carnet de phrases";"1. Les bases";"salutations#تصبح على خير";"تصبح على خير";"Tsbah 3la khir";"Bonne nuit";"";"";"";"";""
-"3. Carnet de phrases";"1. Les bases";"salutations#صباح الخير";"صباح الخير";"Sbah lkhir";"Bonjour (le matin)";"";"";"";"";""
-"3. Carnet de phrases";"1. Les bases";"salutations#سلام";"سلام";"Salam";"Salut";"";"";"";"";""
-"3. Carnet de phrases";"1. Les bases";"salutations#لاباس، الحمد لله";"لاباس، الحمد لله";"Labas, lhamdulah";"Ça va, merci Dieu";"";"";"";"";""
-"3. Carnet de phrases";"1. Les bases";"salutations#كيف داير";"كيف داير";"Kif dayer";"Comment ça va (à un homme)";"";"";"";"";""
-"3. Carnet de phrases";"1. Les bases";"salutations#كيف دايرة";"كيف دايرة";"Kif dayra";"Comment ça va (à une femme)";"";"";"";"";""
-"3. Carnet de phrases";"1. Les mots essentiels";"transports#بعيد";"بعيد";"B3id";"Loin";"";"";"";"";""
-"3. Carnet de phrases";"1. Les mots essentiels";"transports#الطوبيس";"الطوبيس";"Tobis";"Le bus";"";"";"";"";""
-"3. Carnet de phrases";"1. Les mots essentiels";"transports#على الشمال";"على الشمال";"3la chmal";"À gauche";"";"";"";"";""
-"3. Carnet de phrases";"1. Les mots essentiels";"transports#على اليمين";"على اليمين";"3la lymin";"À droite";"";"";"";"";""
-"3. Carnet de phrases";"1. Les mots essentiels";"transports#قريب";"قريب";"Qrib";"Proche";"";"";"";"";""
-"3. Carnet de phrases";"1. Les mots essentiels";"transports#نيشان";"نيشان";"Nichan";"Tout droit";"";"";"";"";""
-"3. Carnet de phrases";"1. Les mots essentiels";"transports#الطيارة";"الطيارة";"Tyara";"L'avion";"";"";"";"";""
-"3. Carnet de phrases";"1. Les mots essentiels";"transports#الطاكسي";"الطاكسي";"Taxi";"Le taxi";"";"";"";"";""
-"3. Carnet de phrases";"1. Les mots essentiels";"transports#فين كاين...؟";"فين كاين...؟";"Fin kayn...?";"Où se trouve... ?";"";"";"";"";""
-"3. Carnet de phrases";"1. Les mots essentiels";"transports#الطران";"الطران";"Tran";"Le train";"";"";"";"";""
-"3. Carnet de phrases";"1. Qui tu es";"presentation#شحال ف عمرك؟";"شحال ف عمرك؟";"Chhal f 3omrek?";"Quel âge as-tu ?";"";"";"";"";""
-"3. Carnet de phrases";"1. Qui tu es";"presentation#أنا من فرنسا";"أنا من فرنسا";"Ana men fransa";"Je suis de France";"";"";"";"";""
-"3. Carnet de phrases";"1. Qui tu es";"presentation#فرحت بيك";"فرحت بيك";"Frahte bik";"Ravi de te rencontrer";"";"";"";"";""
-"3. Carnet de phrases";"1. Qui tu es";"presentation#عندي ... عام";"عندي ... عام";"3andi ... 3am";"J'ai ... ans";"";"";"";"";""
-"3. Carnet de phrases";"1. Qui tu es";"presentation#سميتي...";"سميتي...";"Smiti...";"Je m'appelle...";"";"";"";"";""
-"3. Carnet de phrases";"1. Qui tu es";"presentation#أسمك أشنو؟";"أسمك أشنو؟";"Asmek achno?";"Comment tu t'appelles ?";"";"";"";"";""
-"3. Carnet de phrases";"1. Qui tu es";"presentation#منين انت؟";"منين انت؟";"Mnin nta?";"D'où es-tu ?";"";"";"";"";""
-"3. Carnet de phrases";"10. Proverbes et sagesse";"exp_10#الله يجيب الخير";"الله يجيب الخير";"Allah yjib lkhir";"Que Dieu apporte le bien";"";"";"";"";""
-"3. Carnet de phrases";"10. Proverbes et sagesse";"exp_10#اللي بغا العسل يصبر لقريص النحل";"اللي بغا العسل يصبر لقريص النحل";"Lli bgha l3sel ysber l qris nhel";"Qui veut le miel supporte les piqûres";"";"";"";"";""
-"3. Carnet de phrases";"10. Proverbes et sagesse";"exp_10#اللي فات مات";"اللي فات مات";"Lli fat mat";"Ce qui est passé est passé";"";"";"";"";""
-"3. Carnet de phrases";"10. Proverbes et sagesse";"exp_10#الصبر مفتاح الفرج";"الصبر مفتاح الفرج";"Sser meftah lfaraj";"La patience est la clé du salut";"";"";"";"";""
-"3. Carnet de phrases";"10. Proverbes et sagesse";"exp_10#ديما الحق كيبان";"ديما الحق كيبان";"Dima lhaq kayban";"La vérité finit toujours par paraître";"";"";"";"";""
-"3. Carnet de phrases";"10. Proverbes et sagesse";"exp_10#يد وحدة ما كتصفقش";"يد وحدة ما كتصفقش";"Yed wehda ma katsefeqch";"Une seule main n'applaudit pas";"";"";"";"";""
-"3. Carnet de phrases";"10. Proverbes et sagesse";"exp_10#كل تأخيرة فيها خيرة";"كل تأخيرة فيها خيرة";"Koul takhira fiha khira";"Tout retard a du bon";"";"";"";"";""
-"3. Carnet de phrases";"10. Proverbes et sagesse";"exp_10#حبة حبة كتعمر الخابية";"حبة حبة كتعمر الخابية";"Hebba hebba kat3emmer lkhabya";"Grain par grain, le pot se remplit";"";"";"";"";""
-"3. Carnet de phrases";"10. Proverbes et sagesse";"exp_10#الجار قبل الدار";"الجار قبل الدار";"Ljar qbel ddar";"Le voisin avant la maison";"";"";"";"";""
-"3. Carnet de phrases";"10. Proverbes et sagesse";"exp_10#اللي ما عندو ما يخسر";"اللي ما عندو ما يخسر";"Lli ma 3ando ma ykhser";"Qui n'a rien n'a rien à perdre";"";"";"";"";""
-"3. Carnet de phrases";"2. Accueillir, prendre des nouvelles";"salutations_2#كيف الحال؟";"كيف الحال؟";"Kif lhal?";"Comment vas-tu ? (neutre)";"";"";"";"";""
-"3. Carnet de phrases";"2. Accueillir, prendre des nouvelles";"salutations_2#تهلا";"تهلا";"Thella";"Porte-toi bien (au départ)";"";"";"";"";""
-"3. Carnet de phrases";"2. Accueillir, prendre des nouvelles";"salutations_2#أهلا وسهلا";"أهلا وسهلا";"Ahlan wa sahlan";"Bienvenue (chaleureux)";"";"";"";"";""
-"3. Carnet de phrases";"2. Accueillir, prendre des nouvelles";"salutations_2#مرحبا بيك";"مرحبا بيك";"Marhba bik";"Sois le bienvenu";"";"";"";"";""
-"3. Carnet de phrases";"2. Accueillir, prendre des nouvelles";"salutations_2#أش خبارك؟";"أش خبارك؟";"Ach khbarek?";"Quelles nouvelles ?";"";"";"";"";""
-"3. Carnet de phrases";"2. Accueillir, prendre des nouvelles";"salutations_2#كلشي بخير؟";"كلشي بخير؟";"Koulchi bikhir?";"Tout va bien ?";"";"";"";"";""
-"3. Carnet de phrases";"2. Accueillir, prendre des nouvelles";"salutations_2#الله يسعد صباحك";"الله يسعد صباحك";"Allah ys3ed sbahek";"Que ta matinée soit heureuse";"";"";"";"";""
-"3. Carnet de phrases";"2. Accueillir, prendre des nouvelles";"salutations_2#الله يحفظك";"الله يحفظك";"Allah yhefdek";"Que Dieu te garde";"";"";"";"";""
-"3. Carnet de phrases";"2. Approuver, nuancer";"exp_2#بالتأكيد";"بالتأكيد";"Bettakid";"Certainement";"";"";"";"";""
-"3. Carnet de phrases";"2. Approuver, nuancer";"exp_2#ياك؟";"ياك؟";"Yak?";"N'est-ce pas ?";"";"";"";"";""
-"3. Carnet de phrases";"2. Approuver, nuancer";"exp_2#إيوا";"إيوا";"Iwa";"Oui, voilà";"";"";"";"";""
-"3. Carnet de phrases";"2. Approuver, nuancer";"exp_2#على الأقل";"على الأقل";"3la lqell";"Au moins";"";"";"";"";""
-"3. Carnet de phrases";"2. Approuver, nuancer";"exp_2#صافي";"صافي";"Safi";"C'est bon, ça suffit";"";"";"";"";""
-"3. Carnet de phrases";"2. Approuver, nuancer";"exp_2#ماشي";"ماشي";"Machi";"Ce n'est pas";"";"";"";"";""
-"3. Carnet de phrases";"2. Approuver, nuancer";"exp_2#يمكن";"يمكن";"Yemken";"Peut-être";"";"";"";"";""
-"3. Carnet de phrases";"2. Approuver, nuancer";"exp_2#كافي";"كافي";"Kafi";"Assez";"";"";"";"";""
-"3. Carnet de phrases";"2. Approuver, nuancer";"exp_2#شوية";"شوية";"Chwiya";"Un peu";"";"";"";"";""
-"3. Carnet de phrases";"2. Approuver, nuancer";"exp_2#بزاف";"بزاف";"Bezzaf";"Beaucoup, trop";"";"";"";"";""
-"3. Carnet de phrases";"2. Demander son chemin";"transports_2#بشحال للمطار؟";"بشحال للمطار؟";"Bchhal l lmatar?";"Combien pour l'aéroport ?";"";"";"";"";""
-"3. Carnet de phrases";"2. Demander son chemin";"transports_2#شحال بعيد من هنا؟";"شحال بعيد من هنا؟";"Chhal b3id men hna?";"C'est à quelle distance d'ici ?";"";"";"";"";""
-"3. Carnet de phrases";"2. Demander son chemin";"transports_2#كيفاش نوصل ل...؟";"كيفاش نوصل ل...؟";"Kifach nousel l...?";"Comment aller à... ?";"";"";"";"";""
-"3. Carnet de phrases";"2. Demander son chemin";"transports_2#قدام";"قدام";"Qeddam";"Devant";"";"";"";"";""
-"3. Carnet de phrases";"2. Demander son chemin";"transports_2#فين كاينة المحطة؟";"فين كاينة المحطة؟";"Fin kayna lmahatta?";"Où est la gare ?";"";"";"";"";""
-"3. Carnet de phrases";"2. Demander son chemin";"transports_2#مورا";"مورا";"Moura";"Derrière";"";"";"";"";""
-"3. Carnet de phrases";"2. Demander son chemin";"transports_2#بين";"بين";"Bin";"Entre";"";"";"";"";""
-"3. Carnet de phrases";"2. Demander son chemin";"transports_2#حدا الجامع";"حدا الجامع";"Hda jjame3";"À côté de la mosquée";"";"";"";"";""
-"3. Carnet de phrases";"2. Demander son chemin";"transports_2#وقف هنا عافاك";"وقف هنا عافاك";"Wqef hna 3afak";"Arrête-toi ici s'il te plaît";"";"";"";"";""
-"3. Carnet de phrases";"2. Demander son chemin";"transports_2#دوز على اليمين";"دوز على اليمين";"Douz 3la lymin";"Tourne à droite";"";"";"";"";""
-"3. Carnet de phrases";"2. Faire ses courses";"nourriture_2#الطماطم";"الطماطم";"Maticha";"Les tomates";"";"";"";"";""
-"3. Carnet de phrases";"2. Faire ses courses";"nourriture_2#البصلة";"البصلة";"Lbsla";"L'oignon";"";"";"";"";""
-"3. Carnet de phrases";"2. Faire ses courses";"nourriture_2#البطاطا";"البطاطا";"Lbatata";"Les pommes de terre";"";"";"";"";""
-"3. Carnet de phrases";"2. Faire ses courses";"nourriture_2#الخضرة";"الخضرة";"Lkhodra";"Les légumes";"";"";"";"";""
-"3. Carnet de phrases";"2. Faire ses courses";"nourriture_2#عطيني كيلو عافاك";"عطيني كيلو عافاك";"3tini kilo 3afak";"Donne-moi un kilo, merci";"";"";"";"";""
-"3. Carnet de phrases";"2. Faire ses courses";"nourriture_2#الجبن";"الجبن";"Ljben";"Le fromage";"";"";"";"";""
-"3. Carnet de phrases";"2. Faire ses courses";"nourriture_2#البيض";"البيض";"Lbeid";"Les œufs";"";"";"";"";""
-"3. Carnet de phrases";"2. Faire ses courses";"nourriture_2#الملحة";"الملحة";"Lmelha";"Le sel";"";"";"";"";""
-"3. Carnet de phrases";"2. Faire ses courses";"nourriture_2#السكر";"السكر";"Ssokkar";"Le sucre";"";"";"";"";""
-"3. Carnet de phrases";"2. Faire ses courses";"nourriture_2#الزيت";"الزيت";"Zzit";"L'huile";"";"";"";"";""
-"3. Carnet de phrases";"2. Ta vie, ta famille";"presentation_2#كنخدم ف...";"كنخدم ف...";"Kankhdem f...";"Je travaille dans...";"";"";"";"";""
-"3. Carnet de phrases";"2. Ta vie, ta famille";"presentation_2#كنتعلم الدارجة";"كنتعلم الدارجة";"Kant3ellem ddarija";"J'apprends le darija";"";"";"";"";""
-"3. Carnet de phrases";"2. Ta vie, ta famille";"presentation_2#أنا مزال";"أنا مزال";"Ana mazal";"Je suis encore célibataire";"";"";"";"";""
-"3. Carnet de phrases";"2. Ta vie, ta famille";"presentation_2#أنا طالب";"أنا طالب";"Ana taleb";"Je suis étudiant";"";"";"";"";""
-"3. Carnet de phrases";"2. Ta vie, ta famille";"presentation_2#واليدي مغربي";"واليدي مغربي";"Walidi maghribi";"Mon père est marocain";"";"";"";"";""
-"3. Carnet de phrases";"2. Ta vie, ta famille";"presentation_2#كنسكن ف...";"كنسكن ف...";"Kanseken f...";"J'habite à...";"";"";"";"";""
-"3. Carnet de phrases";"2. Ta vie, ta famille";"presentation_2#أنا متزوج";"أنا متزوج";"Ana mzewwej";"Je suis marié";"";"";"";"";""
-"3. Carnet de phrases";"2. Ta vie, ta famille";"presentation_2#عندي وليدات";"عندي وليدات";"3andi wlidat";"J'ai des enfants";"";"";"";"";""
-"3. Carnet de phrases";"3. Aller plus loin";"presentation_3#جيت هنا للعطلة";"جيت هنا للعطلة";"Jit hna l l3otla";"Je suis venu ici en vacances";"";"";"";"";""
-"3. Carnet de phrases";"3. Aller plus loin";"presentation_3#مازال كنتعلم";"مازال كنتعلم";"Mazal kant3ellem";"J'apprends encore";"";"";"";"";""
-"3. Carnet de phrases";"3. Aller plus loin";"presentation_3#أشمن مدينة كتسكن؟";"أشمن مدينة كتسكن؟";"Achmen mdina katseken?";"Dans quelle ville habites-tu ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Aller plus loin";"presentation_3#عاود ليا عافاك، بشوية";"عاود ليا عافاك، بشوية";"3awed liya 3afak, bchwiya";"Répète doucement, merci";"";"";"";"";""
-"3. Carnet de phrases";"3. Aller plus loin";"presentation_3#أشنو كتخدم؟";"أشنو كتخدم؟";"Achnou katkhdem?";"Tu fais quoi comme travail ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Aller plus loin";"presentation_3#كنبغي المغرب بزاف";"كنبغي المغرب بزاف";"Kanebghi lmaghrib bezzaf";"J'aime beaucoup le Maroc";"";"";"";"";""
-"3. Carnet de phrases";"3. Aller plus loin";"presentation_3#أصلي من المغرب";"أصلي من المغرب";"Asli men lmaghrib";"Je suis d’origine marocaine";"";"";"";"";""
-"3. Carnet de phrases";"3. Aller plus loin";"presentation_3#كنهضر شوية الدارجة";"كنهضر شوية الدارجة";"Kanhder chwiya ddarija";"Je parle un peu le darija";"";"";"";"";""
-"3. Carnet de phrases";"3. Commander et apprécier";"nourriture_3#بلا سكر عافاك";"بلا سكر عافاك";"Bla soukkar 3afak";"Sans sucre, merci";"";"";"";"";""
-"3. Carnet de phrases";"3. Commander et apprécier";"nourriture_3#بصحتك";"بصحتك";"Bsahtek";"Bon appétit / à ta santé";"";"";"";"";""
-"3. Carnet de phrases";"3. Commander et apprécier";"nourriture_3#أشنو كاين اليوم؟";"أشنو كاين اليوم؟";"Achnou kayn lyoum?";"Qu'y a-t-il aujourd'hui ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Commander et apprécier";"nourriture_3#الحساب عافاك";"الحساب عافاك";"Lhsab 3afak";"L'addition, s'il te plaît";"";"";"";"";""
-"3. Carnet de phrases";"3. Commander et apprécier";"nourriture_3#ما كناكلش اللحم";"ما كناكلش اللحم";"Ma kanaklch llham";"Je ne mange pas de viande";"";"";"";"";""
-"3. Carnet de phrases";"3. Commander et apprécier";"nourriture_3#هادا بنين بزاف";"هادا بنين بزاف";"Hada bnin bezzaf";"C'est vraiment délicieux";"";"";"";"";""
-"3. Carnet de phrases";"3. Commander et apprécier";"nourriture_3#شوية من الملحة";"شوية من الملحة";"Chwiya men lmelha";"Un peu de sel";"";"";"";"";""
-"3. Carnet de phrases";"3. Commander et apprécier";"nourriture_3#شبعت، الحمد لله";"شبعت، الحمد لله";"Chbe3t, lhamdoullah";"J'ai assez mangé, merci";"";"";"";"";""
-"3. Carnet de phrases";"3. Commander et apprécier";"nourriture_3#عندي حساسية";"عندي حساسية";"3andi hassasiya";"J'ai une allergie";"";"";"";"";""
-"3. Carnet de phrases";"3. Commander et apprécier";"nourriture_3#بغيت نفطر";"بغيت نفطر";"Bghit neftar";"Je voudrais déjeuner";"";"";"";"";""
-"3. Carnet de phrases";"3. Comme un habitué";"salutations_3#وعليكم السلام";"وعليكم السلام";"W 3alaykoum salam";"La réponse attendue";"";"";"";"";""
-"3. Carnet de phrases";"3. Comme un habitué";"salutations_3#كيداير مع الصحة؟";"كيداير مع الصحة؟";"Kidayer m3a sseha?";"Et la santé, ça va ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Comme un habitué";"salutations_3#شحال هادي ما تشاوفنا";"شحال هادي ما تشاوفنا";"Chhal hadi ma tchawefna";"Ça fait longtemps qu'on ne s'est pas vus";"";"";"";"";""
-"3. Carnet de phrases";"3. Comme un habitué";"salutations_3#السلام عليكم";"السلام عليكم";"Assalamou 3alaykoum";"Salutation complète, respectueuse";"";"";"";"";""
-"3. Carnet de phrases";"3. Comme un habitué";"salutations_3#على الله نتلاقاو";"على الله نتلاقاو";"3la Allah ntlaqaw";"On se reverra, si Dieu veut";"";"";"";"";""
-"3. Carnet de phrases";"3. Comme un habitué";"salutations_3#تهلا في راسك";"تهلا في راسك";"Thella f rasek";"Prends soin de toi";"";"";"";"";""
-"3. Carnet de phrases";"3. Comme un habitué";"salutations_3#سلم لي على الوالدين";"سلم لي على الوالدين";"Sellem li 3la lwalidin";"Salue tes parents de ma part";"";"";"";"";""
-"3. Carnet de phrases";"3. Comme un habitué";"salutations_3#الله يعاونك";"الله يعاونك";"Allah y3awnek";"Bon courage (à quelqu'un qui travaille)";"";"";"";"";""
-"3. Carnet de phrases";"3. Poser une question";"exp_3#كيفاش؟";"كيفاش؟";"Kifach?";"Comment ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Poser une question";"exp_3#أشمن واحد؟";"أشمن واحد؟";"Achmen wahed?";"Lequel ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Poser une question";"exp_3#شكون؟";"شكون؟";"Chkoun?";"Qui ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Poser une question";"exp_3#شحال؟";"شحال؟";"Chhal?";"Combien ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Poser une question";"exp_3#واش...؟";"واش...؟";"Wach...?";"Est-ce que... ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Poser une question";"exp_3#أشنو؟";"أشنو؟";"Achnou?";"Quoi ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Poser une question";"exp_3#فين؟";"فين؟";"Fin?";"Où ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Poser une question";"exp_3#فوقاش؟";"فوقاش؟";"Fouqach?";"À quelle heure ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Poser une question";"exp_3#إمتى؟";"إمتى؟";"Imta?";"Quand ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Poser une question";"exp_3#علاش؟";"علاش؟";"3lach?";"Pourquoi ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Voyager pour de vrai";"transports_3#واش هاد الطريق مزيان؟";"واش هاد الطريق مزيان؟";"Wach had triq mezyan?";"Est-ce que cette route est bonne ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Voyager pour de vrai";"transports_3#كاين الزحام";"كاين الزحام";"Kayn zzham";"Il y a des embouteillages";"";"";"";"";""
-"3. Carnet de phrases";"3. Voyager pour de vrai";"transports_3#فوقاش كيمشي الطران؟";"فوقاش كيمشي الطران؟";"Fouqach kaymchi tran?";"À quelle heure part le train ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Voyager pour de vrai";"transports_3#مشا ليا الطوبيس";"مشا ليا الطوبيس";"Mcha liya tobis";"J'ai raté le bus";"";"";"";"";""
-"3. Carnet de phrases";"3. Voyager pour de vrai";"transports_3#بلا كونتور عافاك";"بلا كونتور عافاك";"Bla contour 3afak";"Sans détour, s’il te plaît";"";"";"";"";""
-"3. Carnet de phrases";"3. Voyager pour de vrai";"transports_3#صافي، وصلت";"صافي، وصلت";"Safi, wselt";"Voilà, je suis arrivé";"";"";"";"";""
-"3. Carnet de phrases";"3. Voyager pour de vrai";"transports_3#بغيت تيكي ل...";"بغيت تيكي ل...";"Bghit tiki l...";"Je voudrais un billet pour...";"";"";"";"";""
-"3. Carnet de phrases";"3. Voyager pour de vrai";"transports_3#فين نزل؟";"فين نزل؟";"Fin nnzel?";"Où est-ce que je descends ?";"";"";"";"";""
-"3. Carnet de phrases";"3. Voyager pour de vrai";"transports_3#حط الكونتور";"حط الكونتور";"Hett lcontour";"Mets le compteur";"";"";"";"";""
-"3. Carnet de phrases";"3. Voyager pour de vrai";"transports_3#عندي الباكاج";"عندي الباكاج";"3andi lbagaj";"J'ai des bagages";"";"";"";"";""
-"3. Carnet de phrases";"4. Situer dans le temps";"exp_4#كل نهار";"كل نهار";"Koul nhar";"Chaque jour";"";"";"";"";""
-"3. Carnet de phrases";"4. Situer dans le temps";"exp_4#من بعد";"من بعد";"Men be3d";"Plus tard";"";"";"";"";""
-"3. Carnet de phrases";"4. Situer dans le temps";"exp_4#مرة مرة";"مرة مرة";"Marra marra";"De temps en temps";"";"";"";"";""
-"3. Carnet de phrases";"4. Situer dans le temps";"exp_4#بشوية";"بشوية";"Bchwiya";"Doucement";"";"";"";"";""
-"3. Carnet de phrases";"4. Situer dans le temps";"exp_4#ديما";"ديما";"Dima";"Toujours";"";"";"";"";""
-"3. Carnet de phrases";"4. Situer dans le temps";"exp_4#غدا";"غدا";"Ghedda";"Demain";"";"";"";"";""
-"3. Carnet de phrases";"4. Situer dans le temps";"exp_4#اليوم";"اليوم";"Lyoum";"Aujourd'hui";"";"";"";"";""
-"3. Carnet de phrases";"4. Situer dans le temps";"exp_4#دغيا";"دغيا";"Deghya";"Vite, tout de suite";"";"";"";"";""
-"3. Carnet de phrases";"4. Situer dans le temps";"exp_4#دابا";"دابا";"Daba";"Maintenant";"";"";"";"";""
-"3. Carnet de phrases";"4. Situer dans le temps";"exp_4#البارح";"البارح";"Lbareh";"Hier";"";"";"";"";""
-"3. Carnet de phrases";"5. Dire ce que tu ressens";"exp_5#كنبغي";"كنبغي";"Kanebghi";"J'aime";"";"";"";"";""
-"3. Carnet de phrases";"5. Dire ce que tu ressens";"exp_5#ما كنبغيش";"ما كنبغيش";"Ma kanebghich";"Je n'aime pas";"";"";"";"";""
-"3. Carnet de phrases";"5. Dire ce que tu ressens";"exp_5#بخير";"بخير";"Bikhir";"Je vais bien";"";"";"";"";""
-"3. Carnet de phrases";"5. Dire ce que tu ressens";"exp_5#خايف";"خايف";"Khayef";"J'ai peur";"";"";"";"";""
-"3. Carnet de phrases";"5. Dire ce que tu ressens";"exp_5#فيا العطش";"فيا العطش";"Fiya l3tach";"J'ai soif";"";"";"";"";""
-"3. Carnet de phrases";"5. Dire ce que tu ressens";"exp_5#فرحان";"فرحان";"Ferhan";"Content";"";"";"";"";""
-"3. Carnet de phrases";"5. Dire ce que tu ressens";"exp_5#مستعجل";"مستعجل";"Msta3jel";"Pressé";"";"";"";"";""
-"3. Carnet de phrases";"5. Dire ce que tu ressens";"exp_5#مقلق";"مقلق";"Mqelleq";"Contrarié";"";"";"";"";""
-"3. Carnet de phrases";"5. Dire ce que tu ressens";"exp_5#فيا الجوع";"فيا الجوع";"Fiya jjou3";"J'ai faim";"";"";"";"";""
-"3. Carnet de phrases";"5. Dire ce que tu ressens";"exp_5#عيان";"عيان";"3eyyan";"Fatigué";"";"";"";"";""
-"3. Carnet de phrases";"6. Se débrouiller";"exp_6#بشحال هادا؟";"بشحال هادا؟";"Bchhal hada?";"Combien coûte ceci ?";"";"";"";"";""
-"3. Carnet de phrases";"6. Se débrouiller";"exp_6#خلاص";"خلاص";"Khlas";"C'est réglé, terminé";"";"";"";"";""
-"3. Carnet de phrases";"6. Se débrouiller";"exp_6#تكلم بشوية عافاك";"تكلم بشوية عافاك";"Tkellem bchwiya 3afak";"Parle doucement, merci";"";"";"";"";""
-"3. Carnet de phrases";"6. Se débrouiller";"exp_6#وقف هنا عافاك";"وقف هنا عافاك";"Wqef hna 3afak";"Arrête-toi ici s'il te plaît";"";"";"";"";""
-"3. Carnet de phrases";"6. Se débrouiller";"exp_6#عندك...؟";"عندك...؟";"3andek...?";"Est-ce que tu as... ?";"";"";"";"";""
-"3. Carnet de phrases";"6. Se débrouiller";"exp_6#ضاع ليا";"ضاع ليا";"Da3 liya";"Je l'ai perdu";"";"";"";"";""
-"3. Carnet de phrases";"6. Se débrouiller";"exp_6#ما عرفتش";"ما عرفتش";"Ma 3reftch";"Je ne sais pas";"";"";"";"";""
-"3. Carnet de phrases";"6. Se débrouiller";"exp_6#بغيت نمشي ل...";"بغيت نمشي ل...";"Bghit nemchi l...";"Je veux aller à...";"";"";"";"";""
-"3. Carnet de phrases";"6. Se débrouiller";"exp_6#كتهضر بالفرنسية؟";"كتهضر بالفرنسية؟";"Katehder belfransiya?";"Tu parles français ?";"";"";"";"";""
-"3. Carnet de phrases";"6. Se débrouiller";"exp_6#عاوني عافاك";"عاوني عافاك";"3awenni 3afak";"Aide-moi s'il te plaît";"";"";"";"";""
-"3. Carnet de phrases";"7. Donner ton avis";"exp_7#ساهل";"ساهل";"Sahel";"Facile";"";"";"";"";""
-"3. Carnet de phrases";"7. Donner ton avis";"exp_7#صعيب";"صعيب";"S3ib";"Difficile";"";"";"";"";""
-"3. Carnet de phrases";"7. Donner ton avis";"exp_7#زوين";"زوين";"Zwin";"Beau, joli";"";"";"";"";""
-"3. Carnet de phrases";"7. Donner ton avis";"exp_7#عجبني";"عجبني";"3jebni";"Ça m'a plu";"";"";"";"";""
-"3. Carnet de phrases";"7. Donner ton avis";"exp_7#رخيص";"رخيص";"Rkhis";"Bon marché";"";"";"";"";""
-"3. Carnet de phrases";"7. Donner ton avis";"exp_7#مزيان";"مزيان";"Mezyan";"Bien";"";"";"";"";""
-"3. Carnet de phrases";"7. Donner ton avis";"exp_7#خايب";"خايب";"Khayb";"Laid, mauvais";"";"";"";"";""
-"3. Carnet de phrases";"7. Donner ton avis";"exp_7#ما مزيانش";"ما مزيانش";"Ma mezyanch";"Pas bien";"";"";"";"";""
-"3. Carnet de phrases";"7. Donner ton avis";"exp_7#غالي";"غالي";"Ghali";"Cher";"";"";"";"";""
-"3. Carnet de phrases";"7. Donner ton avis";"exp_7#بنين";"بنين";"Bnin";"Délicieux";"";"";"";"";""
-"3. Carnet de phrases";"8. Les formules qui font marocain";"exp_8#تهلا في راسك";"تهلا في راسك";"Thella f rasek";"Prends soin de toi";"";"";"";"";""
-"3. Carnet de phrases";"8. Les formules qui font marocain";"exp_8#الله يسهل";"الله يسهل";"Allah ysehhel";"Que Dieu facilite";"";"";"";"";""
-"3. Carnet de phrases";"8. Les formules qui font marocain";"exp_8#بسلامة";"بسلامة";"Bslama";"Va en paix";"";"";"";"";""
-"3. Carnet de phrases";"8. Les formules qui font marocain";"exp_8#واه؟";"واه؟";"Wah?";"Ah bon ?";"";"";"";"";""
-"3. Carnet de phrases";"8. Les formules qui font marocain";"exp_8#الله يرحم الوالدين";"الله يرحم الوالدين";"Allah yrhem lwalidin";"Formule de remerciement appuyé";"";"";"";"";""
-"3. Carnet de phrases";"8. Les formules qui font marocain";"exp_8#الله يعطيك الصحة";"الله يعطيك الصحة";"Allah y3tik sseha";"Merci (littéralement : que Dieu te donne la santé)";"";"";"";"";""
-"3. Carnet de phrases";"8. Les formules qui font marocain";"exp_8#تبارك الله عليك";"تبارك الله عليك";"Tbarkallah 3lik";"Bravo, félicitations";"";"";"";"";""
-"3. Carnet de phrases";"8. Les formules qui font marocain";"exp_8#الله يخليك";"الله يخليك";"Allah ykhellik";"Je t'en prie, de grâce";"";"";"";"";""
-"3. Carnet de phrases";"8. Les formules qui font marocain";"exp_8#مبروك";"مبروك";"Mabrouk";"Félicitations";"";"";"";"";""
-"3. Carnet de phrases";"8. Les formules qui font marocain";"exp_8#الحمد لله";"الحمد لله";"Lhamdoullah";"Dieu merci";"";"";"";"";""
-"3. Carnet de phrases";"9. Expressions imagées";"exp_9#دير النية";"دير النية";"Dir nniya";"Fais-le de bon cœur";"";"";"";"";""
-"3. Carnet de phrases";"9. Expressions imagées";"exp_9#ما كاين باس";"ما كاين باس";"Ma kayn bas";"Il n’y a pas de mal";"";"";"";"";""
-"3. Carnet de phrases";"9. Expressions imagées";"exp_9#غير بشوية عليك";"غير بشوية عليك";"Ghir bchwiya 3lik";"Vas-y doucement";"";"";"";"";""
-"3. Carnet de phrases";"9. Expressions imagées";"exp_9#زعما؟";"زعما؟";"Z3ma?";"Ah bon, c’est-à-dire ?";"";"";"";"";""
-"3. Carnet de phrases";"9. Expressions imagées";"exp_9#واقيلا";"واقيلا";"Waqila";"Il me semble que";"";"";"";"";""
-"3. Carnet de phrases";"9. Expressions imagées";"exp_9#على قد الحال";"على قد الحال";"3la qed lhal";"Modestement, comme on peut";"";"";"";"";""
-"3. Carnet de phrases";"9. Expressions imagées";"exp_9#شوية بشوية";"شوية بشوية";"Chwiya b chwiya";"Petit à petit";"";"";"";"";""
-"3. Carnet de phrases";"9. Expressions imagées";"exp_9#الله غالب";"الله غالب";"Allah ghaleb";"On n'y peut rien, c'est ainsi";"";"";"";"";""
-"3. Carnet de phrases";"9. Expressions imagées";"exp_9#بصح؟";"بصح؟";"Bsseh?";"Vraiment ?";"";"";"";"";""
-"3. Carnet de phrases";"9. Expressions imagées";"exp_9#صافي بقيت أنا";"صافي بقيت أنا";"Safi bqit ana";"Ça suffit, j'arrête là";"";"";"";"";""
-"3. Carnet de phrases";"Les centaines";"centaines#خمس مية و ستة و تلاتين";"خمس مية و ستة و تلاتين";"Khems mya w setta w tlatin";"Cinq cent trente-six (536)";"";"";"";"";""
-"3. Carnet de phrases";"Les centaines";"centaines#سبع مية";"سبع مية";"Sbe3 mya";"Sept cents (700)";"";"";"";"";""
-"3. Carnet de phrases";"Les centaines";"centaines#ست مية";"ست مية";"Sett mya";"Six cents (600)";"";"";"";"";""
-"3. Carnet de phrases";"Les centaines";"centaines#تمن مية";"تمن مية";"Tmen mya";"Huit cents (800)";"";"";"";"";""
-"3. Carnet de phrases";"Les centaines";"centaines#تسع مية";"تسع مية";"Tse3 mya";"Neuf cents (900)";"";"";"";"";""
-"3. Carnet de phrases";"Les centaines";"centaines#تلت مية و خمسين";"تلت مية و خمسين";"Tlet mya w khamsin";"Trois cent cinquante (350)";"";"";"";"";""
-"3. Carnet de phrases";"Les centaines";"centaines#خمس مية";"خمس مية";"Khems mya";"Cinq cents (500)";"";"";"";"";""
-"3. Carnet de phrases";"Les centaines";"centaines#ربع مية";"ربع مية";"Rbe3 mya";"Quatre cents (400)";"";"";"";"";""
-"3. Carnet de phrases";"Les centaines";"centaines#مية";"مية";"Mya";"Cent (100)";"";"";"";"";""
-"3. Carnet de phrases";"Les centaines";"centaines#ميتين";"ميتين";"Myatayn";"Deux cents (200) — forme spéciale";"";"";"";"";""
-"3. Carnet de phrases";"Les centaines";"centaines#تلت مية";"تلت مية";"Tlet mya";"Trois cents (300)";"";"";"";"";""
-"3. Carnet de phrases";"Les chiffres 11 à 20";"chiffres_11_20#عشرين";"عشرين";"3achrin";"Vingt (20) — nouvelle forme";"";"";"";"";""
-"3. Carnet de phrases";"Les chiffres 11 à 20";"chiffres_11_20#تسعطاش";"تسعطاش";"Tsa3tach";"Dix-neuf (19) — tes3a + tach";"";"";"";"";""
-"3. Carnet de phrases";"Les chiffres 11 à 20";"chiffres_11_20#تلطاش";"تلطاش";"Tletach";"Treize (13) — tlata + tach";"";"";"";"";""
-"3. Carnet de phrases";"Les chiffres 11 à 20";"chiffres_11_20#ربعطاش";"ربعطاش";"Rba3tach";"Quatorze (14) — rab3a + tach";"";"";"";"";""
-"3. Carnet de phrases";"Les chiffres 11 à 20";"chiffres_11_20#حضاش";"حضاش";"Hdach";"Onze (11) — irrégulier";"";"";"";"";""
-"3. Carnet de phrases";"Les chiffres 11 à 20";"chiffres_11_20#طناش";"طناش";"Tnach";"Douze (12) — irrégulier";"";"";"";"";""
-"3. Carnet de phrases";"Les chiffres 11 à 20";"chiffres_11_20#سبعطاش";"سبعطاش";"Sba3tach";"Dix-sept (17) — seb3a + tach";"";"";"";"";""
-"3. Carnet de phrases";"Les chiffres 11 à 20";"chiffres_11_20#تمنطاش";"تمنطاش";"Tmentach";"Dix-huit (18) — tmnya + tach";"";"";"";"";""
-"3. Carnet de phrases";"Les chiffres 11 à 20";"chiffres_11_20#خمسطاش";"خمسطاش";"Khmestach";"Quinze (15) — khamsa + tach";"";"";"";"";""
-"3. Carnet de phrases";"Les chiffres 11 à 20";"chiffres_11_20#سطاش";"سطاش";"Settach";"Seize (16) — setta + tach";"";"";"";"";""
-"3. Carnet de phrases";"Les dizaines (20 à 100)";"dizaines#خمسين";"خمسين";"Khamsin";"Cinquante (50) — khamsa + in";"";"";"";"";""
-"3. Carnet de phrases";"Les dizaines (20 à 100)";"dizaines#ستين";"ستين";"Settin";"Soixante (60) — setta + in";"";"";"";"";""
-"3. Carnet de phrases";"Les dizaines (20 à 100)";"dizaines#ربعين";"ربعين";"Reb3in";"Quarante (40) — rab3a + in";"";"";"";"";""
-"3. Carnet de phrases";"Les dizaines (20 à 100)";"dizaines#تسعين";"تسعين";"Tes3in";"Quatre-vingt-dix (90) — tes3a + in";"";"";"";"";""
-"3. Carnet de phrases";"Les dizaines (20 à 100)";"dizaines#عشرين";"عشرين";"3achrin";"Vingt (20)";"";"";"";"";""
-"3. Carnet de phrases";"Les dizaines (20 à 100)";"dizaines#تلاتين";"تلاتين";"Tlatin";"Trente (30) — tlata + in";"";"";"";"";""
-"3. Carnet de phrases";"Les dizaines (20 à 100)";"dizaines#سبعين";"سبعين";"Seb3in";"Soixante-dix (70) — seb3a + in";"";"";"";"";""
-"3. Carnet de phrases";"Les dizaines (20 à 100)";"dizaines#خمسة و تلاتين";"خمسة و تلاتين";"Khamsa w tlatin";"Trente-cinq (35) — « cinq et trente »";"";"";"";"";""
-"3. Carnet de phrases";"Les dizaines (20 à 100)";"dizaines#تمنية و ربعين";"تمنية و ربعين";"Tmnya w reb3in";"Quarante-huit (48) — « huit et quarante »";"";"";"";"";""
-"3. Carnet de phrases";"Les dizaines (20 à 100)";"dizaines#تسعة و تسعين";"تسعة و تسعين";"Tes3a w tes3in";"Quatre-vingt-dix-neuf (99) — « neuf et quatre-vingt-dix »";"";"";"";"";""
-"3. Carnet de phrases";"Les dizaines (20 à 100)";"dizaines#تمانين";"تمانين";"Tmanin";"Quatre-vingts (80) — tmnya + in";"";"";"";"";""
-"3. Carnet de phrases";"Les dizaines (20 à 100)";"dizaines#مية";"مية";"Mya";"Cent (100)";"";"";"";"";""
-"3. Carnet de phrases";"Les dizaines (20 à 100)";"dizaines#واحد و عشرين";"واحد و عشرين";"Wahed w 3achrin";"Vingt-et-un (21) — « un et vingt »";"";"";"";"";""
-"3. Carnet de phrases";"Mille et au-delà";"grands_nombres#مية ألف";"مية ألف";"Mya alf";"Cent mille (100 000) — mya (cent) + alf (mille)";"";"";"";"";""
-"3. Carnet de phrases";"Mille et au-delà";"grands_nombres#عشرة آلاف";"عشرة آلاف";"3achra alaf";"Dix mille (10 000)";"";"";"";"";""
-"3. Carnet de phrases";"Mille et au-delà";"grands_nombres#جوج ملايين";"جوج ملايين";"Jouj mlayen";"Deux millions (2 000 000)";"";"";"";"";""
-"3. Carnet de phrases";"Mille et au-delà";"grands_nombres#مليون";"مليون";"Melyoun";"Un million (1 000 000)";"";"";"";"";""
-"3. Carnet de phrases";"Mille et au-delà";"grands_nombres#خمس آلاف";"خمس آلاف";"Khems alaf";"Cinq mille (5 000)";"";"";"";"";""
-"3. Carnet de phrases";"Mille et au-delà";"grands_nombres#ألف";"ألف";"Alf";"Mille (1 000)";"";"";"";"";""
-"3. Carnet de phrases";"Mille et au-delà";"grands_nombres#ألف و ميتين و ستة و خمسين";"ألف و ميتين و ستة و خمسين";"Alf w myatayn w setta w khamsin";"Mille deux cent cinquante-six (1 256)";"";"";"";"";""
-"3. Carnet de phrases";"Mille et au-delà";"grands_nombres#تلت آلاف";"تلت آلاف";"Tlet alaf";"Trois mille (3 000) — chiffre + alaf";"";"";"";"";""
-"3. Carnet de phrases";"Mille et au-delà";"grands_nombres#ألفين";"ألفين";"Alfayn";"Deux mille (2 000) — forme spéciale";"";"";"";"";""
-"4. Comprendre la langue";"1. Les pronoms";"gram_pronoms#نتي";"نتي";"Nti";"toi (à une femme)";"";"";"";"";""
-"4. Comprendre la langue";"1. Les pronoms";"gram_pronoms#هو";"هو";"Houwa";"lui";"";"";"";"";""
-"4. Comprendre la langue";"1. Les pronoms";"gram_pronoms#أنا";"أنا";"Ana";"moi, je";"";"";"";"";""
-"4. Comprendre la langue";"1. Les pronoms";"gram_pronoms#نتا";"نتا";"Nta";"toi (à un homme)";"";"";"";"";""
-"4. Comprendre la langue";"1. Les pronoms";"gram_pronoms#نتوما";"نتوما";"Ntouma";"vous";"";"";"";"";""
-"4. Comprendre la langue";"1. Les pronoms";"gram_pronoms#هوما";"هوما";"Houma";"eux, elles";"";"";"";"";""
-"4. Comprendre la langue";"1. Les pronoms";"gram_pronoms#هي";"هي";"Hiya";"elle";"";"";"";"";""
-"4. Comprendre la langue";"1. Les pronoms";"gram_pronoms#حنا";"حنا";"Hna";"nous";"";"";"";"";""
-"4. Comprendre la langue";"10. Compter avec les noms";"gram_nombres#خمسة دراهم";"خمسة دراهم";"Khamsa drahem";"cinq dirhams";"";"";"";"";""
-"4. Comprendre la langue";"10. Compter avec les noms";"gram_nombres#تلاتة د القهاوي";"تلاتة د القهاوي";"Tlata d lqhawi";"trois cafés";"";"";"";"";""
-"4. Comprendre la langue";"10. Compter avec les noms";"gram_nombres#جوج قهاوي";"جوج قهاوي";"Jouj qhawi";"deux cafés";"";"";"";"";""
-"4. Comprendre la langue";"10. Compter avec les noms";"gram_nombres#شحال من مرة";"شحال من مرة";"Chhal men marra";"combien de fois";"";"";"";"";""
-"4. Comprendre la langue";"10. Compter avec les noms";"gram_nombres#عشرين عام";"عشرين عام";"3achrin 3am";"vingt ans";"";"";"";"";""
-"4. Comprendre la langue";"10. Compter avec les noms";"gram_nombres#حضاشن عام";"حضاشن عام";"Hdachen 3am";"onze ans";"";"";"";"";""
-"4. Comprendre la langue";"10. Compter avec les noms";"gram_nombres#واحد القهوة";"واحد القهوة";"Wahed lqahwa";"un café";"";"";"";"";""
-"4. Comprendre la langue";"10. Compter avec les noms";"gram_nombres#عشرة دقايق";"عشرة دقايق";"3achra dqayq";"dix minutes";"";"";"";"";""
-"4. Comprendre la langue";"2. À qui c\";"gram_possessifs#سميتي";"سميتي";"Smiti";"mon nom";"";"";"";"";""
-"4. Comprendre la langue";"2. À qui c\";"gram_possessifs#الدار ديالي";"الدار ديالي";"Ddar dyali";"la maison à moi";"";"";"";"";""
-"4. Comprendre la langue";"2. À qui c\";"gram_possessifs#دارو";"دارو";"Daro";"sa maison (à lui)";"";"";"";"";""
-"4. Comprendre la langue";"2. À qui c\";"gram_possessifs#دارها";"دارها";"Darha";"sa maison (à elle)";"";"";"";"";""
-"4. Comprendre la langue";"2. À qui c\";"gram_possessifs#دارنا";"دارنا";"Darna";"notre maison";"";"";"";"";""
-"4. Comprendre la langue";"2. À qui c\";"gram_possessifs#دارك";"دارك";"Darek";"ta maison";"";"";"";"";""
-"4. Comprendre la langue";"2. À qui c\";"gram_possessifs#داري";"داري";"Dari";"ma maison";"";"";"";"";""
-"4. Comprendre la langue";"2. À qui c\";"gram_possessifs#الكتاب ديالك";"الكتاب ديالك";"Lktab dyalek";"ton livre";"";"";"";"";""
-"4. Comprendre la langue";"3. Le présent en ka-";"gram_present#كياكلو";"كياكلو";"Kayaklou";"ils mangent";"";"";"";"";""
-"4. Comprendre la langue";"3. Le présent en ka-";"gram_present#كنشرب أتاي";"كنشرب أتاي";"Kancherb atay";"je bois du thé";"";"";"";"";""
-"4. Comprendre la langue";"3. Le présent en ka-";"gram_present#كنهضر الدارجة";"كنهضر الدارجة";"Kanhder ddarija";"je parle le darija";"";"";"";"";""
-"4. Comprendre la langue";"3. Le présent en ka-";"gram_present#كتاكل";"كتاكل";"Katakol";"tu manges / elle mange";"";"";"";"";""
-"4. Comprendre la langue";"3. Le présent en ka-";"gram_present#كياكل";"كياكل";"Kayakol";"il mange";"";"";"";"";""
-"4. Comprendre la langue";"3. Le présent en ka-";"gram_present#كتاكلو";"كتاكلو";"Kataklou";"vous mangez";"";"";"";"";""
-"4. Comprendre la langue";"3. Le présent en ka-";"gram_present#كناكل";"كناكل";"Kanakol";"je mange";"";"";"";"";""
-"4. Comprendre la langue";"3. Le présent en ka-";"gram_present#كناكلو";"كناكلو";"Kanaklou";"nous mangeons";"";"";"";"";""
-"4. Comprendre la langue";"4. Dire non";"gram_negation#ما عرفتش";"ما عرفتش";"Ma 3reftch";"je ne sais pas";"";"";"";"";""
-"4. Comprendre la langue";"4. Dire non";"gram_negation#ما كنشربش";"ما كنشربش";"Ma kancherbch";"je ne bois pas";"";"";"";"";""
-"4. Comprendre la langue";"4. Dire non";"gram_negation#ماشي هو";"ماشي هو";"Machi houwa";"ce n'est pas lui";"";"";"";"";""
-"4. Comprendre la langue";"4. Dire non";"gram_negation#ما عنديش";"ما عنديش";"Ma 3andich";"je n'ai pas";"";"";"";"";""
-"4. Comprendre la langue";"4. Dire non";"gram_negation#ما بغيتش";"ما بغيتش";"Ma bghitch";"je ne veux pas";"";"";"";"";""
-"4. Comprendre la langue";"4. Dire non";"gram_negation#ما كاينش";"ما كاينش";"Ma kaynch";"il n'y a pas";"";"";"";"";""
-"4. Comprendre la langue";"4. Dire non";"gram_negation#ما كناكلش";"ما كناكلش";"Ma kanaklch";"je ne mange pas";"";"";"";"";""
-"4. Comprendre la langue";"4. Dire non";"gram_negation#ما فهمتش";"ما فهمتش";"Ma fhemtch";"je n'ai pas compris";"";"";"";"";""
-"4. Comprendre la langue";"5. Le passé";"gram_passe#كلينا";"كلينا";"Klina";"nous avons mangé";"";"";"";"";""
-"4. Comprendre la langue";"5. Le passé";"gram_passe#مشيت";"مشيت";"Mchit";"je suis allé";"";"";"";"";""
-"4. Comprendre la langue";"5. Le passé";"gram_passe#كليتي";"كليتي";"Kliti";"tu as mangé";"";"";"";"";""
-"4. Comprendre la langue";"5. Le passé";"gram_passe#كلا";"كلا";"Kla";"il a mangé";"";"";"";"";""
-"4. Comprendre la langue";"5. Le passé";"gram_passe#كليت";"كليت";"Klit";"j'ai mangé";"";"";"";"";""
-"4. Comprendre la langue";"5. Le passé";"gram_passe#كلات";"كلات";"Klat";"elle a mangé";"";"";"";"";""
-"4. Comprendre la langue";"5. Le passé";"gram_passe#شفت";"شفت";"Cheft";"j'ai vu";"";"";"";"";""
-"4. Comprendre la langue";"5. Le passé";"gram_passe#مشا";"مشا";"Mcha";"il est allé";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#أنا فرحان";"أنا فرحان";"Ana ferhan";"je suis content";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#الدار كبيرة";"الدار كبيرة";"Ddar kbira";"la grande maison";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#غدا غادي نمشي";"غدا غادي نمشي";"Ghedda ghadi nemchi";"demain je vais partir";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#غادي نشوفك";"غادي نشوفك";"Ghadi nchoufek";"je vais te voir";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#ما غاديش نمشي";"ما غاديش نمشي";"Ma ghadich nemchi";"je ne vais pas aller";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#هاد الدار";"هاد الدار";"Had ddar";"cette maison";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#هادا الكتاب";"هادا الكتاب";"Hada lktab";"ceci est le livre";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#واحد الراجل مزيان";"واحد الراجل مزيان";"Wahed rajel mezyan";"un homme bien";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#هو ف الدار";"هو ف الدار";"Houwa f ddar";"il est à la maison";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#الطاجين بنين";"الطاجين بنين";"Tajine bnin";"le tajine est bon";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#الما بارد";"الما بارد";"Lma bared";"l'eau est froide";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#غادي تمشي";"غادي تمشي";"Ghadi temchi";"tu vas aller";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#غادي نمشي";"غادي نمشي";"Ghadi nemchi";"je vais aller";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#غادي يمشي";"غادي يمشي";"Ghadi ymchi";"il va aller";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#غادي ناكل";"غادي ناكل";"Ghadi nakol";"je vais manger";"";"";"";"";""
-"4. Comprendre la langue";"6. Le futur avec ghadi";"gram_futur#غادية تمشي";"غادية تمشي";"Ghadya temchi";"elle va aller";"";"";"";"";""
-"4. Comprendre la langue";"8. Poser une question";"gram_questions#واش نتا مغربي؟";"واش نتا مغربي؟";"Wach nta maghribi?";"Es-tu marocain ?";"";"";"";"";""
-"4. Comprendre la langue";"8. Poser une question";"gram_questions#شكون هادا؟";"شكون هادا؟";"Chkoun hada?";"Qui est-ce ?";"";"";"";"";""
-"4. Comprendre la langue";"8. Poser une question";"gram_questions#فين كاينة المحطة؟";"فين كاينة المحطة؟";"Fin kayna lmahatta?";"Où est la gare ?";"";"";"";"";""
-"4. Comprendre la langue";"8. Poser une question";"gram_questions#نتا مغربي؟";"نتا مغربي؟";"Nta maghribi?";"Tu es marocain ? (à l\";"";"";"";"";""
-"4. Comprendre la langue";"8. Poser une question";"gram_questions#شنو كتقول؟";"شنو كتقول؟";"Chnou katqoul?";"Que dis-tu ?";"";"";"";"";""
-"4. Comprendre la langue";"8. Poser une question";"gram_questions#علاش؟";"علاش؟";"3lach?";"Pourquoi ?";"";"";"";"";""
-"4. Comprendre la langue";"8. Poser une question";"gram_questions#واش عندك الوقت؟";"واش عندك الوقت؟";"Wach 3andek lweqt?";"As-tu le temps ?";"";"";"";"";""
-"4. Comprendre la langue";"8. Poser une question";"gram_questions#كيفاش سميتك؟";"كيفاش سميتك؟";"Kifach smitek?";"Comment t'appelles-tu ?";"";"";"";"";""
-"4. Comprendre la langue";"9. Les mots de liaison";"gram_liaison#ولاكن";"ولاكن";"Walakin";"mais";"";"";"";"";""
-"4. Comprendre la langue";"9. Les mots de liaison";"gram_liaison#اللي";"اللي";"Lli";"qui, que";"";"";"";"";""
-"4. Comprendre la langue";"9. Les mots de liaison";"gram_liaison#ملي";"ملي";"Melli";"quand, dès que";"";"";"";"";""
-"4. Comprendre la langue";"9. Les mots de liaison";"gram_liaison#إلا";"إلا";"Ila";"si";"";"";"";"";""
-"4. Comprendre la langue";"9. Les mots de liaison";"gram_liaison#ولا";"ولا";"Wla";"ou";"";"";"";"";""
-"4. Comprendre la langue";"9. Les mots de liaison";"gram_liaison#حيت";"حيت";"Hit";"parce que";"";"";"";"";""
-"4. Comprendre la langue";"9. Les mots de liaison";"gram_liaison#باش";"باش";"Bach";"pour, afin de";"";"";"";"";""
-"4. Comprendre la langue";"9. Les mots de liaison";"gram_liaison#و";"و";"W";"et";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#الصحراء";"الصحراء";"ssahra";"désert";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#الشتا";"الشتا";"chta";"pluie";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#التومة";"التومة";"ttouma";"ail";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#الجبل";"الجبل";"jbel";"montagne";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#الثلج";"الثلج";"telj";"neige";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#الدري";"الدري";"dderri";"enfant";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#العجوزة";"العجوزة";"l3jouza";"vieille dame";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#العافية";"العافية";"l3afiya";"feu";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#النجمة";"النجمة";"nnejma";"étoile";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#الفلفلة الحارة";"الفلفلة الحارة";"lfelfla harra";"piment";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#النحلة";"النحلة";"nnehla";"abeille";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#الهندية";"الهندية";"lhendiya";"figuier de barbarie";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#الجمل";"الجمل";"jmel";"chameau";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#الموكة";"الموكة";"lmouka";"chouette";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#الزيتون";"الزيتون";"zzitoun";"olives";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#البراد";"البراد";"berrad";"théière";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#الكسكسو";"الكسكسو";"kesksou";"couscous";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#الزرع";"الزرع";"zzr3";"blé, culture";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#العتروس";"العتروس";"l3atrous";"bouc";"";"";"";"";""
-"5. Quiz images";"avance";"quiz_avance#الزربية";"الزربية";"zerbiya";"tapis";"";"";"";"";""
-"5. Quiz images";"Avancé";"avance#الطيارة";"الطيارة";"tyara";"avion";"";"";"";"";""
-"5. Quiz images";"Avancé";"avance#السيارة";"السيارة";"ssiyara";"voiture";"";"";"";"";""
-"5. Quiz images";"Avancé";"avance#موطو";"موطو";"moto";"moto";"";"";"";"";""
-"5. Quiz images";"Avancé";"avance#الطوبيس";"الطوبيس";"tobis";"bus";"";"";"";"";""
-"5. Quiz images";"Avancé";"avance#الطاكسي";"الطاكسي";"taxi";"taxi";"";"";"";"";""
-"5. Quiz images";"Avancé";"avance#الطران";"الطران";"tran";"train";"";"";"";"";""
-"5. Quiz images";"Avancé";"avance#الخبز";"الخبز";"khobz";"pain";"";"";"";"";""
-"5. Quiz images";"Avancé";"avance#موش";"موش";"mouch";"chat";"";"";"";"";""
-"5. Quiz images";"Avancé";"avance#كلب";"كلب";"kelb";"chien";"";"";"";"";""
-"5. Quiz images";"Avancé";"avance#الحليب";"الحليب";"hlib";"lait";"";"";"";"";""
-"5. Quiz images";"Avancé";"avance#أتاي";"أتاي";"atay";"thé";"";"";"";"";""
-"5. Quiz images";"Avancé";"avance#قهوة";"قهوة";"qahwa";"café";"";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#البيض";"البيض";"beid";"œufs";"";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#الخبز";"الخبز";"khobz";"pain";"";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#الحليب";"الحليب";"hlib";"lait";"";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#قهوة";"قهوة";"qahwa";"café";"";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#أتاي";"أتاي";"atay";"thé";"";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#الطاكسي";"الطاكسي";"taxi";"taxi";"";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#الطوبيس";"الطوبيس";"tobis";"bus";"";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#السيارة";"السيارة";"ssiyara";"voiture";"tomobil,tonobil";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#موش";"موش";"mouch";"chat";"qett,qatt,mech";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#كلب";"كلب";"kelb";"chien";"";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#الدار";"الدار";"ddar";"maison";"";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#العين";"العين";"3in";"œil";"";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#الما";"الما";"lma";"eau";"";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#اليد";"اليد";"yed";"main";"";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#الشمس";"الشمس";"chems";"soleil";"";"";"";"";""
-"5. Quiz images";"debutant";"quiz_debutant#القمر";"القمر";"qamar";"lune";"";"";"";"";""
-"5. Quiz images";"ghizlane";"b_blitz_perfect#العائلة";"العائلة";"l3a2ila";"Ma famille";"";"";"";"";""
-"5. Quiz images";"ghizlane";"b_blitz_perfect#المغرب";"المغرب";"lmaghrib";"Le Maroc";"";"";"";"";""
-"5. Quiz images";"ghizlane";"b_blitz_perfect#الماكلة";"الماكلة";"lmakla";"La cuisine";"";"";"";"";""
-"5. Quiz images";"ghizlane";"b_blitz_perfect#الجو";"الجو";"jjaw";"Le temps qu'il fait";"";"";"";"";""
-"5. Quiz images";"ghizlane";"b_blitz_perfect#الخدمة";"الخدمة";"lkhedma";"Mon travail";"";"";"";"";""
-"5. Quiz images";"ghizlane";"b_blitz_perfect#الكورة";"الكورة";"lkoura";"Le foot";"";"";"";"";""
-"5. Quiz images";"ghizlane";"b_blitz_perfect#الموسيقى";"الموسيقى";"lmousiqa";"La musique";"";"";"";"";""
-"5. Quiz images";"ghizlane";"b_blitz_perfect#العطلة";"العطلة";"l3otla";"Mes vacances";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#التفاح";"التفاح";"tteffah";"pomme";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#اللحم";"اللحم";"llham";"viande";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#البصلة";"البصلة";"lbsla";"oignon";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#الليمون";"الليمون";"llimoun";"orange";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#الحوت";"الحوت";"lhout";"poisson";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#الطران";"الطران";"tran";"train";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#الطيارة";"الطيارة";"tyara";"avion";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#الطاجين";"الطاجين";"tajine";"tajine";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#موطو";"موطو";"moto";"moto";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#الفلوس";"الفلوس";"flous";"argent";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#الصباط";"الصباط";"sebbat";"chaussures";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#البحر";"البحر";"lbhar";"mer";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#الجامع";"الجامع";"jame3";"mosquée";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#القاميجة";"القاميجة";"qamija";"chemise";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#الساروت";"الساروت";"sarout";"clé";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#الخيزو";"الخيزو";"khizzou";"carotte";"";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#الشلية";"الشلية";"chelya";"chaise";"kursi";"";"";"";""
-"5. Quiz images";"intermediaire";"quiz_intermediaire#الباب";"الباب";"lbab";"porte";"";"";"";"";""
-"6. Ouvertures de scenarios";"À l\";"ecole#صباح الخير! أنا المعلمة. نقولو مع بعض: صباح الخير!";"صباح الخير! أنا المعلمة. نقولو مع بعض: صباح الخير!";"Sbah lkhir! Ana lm3alma. Ngoulou m3a b3d: sbah lkhir!";"Bonjour ! Je suis la maîtresse. On dit ensemble : bonjour !";"";"";"";"";""
-"6. Ouvertures de scenarios";"À la mairie";"mairie#صباح الخير، مرحبا بيك. أشنو خدمة بغيتي؟";"صباح الخير، مرحبا بيك. أشنو خدمة بغيتي؟";"Sbah lkhir, marhba bik. Achno khedma bghiti?";"Bonjour, bienvenue. Quel service désirez-vous ?";"";"";"";"";""
-"6. Ouvertures de scenarios";"À la pharmacie";"pharmacie#صباح الخير، أشنو بغيتي؟";"صباح الخير، أشنو بغيتي؟";"Sbah lkhir, achno bghiti?";"Bonjour, qu'est-ce qu'il vous faut ?";"";"";"";"";""
-"6. Ouvertures de scenarios";"Au restaurant";"restaurant#مرحبا بيكم، شحال ديال الناس؟ وأشنو غادي تشربو؟";"مرحبا بيكم، شحال ديال الناس؟ وأشنو غادي تشربو؟";"Marhba bikoum, chhal dyal nnas? Wa achno ghadi tchrbo?";"Bienvenue, vous êtes combien ? Et qu'est-ce que vous prendrez à boire ?";"";"";"";"";""
-"6. Ouvertures de scenarios";"Au souk";"souk#مرحبا بيك! شوف هاد الزربية، بغالي بزاف، صنعة اليد!";"مرحبا بيك! شوف هاد الزربية، بغالي بزاف، صنعة اليد!";"Marhba bik! Chouf had zerbiya, bghalya bezzaf, sna3a lyed!";"Bienvenue ! Regarde ce tapis, il me tient à cœur, fait main !";"";"";"";"";""
-"6. Ouvertures de scenarios";"Chez l\";"epicerie#أهلا بيك خويا! أشنو بغيتي اليوم؟";"أهلا بيك خويا! أشنو بغيتي اليوم؟";"Ahlan bik khouya! Achno bghiti lyoum?";"Bienvenue mon frère ! Qu'est-ce que tu veux aujourd'hui ?";"";"";"";"";""
-"6. Ouvertures de scenarios";"Chez le coiffeur";"coiffeur#أهلا بيك! أشنو بغيتي نصاوبلك اليوم؟";"أهلا بيك! أشنو بغيتي نصاوبلك اليوم؟";"Ahlan bik! Achno bghiti nsawablek lyoum?";"Bienvenue ! Qu'est-ce que je te fais aujourd'hui ?";"";"";"";"";""
-"6. Ouvertures de scenarios";"Chez le docteur";"docteur#صباح الخير، أشنو عندك اليوم؟";"صباح الخير، أشنو عندك اليوم؟";"Sbah lkhir, achno 3endek lyoum?";"Bonjour, qu'est-ce qui vous amène aujourd'hui ?";"";"";"";"";""
-"6. Ouvertures de scenarios";"Contrôle policier";"police#مساء الخير، الوراق ديال السيارة من فضلك.";"مساء الخير، الوراق ديال السيارة من فضلك.";"Msa lkhir, lwraq dyal ssiyara min fadlik.";"Bonsoir, les papiers de la voiture s'il vous plaît.";"";"";"";"";""
-"6. Ouvertures de scenarios";"Dans un taxi";"taxi#مرحبا، فين غادي؟";"مرحبا، فين غادي؟";"Marhba, fin ghadi?";"Bonjour, où allez-vous ?";"";"";"";"";""
-"6. Ouvertures de scenarios";"Entre amis";"amie#أهلا خويتي! شحال هادي ما تلاقينا، أشنو خبارك؟";"أهلا خويتي! شحال هادي ما تلاقينا، أشنو خبارك؟";"Ahlan khouiti! Chhal hadi ma tlaqina, achno khbarek?";"Salut ma belle ! Ça fait un moment qu'on s'est pas vues, quelles nouvelles ?";"";"";"";"";""
-"6. Ouvertures de scenarios";"Les animaux";"animaux#مرحبا صغيري! شوف، هادا لحمار! لحمار... لحمار! قوليها معايا!";"مرحبا صغيري! شوف، هادا لحمار! لحمار... لحمار! قوليها معايا!";"Marhba sghiri! Chouf, hada lhmar! Lhmar... lhmar! Goulha m3aya!";"Bonjour petit/petite ! Regarde, voici l'âne ! L'âne... l'âne ! Dis-le avec moi !";"";"";"";"";""
-"6. Ouvertures de scenarios";"Ma famille";"famille_kids#يا حبيبي! أنا جدة. هادي ماما، ماما... ماما! فين ماما ديالك؟";"يا حبيبي! أنا جدة. هادي ماما، ماما... ماما! فين ماما ديالك؟";"Ya hbibi! Ana jida. Hadi mama, mama... mama! Fin mama dyalek?";"Mon chéri ! Je suis mamie. Voici maman, maman... maman ! Où est ta maman ?";"";"";"";"";""
-"6. Ouvertures de scenarios";"On joue !";"jeu#سالام صاحبي! نلعبو! شوف، هادا لهمر! لهمر... لهمر! كاين شي حاجة حمراء عندك؟";"سالام صاحبي! نلعبو! شوف، هادا لهمر! لهمر... لهمر! كاين شي حاجة حمراء عندك؟";"Salam sahbi! Nl3abou! Chouf, hada lahmar! Lahmar... lahmar! Kayn chi haja hamra 3endek?";"Salut copain ! On joue ! Regarde, ça c'est rouge ! Rouge... rouge ! Tu as quelque chose de rouge près de toi ?";"";"";"";"";""
-"6. Ouvertures de scenarios";"Retrouvailles";"famille#واه شحال هاد الوقت ما تشافينا! كيداير راسك؟";"واه شحال هاد الوقت ما تشافينا! كيداير راسك؟";"Waah chhal had lwaqt ma tchafina! Kidayer rassek?";"Waouh, ça fait si longtemps qu'on ne s'est pas vus ! Comment vas-tu ?";"";"";"";"";""
+﻿Section;Categorie;ID;Arabe;Translitteration;Francais;Variantes;Verdict (OK ou A CORRIGER);Arabe corrige;Translitteration corrigee;Commentaire
+1. Je debute - les sons;Les sons;basics_sounds#حوت;حوت;Hout;poisson;;OK;;;
+1. Je debute - les sons;Les sons;basics_sounds#خمسة;خمسة;Khamsa;cinq;;OK;;;
+1. Je debute - les sons;Les sons;basics_sounds#عافاك;عافاك;3afak;s'il te plaît;;OK;;;
+1. Je debute - les sons;Les sons;basics_sounds#قريب;قريب;Qrib;proche;;OK;;;
+1. Je debute - les sons;Les sons;basics_sounds#طاجين;طاجين;Tajine;le tajine;;OK;;;
+1. Je debute - les sons;Les sons;basics_sounds#شكرا;شكرا;Choukran;merci;;OK;;;
+1. Je debute - les sons;Les sons;basics_sounds#واخا;واخا;Wakha;d'accord;;OK;;;
+1. Je debute - les sons;Les sons;basics_sounds#بغيت;بغيت;Bghit;je veux;;OK;;;
+1. Je debute - les sons;Les sons;basics_sounds#قهوة;قهوة;Qahwa;café;;OK;;;
+2. Je debute - mots;12 premiers mots;basics_words#سلام;سلام;Salam;Salut;;OK;;;
+2. Je debute - mots;12 premiers mots;basics_words#بغيت;بغيت;Bghit;Je veux;;OK;;;
+2. Je debute - mots;12 premiers mots;basics_words#صباح الخير;صباح الخير;Sbah lkhir;Bonjour (le matin);;OK;;;
+2. Je debute - mots;12 premiers mots;basics_words#ما فهمتش;ما فهمتش;Ma fhemtch;Je n'ai pas compris;;OK;;;
+2. Je debute - mots;12 premiers mots;basics_words#سمح لي;سمح لي;Smah li;Pardon, excuse-moi;;OK;;;
+2. Je debute - mots;12 premiers mots;basics_words#شحال;شحال;Chhal;Combien;;OK;;;
+2. Je debute - mots;12 premiers mots;basics_words#عاود عافاك;عاود عافاك;3awed 3afak;Répète, s'il te plaît;;OK;;;
+2. Je debute - mots;12 premiers mots;basics_words#نعم / لا;نعم / لا;Ih / Lla;Oui / Non;;OK;;;
+2. Je debute - mots;12 premiers mots;basics_words#شكرا;شكرا;Choukran;Merci;;OK;;;
+2. Je debute - mots;12 premiers mots;basics_words#بسلامة;بسلامة;Bslama;Au revoir;;OK;;;
+2. Je debute - mots;12 premiers mots;basics_words#واخا;واخا;Wakha;D'accord;;OK;;;
+2. Je debute - mots;12 premiers mots;basics_words#عافاك;عافاك;3afak;S'il te plaît;;OK;;;
+2. Je debute - mots;Premiere phrase;basics_phrase;سلام، سميتي كريم و أنا من فرنسا;Salam, smiti Karim w ana men Fransa;Salut, je m'appelle Karim et je viens de France;;OK;;;
+3. Carnet de phrases;1 à 10;chiffres#سبعة;سبعة;Seb3a;Sept (7);;OK;;;
+3. Carnet de phrases;1 à 10;chiffres#ستة;ستة;Setta;Six (6);;OK;;;
+3. Carnet de phrases;1 à 10;chiffres#تمنية;تمنية;Tmnya;Huit (8);;OK;;;
+3. Carnet de phrases;1 à 10;chiffres#عشرة;عشرة;3achra;Dix (10);;OK;;;
+3. Carnet de phrases;1 à 10;chiffres#تسعة;تسعة;Tes3a;Neuf (9);;OK;;;
+3. Carnet de phrases;1 à 10;chiffres#خمسة;خمسة;Khamsa;Cinq (5);;OK;;;
+3. Carnet de phrases;1 à 10;chiffres#واحد;واحد;Wahed;Un (1);;OK;;;
+3. Carnet de phrases;1 à 10;chiffres#صفر;صفر;Sifr;Zéro (0);;OK;;;
+3. Carnet de phrases;1 à 10;chiffres#جوج;جوج;Jouj;Deux (2);;OK;;;
+3. Carnet de phrases;1 à 10;chiffres#ربعة;ربعة;Rab3a;Quatre (4);;OK;;;
+3. Carnet de phrases;1 à 10;chiffres#تلاتة;تلاتة;Tlata;Trois (3);;OK;;;
+3. Carnet de phrases;1. À table;nourriture#الكسكسو;الكسكسو;Kesksou;Le couscous;;OK;;;
+3. Carnet de phrases;1. À table;nourriture#الطاجين;الطاجين;Tajine;Le tajine;;OK;;;
+3. Carnet de phrases;1. À table;nourriture#الفاكية;الفاكية;Lfakya;Les fruits;lKhodra;A corriger;;;
+3. Carnet de phrases;1. À table;nourriture#اللحم;اللحم;Llham;La viande;;OK;;;
+3. Carnet de phrases;1. À table;nourriture#الحوت;الحوت;Lhout;Le poisson;;OK;;;
+3. Carnet de phrases;1. À table;nourriture#الخبز;الخبز;Lkhobz;Le pain;;OK;;;
+3. Carnet de phrases;1. À table;nourriture#الحليب;الحليب;Lhlib;Le lait;;OK;;;
+3. Carnet de phrases;1. À table;nourriture#قهوة;قهوة;Qahwa;Café;;OK;;;
+3. Carnet de phrases;1. À table;nourriture#الما;الما;Lma;L'eau;;OK;;;
+3. Carnet de phrases;1. À table;nourriture#أتاي;أتاي;Atay;Thé à la menthe;;OK;;;
+3. Carnet de phrases;1. La politesse essentielle;expressions#ما فهمتش;ما فهمتش;Ma fhemtch;Je n'ai pas compris;;OK;;;
+3. Carnet de phrases;1. La politesse essentielle;expressions#عاود عافاك;عاود عافاك;3awed 3afak;Répète s'il te plaît;;OK;;;
+3. Carnet de phrases;1. La politesse essentielle;expressions#نعم / لا;نعم / لا;Ih / Lla;Oui / Non;;OK;;;
+3. Carnet de phrases;1. La politesse essentielle;expressions#بلا جميل;بلا جميل;Bla jmil;De rien;;OK;;;
+3. Carnet de phrases;1. La politesse essentielle;expressions#شكرا;شكرا;Choukran;Merci;;OK;;;
+3. Carnet de phrases;1. La politesse essentielle;expressions#عافاك;عافاك;3afak;S'il te plaît;;OK;;;
+3. Carnet de phrases;1. La politesse essentielle;expressions#سمح لي;سمح لي;Smah li;Excuse-moi / pardon;;OK;;;
+3. Carnet de phrases;1. La politesse essentielle;expressions#ماشي مشكل;ماشي مشكل;Machi mouchkil;Pas de souci;;OK;;;
+3. Carnet de phrases;1. La politesse essentielle;expressions#إن شاء الله;إن شاء الله;Inchallah;Si Dieu le veut;;OK;;;
+3. Carnet de phrases;1. La politesse essentielle;expressions#واخا;واخا;Wakha;D'accord;;OK;;;
+3. Carnet de phrases;1. Les bases;salutations#مسا الخير;مسا الخير;Msa lkhir;Bonsoir;;OK;;;
+3. Carnet de phrases;1. Les bases;salutations#بسلامة;بسلامة;Bslama;Au revoir;;OK;;;
+3. Carnet de phrases;1. Les bases;salutations#تصبح على خير;تصبح على خير;Tsbah 3la khir;Bonne nuit;;OK;;;
+3. Carnet de phrases;1. Les bases;salutations#صباح الخير;صباح الخير;Sbah lkhir;Bonjour (le matin);;OK;;;
+3. Carnet de phrases;1. Les bases;salutations#سلام;سلام;Salam;Salut;;OK;;;
+3. Carnet de phrases;1. Les bases;salutations#لاباس، الحمد لله;لاباس، الحمد لله;Labas, lhamdulah;Ça va, merci Dieu;;OK;;;
+3. Carnet de phrases;1. Les bases;salutations#كيف داير;كيف داير;Kif dayer;Comment ça va (à un homme);;OK;;;
+3. Carnet de phrases;1. Les bases;salutations#كيف دايرة;كيف دايرة;Kif dayra;Comment ça va (à une femme);;OK;;;
+3. Carnet de phrases;1. Les mots essentiels;transports#بعيد;بعيد;B3id;Loin;;OK;;;
+3. Carnet de phrases;1. Les mots essentiels;transports#الطوبيس;الطوبيس;Tobis;Le bus;;OK;;;
+3. Carnet de phrases;1. Les mots essentiels;transports#على الشمال;على الشمال;3la chmal;À gauche;;OK;;;
+3. Carnet de phrases;1. Les mots essentiels;transports#على اليمين;على اليمين;3la lymin;À droite;;OK;;;
+3. Carnet de phrases;1. Les mots essentiels;transports#قريب;قريب;Qrib;Proche;;OK;;;
+3. Carnet de phrases;1. Les mots essentiels;transports#نيشان;نيشان;Nichan;Tout droit;;OK;;;
+3. Carnet de phrases;1. Les mots essentiels;transports#الطيارة;الطيارة;Tyara;L'avion;;OK;;;
+3. Carnet de phrases;1. Les mots essentiels;transports#الطاكسي;الطاكسي;Taxi;Le taxi;;OK;;;
+3. Carnet de phrases;1. Les mots essentiels;transports#فين كاين...؟;فين كاين...؟;Fin kayn...?;Où se trouve... ?;;OK;;;
+3. Carnet de phrases;1. Les mots essentiels;transports#الطران;الطران;Tran;Le train;;OK;;;
+3. Carnet de phrases;1. Qui tu es;presentation#شحال ف عمرك؟;شحال ف عمرك؟;Chhal f 3omrek?;Quel âge as-tu ?;;OK;;;
+3. Carnet de phrases;1. Qui tu es;presentation#أنا من فرنسا;أنا من فرنسا;Ana men fransa;Je suis de France;;OK;;;
+3. Carnet de phrases;1. Qui tu es;presentation#فرحت بيك;فرحت بيك;Frahte bik;Ravi de te rencontrer;;OK;;;
+3. Carnet de phrases;1. Qui tu es;presentation#عندي ... عام;عندي ... عام;3andi ... 3am;J'ai ... ans;;OK;;;
+3. Carnet de phrases;1. Qui tu es;presentation#سميتي...;سميتي...;Smiti...;Je m'appelle...;;OK;;;
+3. Carnet de phrases;1. Qui tu es;presentation#أسمك أشنو؟;أسمك أشنو؟;Asmek achno?;Comment tu t'appelles ?;Kif smitek;A corriger;;;
+3. Carnet de phrases;1. Qui tu es;presentation#منين انت؟;منين انت؟;Mnin nta?;D'où es-tu ?;;OK;;;
+3. Carnet de phrases;10. Proverbes et sagesse;exp_10#الله يجيب الخير;الله يجيب الخير;Allah yjib lkhir;Que Dieu apporte le bien;;OK;;;
+3. Carnet de phrases;10. Proverbes et sagesse;exp_10#اللي بغا العسل يصبر لقريص النحل;اللي بغا العسل يصبر لقريص النحل;Lli bgha l3sel ysber l qris nhel;Qui veut le miel supporte les piqûres;;OK;;;
+3. Carnet de phrases;10. Proverbes et sagesse;exp_10#اللي فات مات;اللي فات مات;Lli fat mat;Ce qui est passé est passé;;OK;;;
+3. Carnet de phrases;10. Proverbes et sagesse;exp_10#الصبر مفتاح الفرج;الصبر مفتاح الفرج;Sser meftah lfaraj;La patience est la clé du salut;;A corriger;;Sabr meftah lfaraj;
+3. Carnet de phrases;10. Proverbes et sagesse;exp_10#ديما الحق كيبان;ديما الحق كيبان;Dima lhaq kayban;La vérité finit toujours par paraître;;OK;;;
+3. Carnet de phrases;10. Proverbes et sagesse;exp_10#يد وحدة ما كتصفقش;يد وحدة ما كتصفقش;Yed wehda ma katsefeqch;Une seule main n'applaudit pas;;OK;;;
+3. Carnet de phrases;10. Proverbes et sagesse;exp_10#كل تأخيرة فيها خيرة;كل تأخيرة فيها خيرة;Koul takhira fiha khira;Tout retard a du bon;;OK;;;
+3. Carnet de phrases;10. Proverbes et sagesse;exp_10#حبة حبة كتعمر الخابية;حبة حبة كتعمر الخابية;Hebba hebba kat3emmer lkhabya;Grain par grain, le pot se remplit;;OK;;;
+3. Carnet de phrases;10. Proverbes et sagesse;exp_10#الجار قبل الدار;الجار قبل الدار;Ljar qbel ddar;Le voisin avant la maison;;OK;;;
+3. Carnet de phrases;10. Proverbes et sagesse;exp_10#اللي ما عندو ما يخسر;اللي ما عندو ما يخسر;Lli ma 3ando ma ykhser;Qui n'a rien n'a rien à perdre;;OK;;;
+3. Carnet de phrases;2. Accueillir, prendre des nouvelles;salutations_2#كيف الحال؟;كيف الحال؟;Kif lhal?;Comment vas-tu ? (neutre);;OK;;;
+3. Carnet de phrases;2. Accueillir, prendre des nouvelles;salutations_2#تهلا;تهلا;Thella;Porte-toi bien (au départ);;OK;;;
+3. Carnet de phrases;2. Accueillir, prendre des nouvelles;salutations_2#أهلا وسهلا;أهلا وسهلا;Ahlan wa sahlan;Bienvenue (chaleureux);;OK;;;
+3. Carnet de phrases;2. Accueillir, prendre des nouvelles;salutations_2#مرحبا بيك;مرحبا بيك;Marhba bik;Sois le bienvenu;;OK;;;
+3. Carnet de phrases;2. Accueillir, prendre des nouvelles;salutations_2#أش خبارك؟;أش خبارك؟;Ach khbarek?;Quelles nouvelles ?;;OK;;;
+3. Carnet de phrases;2. Accueillir, prendre des nouvelles;salutations_2#كلشي بخير؟;كلشي بخير؟;Koulchi bikhir?;Tout va bien ?;;OK;;;
+3. Carnet de phrases;2. Accueillir, prendre des nouvelles;salutations_2#الله يسعد صباحك;الله يسعد صباحك;Allah ys3ed sbahek;Que ta matinée soit heureuse;;OK;;;
+3. Carnet de phrases;2. Accueillir, prendre des nouvelles;salutations_2#الله يحفظك;الله يحفظك;Allah yhefdek;Que Dieu te garde;;OK;;;
+3. Carnet de phrases;2. Approuver, nuancer;exp_2#بالتأكيد;بالتأكيد;Bettakid;Certainement;;OK;;;
+3. Carnet de phrases;2. Approuver, nuancer;exp_2#ياك؟;ياك؟;Yak?;N'est-ce pas ?;;OK;;;
+3. Carnet de phrases;2. Approuver, nuancer;exp_2#إيوا;إيوا;Iwa;Oui, voilà;;OK;;;
+3. Carnet de phrases;2. Approuver, nuancer;exp_2#على الأقل;على الأقل;3la lqell;Au moins;;OK;;;
+3. Carnet de phrases;2. Approuver, nuancer;exp_2#صافي;صافي;Safi;C'est bon, ça suffit;;OK;;;
+3. Carnet de phrases;2. Approuver, nuancer;exp_2#ماشي;ماشي;Machi;Ce n'est pas;;OK;;;
+3. Carnet de phrases;2. Approuver, nuancer;exp_2#يمكن;يمكن;Yemken;Peut-être;;OK;;;
+3. Carnet de phrases;2. Approuver, nuancer;exp_2#كافي;كافي;Kafi;Assez;;OK;;;
+3. Carnet de phrases;2. Approuver, nuancer;exp_2#شوية;شوية;Chwiya;Un peu;;OK;;;
+3. Carnet de phrases;2. Approuver, nuancer;exp_2#بزاف;بزاف;Bezzaf;Beaucoup, trop;;OK;;;
+3. Carnet de phrases;2. Demander son chemin;transports_2#بشحال للمطار؟;بشحال للمطار؟;Bchhal l lmatar?;Combien pour l'aéroport ?;;OK;;;
+3. Carnet de phrases;2. Demander son chemin;transports_2#شحال بعيد من هنا؟;شحال بعيد من هنا؟;Chhal b3id men hna?;C'est à quelle distance d'ici ?;;OK;;;
+3. Carnet de phrases;2. Demander son chemin;transports_2#كيفاش نوصل ل...؟;كيفاش نوصل ل...؟;Kifach nousel l...?;Comment aller à... ?;;OK;;;
+3. Carnet de phrases;2. Demander son chemin;transports_2#قدام;قدام;Qeddam;Devant;;OK;;;
+3. Carnet de phrases;2. Demander son chemin;transports_2#فين كاينة المحطة؟;فين كاينة المحطة؟;Fin kayna lmahatta?;Où est la gare ?;;OK;;;
+3. Carnet de phrases;2. Demander son chemin;transports_2#مورا;مورا;Moura;Derrière;;OK;;;
+3. Carnet de phrases;2. Demander son chemin;transports_2#بين;بين;Bin;Entre;;OK;;;
+3. Carnet de phrases;2. Demander son chemin;transports_2#حدا الجامع;حدا الجامع;Hda jjame3;À côté de la mosquée;;OK;;;
+3. Carnet de phrases;2. Demander son chemin;transports_2#وقف هنا عافاك;وقف هنا عافاك;Wqef hna 3afak;Arrête-toi ici s'il te plaît;;OK;;;
+3. Carnet de phrases;2. Demander son chemin;transports_2#دوز على اليمين;دوز على اليمين;Douz 3la lymin;Tourne à droite;;OK;;;
+3. Carnet de phrases;2. Faire ses courses;nourriture_2#الطماطم;الطماطم;Maticha;Les tomates;;OK;;;
+3. Carnet de phrases;2. Faire ses courses;nourriture_2#البصلة;البصلة;Lbsla;L'oignon;;OK;;;
+3. Carnet de phrases;2. Faire ses courses;nourriture_2#البطاطا;البطاطا;Lbatata;Les pommes de terre;;OK;;;
+3. Carnet de phrases;2. Faire ses courses;nourriture_2#الخضرة;الخضرة;Lkhodra;Les légumes;;OK;;;
+3. Carnet de phrases;2. Faire ses courses;nourriture_2#عطيني كيلو عافاك;عطيني كيلو عافاك;3tini kilo 3afak;Donne-moi un kilo, merci;;OK;;;
+3. Carnet de phrases;2. Faire ses courses;nourriture_2#الجبن;الجبن;Ljben;Le fromage;;OK;;;
+3. Carnet de phrases;2. Faire ses courses;nourriture_2#البيض;البيض;Lbeid;Les œufs;;OK;;;
+3. Carnet de phrases;2. Faire ses courses;nourriture_2#الملحة;الملحة;Lmelha;Le sel;;OK;;;
+3. Carnet de phrases;2. Faire ses courses;nourriture_2#السكر;السكر;Ssokkar;Le sucre;;OK;;;
+3. Carnet de phrases;2. Faire ses courses;nourriture_2#الزيت;الزيت;Zzit;L'huile;;OK;;;
+3. Carnet de phrases;2. Ta vie, ta famille;presentation_2#كنخدم ف...;كنخدم ف...;Kankhdem f...;Je travaille dans...;;OK;;;
+3. Carnet de phrases;2. Ta vie, ta famille;presentation_2#كنتعلم الدارجة;كنتعلم الدارجة;Kant3ellem ddarija;J'apprends le darija;;OK;;;
+3. Carnet de phrases;2. Ta vie, ta famille;presentation_2#أنا مزال;أنا مزال;Ana mazal;Je suis encore célibataire;;OK;;;
+3. Carnet de phrases;2. Ta vie, ta famille;presentation_2#أنا طالب;أنا طالب;Ana taleb;Je suis étudiant;;OK;;;
+3. Carnet de phrases;2. Ta vie, ta famille;presentation_2#واليدي مغربي;واليدي مغربي;Walidi maghribi;Mon père est marocain;;A corriger;;Lwalid maghrabi;
+3. Carnet de phrases;2. Ta vie, ta famille;presentation_2#كنسكن ف...;كنسكن ف...;Kanseken f...;J'habite à...;;OK;;;
+3. Carnet de phrases;2. Ta vie, ta famille;presentation_2#أنا متزوج;أنا متزوج;Ana mzewwej;Je suis marié;;OK;;;
+3. Carnet de phrases;2. Ta vie, ta famille;presentation_2#عندي وليدات;عندي وليدات;3andi wlidat;J'ai des enfants;;OK;;;
+3. Carnet de phrases;3. Aller plus loin;presentation_3#جيت هنا للعطلة;جيت هنا للعطلة;Jit hna l l3otla;Je suis venu ici en vacances;;OK;;;
+3. Carnet de phrases;3. Aller plus loin;presentation_3#مازال كنتعلم;مازال كنتعلم;Mazal kant3ellem;J'apprends encore;;OK;;;
+3. Carnet de phrases;3. Aller plus loin;presentation_3#أشمن مدينة كتسكن؟;أشمن مدينة كتسكن؟;Achmen mdina katseken?;Dans quelle ville habites-tu ?;;OK;;;
+3. Carnet de phrases;3. Aller plus loin;presentation_3#عاود ليا عافاك، بشوية;عاود ليا عافاك، بشوية;3awed liya 3afak, bchwiya;Répète doucement, merci;;OK;;;
+3. Carnet de phrases;3. Aller plus loin;presentation_3#أشنو كتخدم؟;أشنو كتخدم؟;Achnou katkhdem?;Tu fais quoi comme travail ?;;OK;;;
+3. Carnet de phrases;3. Aller plus loin;presentation_3#كنبغي المغرب بزاف;كنبغي المغرب بزاف;Kanebghi lmaghrib bezzaf;J'aime beaucoup le Maroc;;OK;;;
+3. Carnet de phrases;3. Aller plus loin;presentation_3#أصلي من المغرب;أصلي من المغرب;Asli men lmaghrib;Je suis d’origine marocaine;;OK;;;
+3. Carnet de phrases;3. Aller plus loin;presentation_3#كنهضر شوية الدارجة;كنهضر شوية الدارجة;Kanhder chwiya ddarija;Je parle un peu le darija;;OK;;;
+3. Carnet de phrases;3. Commander et apprécier;nourriture_3#بلا سكر عافاك;بلا سكر عافاك;Bla soukkar 3afak;Sans sucre, merci;;OK;;;
+3. Carnet de phrases;3. Commander et apprécier;nourriture_3#بصحتك;بصحتك;Bsahtek;Bon appétit / à ta santé;;OK;;;
+3. Carnet de phrases;3. Commander et apprécier;nourriture_3#أشنو كاين اليوم؟;أشنو كاين اليوم؟;Achnou kayn lyoum?;Qu'y a-t-il aujourd'hui ?;;OK;;;
+3. Carnet de phrases;3. Commander et apprécier;nourriture_3#الحساب عافاك;الحساب عافاك;Lhsab 3afak;L'addition, s'il te plaît;;OK;;;
+3. Carnet de phrases;3. Commander et apprécier;nourriture_3#ما كناكلش اللحم;ما كناكلش اللحم;Ma kanaklch llham;Je ne mange pas de viande;;A corriger;;Makanakoulch l'ham;
+3. Carnet de phrases;3. Commander et apprécier;nourriture_3#هادا بنين بزاف;هادا بنين بزاف;Hada bnin bezzaf;C'est vraiment délicieux;;OK;;;
+3. Carnet de phrases;3. Commander et apprécier;nourriture_3#شوية من الملحة;شوية من الملحة;Chwiya men lmelha;Un peu de sel;;OK;;;
+3. Carnet de phrases;3. Commander et apprécier;nourriture_3#شبعت، الحمد لله;شبعت، الحمد لله;Chbe3t, lhamdoullah;J'ai assez mangé, merci;;OK;;;
+3. Carnet de phrases;3. Commander et apprécier;nourriture_3#عندي حساسية;عندي حساسية;3andi hassasiya;J'ai une allergie;;OK;;;
+3. Carnet de phrases;3. Commander et apprécier;nourriture_3#بغيت نفطر;بغيت نفطر;Bghit neftar;Je voudrais déjeuner;;OK;;;
+3. Carnet de phrases;3. Comme un habitué;salutations_3#وعليكم السلام;وعليكم السلام;W 3alaykoum salam;Réponse à la salutation;;A corriger;;;
+3. Carnet de phrases;3. Comme un habitué;salutations_3#كيداير مع الصحة؟;كيداير مع الصحة؟;Kidayer m3a sseha?;Et la santé, ça va ?;;OK;;;
+3. Carnet de phrases;3. Comme un habitué;salutations_3#شحال هادي ما تشاوفنا;شحال هادي ما تشاوفنا;Chhal hadi ma tchawefna;Ça fait longtemps qu'on ne s'est pas vus;;OK;;;
+3. Carnet de phrases;3. Comme un habitué;salutations_3#السلام عليكم;السلام عليكم;Assalamou 3alaykoum;Salutation complète, respectueuse;;OK;;;
+3. Carnet de phrases;3. Comme un habitué;salutations_3#على الله نتلاقاو;على الله نتلاقاو;3la Allah ntlaqaw;On se reverra, si Dieu veut;;OK;;;
+3. Carnet de phrases;3. Comme un habitué;salutations_3#تهلا في راسك;تهلا في راسك;Thella f rasek;Prends soin de toi;;OK;;;
+3. Carnet de phrases;3. Comme un habitué;salutations_3#سلم لي على الوالدين;سلم لي على الوالدين;Sellem li 3la lwalidin;Salue tes parents de ma part;;OK;;;
+3. Carnet de phrases;3. Comme un habitué;salutations_3#الله يعاونك;الله يعاونك;Allah y3awnek;Bon courage (à quelqu'un qui travaille);;OK;;;
+3. Carnet de phrases;3. Poser une question;exp_3#كيفاش؟;كيفاش؟;Kifach?;Comment ?;;OK;;;
+3. Carnet de phrases;3. Poser une question;exp_3#أشمن واحد؟;أشمن واحد؟;Achmen wahed?;Lequel ?;;OK;;;
+3. Carnet de phrases;3. Poser une question;exp_3#شكون؟;شكون؟;Chkoun?;Qui ?;;OK;;;
+3. Carnet de phrases;3. Poser une question;exp_3#شحال؟;شحال؟;Chhal?;Combien ?;;OK;;;
+3. Carnet de phrases;3. Poser une question;exp_3#واش...؟;واش...؟;Wach...?;Est-ce que... ?;;OK;;;
+3. Carnet de phrases;3. Poser une question;exp_3#أشنو؟;أشنو؟;Achnou?;Quoi ?;;OK;;;
+3. Carnet de phrases;3. Poser une question;exp_3#فين؟;فين؟;Fin?;Où ?;;OK;;;
+3. Carnet de phrases;3. Poser une question;exp_3#فوقاش؟;فوقاش؟;Fouqach?;À quelle heure ?;;OK;;;
+3. Carnet de phrases;3. Poser une question;exp_3#إمتى؟;إمتى؟;Imta?;Quand ?;;OK;;;
+3. Carnet de phrases;3. Poser une question;exp_3#علاش؟;علاش؟;3lach?;Pourquoi ?;;OK;;;
+3. Carnet de phrases;3. Voyager pour de vrai;transports_3#واش هاد الطريق مزيان؟;واش هاد الطريق مزيان؟;Wach had triq mezyan?;Est-ce que cette route est bonne ?;;OK;;;
+3. Carnet de phrases;3. Voyager pour de vrai;transports_3#كاين الزحام;كاين الزحام;Kayn zzham;Il y a des embouteillages;;OK;;;
+3. Carnet de phrases;3. Voyager pour de vrai;transports_3#فوقاش كيمشي الطران؟;فوقاش كيمشي الطران؟;Fouqach kaymchi tran?;À quelle heure part le train ?;;OK;;;
+3. Carnet de phrases;3. Voyager pour de vrai;transports_3#مشا ليا الطوبيس;مشا ليا الطوبيس;Mcha liya tobis;J'ai raté le bus;;OK;;;
+3. Carnet de phrases;3. Voyager pour de vrai;transports_3#بلا كونتور عافاك;بلا كونتور عافاك;Bla contour 3afak;Sans compteur, s’il te plaît;;A corriger;;;
+3. Carnet de phrases;3. Voyager pour de vrai;transports_3#صافي، وصلت;صافي، وصلت;Safi, wselt;Voilà, je suis arrivé;;OK;;;
+3. Carnet de phrases;3. Voyager pour de vrai;transports_3#بغيت تيكي ل...;بغيت تيكي ل...;Bghit tiki l...;Je voudrais un billet pour...;;OK;;;
+3. Carnet de phrases;3. Voyager pour de vrai;transports_3#فين نزل؟;فين نزل؟;Fin nnzel?;Où est-ce que je descends ?;;OK;;;
+3. Carnet de phrases;3. Voyager pour de vrai;transports_3#حط الكونتور;حط الكونتور;Hett lcontour;Mets le compteur;;OK;;;
+3. Carnet de phrases;3. Voyager pour de vrai;transports_3#عندي الباكاج;عندي الباكاج;3andi lbagaj;J'ai des bagages;;OK;;;
+3. Carnet de phrases;4. Situer dans le temps;exp_4#كل نهار;كل نهار;Koul nhar;Chaque jour;;OK;;;
+3. Carnet de phrases;4. Situer dans le temps;exp_4#من بعد;من بعد;Men be3d;Plus tard;;OK;;;
+3. Carnet de phrases;4. Situer dans le temps;exp_4#مرة مرة;مرة مرة;Marra marra;De temps en temps;;OK;;;
+3. Carnet de phrases;4. Situer dans le temps;exp_4#بشوية;بشوية;Bchwiya;Doucement;;OK;;;
+3. Carnet de phrases;4. Situer dans le temps;exp_4#ديما;ديما;Dima;Toujours;;OK;;;
+3. Carnet de phrases;4. Situer dans le temps;exp_4#غدا;غدا;Ghedda;Demain;;OK;;;
+3. Carnet de phrases;4. Situer dans le temps;exp_4#اليوم;اليوم;Lyoum;Aujourd'hui;;OK;;;
+3. Carnet de phrases;4. Situer dans le temps;exp_4#دغيا;دغيا;Deghya;Vite, tout de suite;;OK;;;
+3. Carnet de phrases;4. Situer dans le temps;exp_4#دابا;دابا;Daba;Maintenant;;OK;;;
+3. Carnet de phrases;4. Situer dans le temps;exp_4#البارح;البارح;Lbareh;Hier;;OK;;;
+3. Carnet de phrases;5. Dire ce que tu ressens;exp_5#كنبغي;كنبغي;Kanebghi;J'aime;;OK;;;
+3. Carnet de phrases;5. Dire ce que tu ressens;exp_5#ما كنبغيش;ما كنبغيش;Ma kanebghich;Je n'aime pas;;OK;;;
+3. Carnet de phrases;5. Dire ce que tu ressens;exp_5#بخير;بخير;Bikhir;Je vais bien;;OK;;;
+3. Carnet de phrases;5. Dire ce que tu ressens;exp_5#خايف;خايف;Khayef;J'ai peur;;OK;;;
+3. Carnet de phrases;5. Dire ce que tu ressens;exp_5#فيا العطش;فيا العطش;Fiya l3tach;J'ai soif;;OK;;;
+3. Carnet de phrases;5. Dire ce que tu ressens;exp_5#فرحان;فرحان;Ferhan;Content;;OK;;;
+3. Carnet de phrases;5. Dire ce que tu ressens;exp_5#مستعجل;مستعجل;Msta3jel;Pressé;mzeroub;A corriger;;;
+3. Carnet de phrases;5. Dire ce que tu ressens;exp_5#مقلق;مقلق;Mqelleq;Contrarié;;OK;;;
+3. Carnet de phrases;5. Dire ce que tu ressens;exp_5#فيا الجوع;فيا الجوع;Fiya jjou3;J'ai faim;;OK;;;
+3. Carnet de phrases;5. Dire ce que tu ressens;exp_5#عيان;عيان;3eyyan;Fatigué;;OK;;;
+3. Carnet de phrases;6. Se débrouiller;exp_6#بشحال هادا؟;بشحال هادا؟;Bchhal hada?;Combien coûte ceci ?;;OK;;;
+3. Carnet de phrases;6. Se débrouiller;exp_6#خلاص;خلاص;Khlas;C'est réglé, terminé;;OK;;;
+3. Carnet de phrases;6. Se débrouiller;exp_6#تكلم بشوية عافاك;تكلم بشوية عافاك;Tkellem bchwiya 3afak;Parle doucement, merci;;OK;;;
+3. Carnet de phrases;6. Se débrouiller;exp_6#وقف هنا عافاك;وقف هنا عافاك;Wqef hna 3afak;Arrête-toi ici s'il te plaît;;OK;;;
+3. Carnet de phrases;6. Se débrouiller;exp_6#عندك...؟;عندك...؟;3andek...?;Est-ce que tu as... ?;;OK;;;
+3. Carnet de phrases;6. Se débrouiller;exp_6#ضاع ليا;ضاع ليا;Da3 liya;Je l'ai perdu;Woudartou;A corriger;;;
+3. Carnet de phrases;6. Se débrouiller;exp_6#ما عرفتش;ما عرفتش;Ma 3reftch;Je ne sais pas;;OK;;;
+3. Carnet de phrases;6. Se débrouiller;exp_6#بغيت نمشي ل...;بغيت نمشي ل...;Bghit nemchi l...;Je veux aller à...;;OK;;;
+3. Carnet de phrases;6. Se débrouiller;exp_6#كتهضر بالفرنسية؟;كتهضر بالفرنسية؟;Katehder belfransiya?;Tu parles français ?;Katehder belfransawiya?, Katehder belfransawi?;A corriger;;;
+3. Carnet de phrases;6. Se débrouiller;exp_6#عاوني عافاك;عاوني عافاك;3awenni 3afak;Aide-moi s'il te plaît;;OK;;;
+3. Carnet de phrases;7. Donner ton avis;exp_7#ساهل;ساهل;Sahel;Facile;;OK;;;
+3. Carnet de phrases;7. Donner ton avis;exp_7#صعيب;صعيب;S3ib;Difficile;;OK;;;
+3. Carnet de phrases;7. Donner ton avis;exp_7#زوين;زوين;Zwin;Beau, joli;;OK;;;
+3. Carnet de phrases;7. Donner ton avis;exp_7#عجبني;عجبني;3jebni;Ça m'a plu;;OK;;;
+3. Carnet de phrases;7. Donner ton avis;exp_7#رخيص;رخيص;Rkhis;Bon marché;;OK;;;
+3. Carnet de phrases;7. Donner ton avis;exp_7#مزيان;مزيان;Mezyan;Bien;;OK;;;
+3. Carnet de phrases;7. Donner ton avis;exp_7#خايب;خايب;Khayb;Laid, mauvais;;OK;;;
+3. Carnet de phrases;7. Donner ton avis;exp_7#ما مزيانش;ما مزيانش;Ma mezyanch;Pas bien;;OK;;;
+3. Carnet de phrases;7. Donner ton avis;exp_7#غالي;غالي;Ghali;Cher;;OK;;;
+3. Carnet de phrases;7. Donner ton avis;exp_7#بنين;بنين;Bnin;Délicieux;;OK;;;
+3. Carnet de phrases;8. Les formules qui font marocain;exp_8#تهلا في راسك;تهلا في راسك;Thella f rasek;Prends soin de toi;;OK;;;
+3. Carnet de phrases;8. Les formules qui font marocain;exp_8#الله يسهل;الله يسهل;Allah ysehhel;Que Dieu facilite;;OK;;;
+3. Carnet de phrases;8. Les formules qui font marocain;exp_8#بسلامة;بسلامة;Bslama;Va en paix;;OK;;;
+3. Carnet de phrases;8. Les formules qui font marocain;exp_8#واه؟;واه؟;Wah?;Ah bon ?;;OK;;;
+3. Carnet de phrases;8. Les formules qui font marocain;exp_8#الله يرحم الوالدين;الله يرحم الوالدين;Allah yrhem lwalidin;Formule de remerciement appuyé;;OK;;;
+3. Carnet de phrases;8. Les formules qui font marocain;exp_8#الله يعطيك الصحة;الله يعطيك الصحة;Allah y3tik sseha;Merci (littéralement : que Dieu te donne la santé);;OK;;;
+3. Carnet de phrases;8. Les formules qui font marocain;exp_8#تبارك الله عليك;تبارك الله عليك;Tbarkallah 3lik;Bravo, félicitations;;OK;;;
+3. Carnet de phrases;8. Les formules qui font marocain;exp_8#الله يخليك;الله يخليك;Allah ykhellik;Je t'en prie, de grâce;;OK;;;
+3. Carnet de phrases;8. Les formules qui font marocain;exp_8#مبروك;مبروك;Mabrouk;Félicitations;;OK;;;
+3. Carnet de phrases;8. Les formules qui font marocain;exp_8#الحمد لله;الحمد لله;Lhamdoullah;Dieu merci;;OK;;;
+3. Carnet de phrases;9. Expressions imagées;exp_9#دير النية;دير النية;Dir nniya;Fais-le de bon cœur;;OK;;;
+3. Carnet de phrases;9. Expressions imagées;exp_9#ما كاين باس;ما كاين باس;Ma kayn bas;Il n’y a pas de mal;;OK;;;
+3. Carnet de phrases;9. Expressions imagées;exp_9#غير بشوية عليك;غير بشوية عليك;Ghir bchwiya 3lik;Vas-y doucement;;OK;;;
+3. Carnet de phrases;9. Expressions imagées;exp_9#زعما؟;زعما؟;Z3ma?;Ah bon, c’est-à-dire ?;;OK;;;
+3. Carnet de phrases;9. Expressions imagées;exp_9#واقيلا;واقيلا;Waqila;Il me semble que;;OK;;;
+3. Carnet de phrases;9. Expressions imagées;exp_9#على قد الحال;على قد الحال;3la qed lhal;Modestement, comme on peut;;OK;;;
+3. Carnet de phrases;9. Expressions imagées;exp_9#شوية بشوية;شوية بشوية;Chwiya b chwiya;Petit à petit;;OK;;;
+3. Carnet de phrases;9. Expressions imagées;exp_9#الله غالب;الله غالب;Allah ghaleb;On n'y peut rien, c'est ainsi;;OK;;;
+3. Carnet de phrases;9. Expressions imagées;exp_9#بصح؟;بصح؟;Bsseh?;Vraiment ?;;OK;;;
+3. Carnet de phrases;9. Expressions imagées;exp_9#صافي بقيت أنا;صافي بقيت أنا;Safi bqit ana;Ça suffit, j'arrête là;;OK;;;
+3. Carnet de phrases;Les centaines;centaines#خمس مية و ستة و تلاتين;خمس مية و ستة و تلاتين;Khems mya w setta w tlatin;Cinq cent trente-six (536);;OK;;;
+3. Carnet de phrases;Les centaines;centaines#سبع مية;سبع مية;Sbe3 mya;Sept cents (700);;OK;;;
+3. Carnet de phrases;Les centaines;centaines#ست مية;ست مية;Sett mya;Six cents (600);;OK;;;
+3. Carnet de phrases;Les centaines;centaines#تمن مية;تمن مية;Tmen mya;Huit cents (800);;OK;;;
+3. Carnet de phrases;Les centaines;centaines#تسع مية;تسع مية;Tse3 mya;Neuf cents (900);;OK;;;
+3. Carnet de phrases;Les centaines;centaines#تلت مية و خمسين;تلت مية و خمسين;Tlet mya w khamsin;Trois cent cinquante (350);;OK;;;
+3. Carnet de phrases;Les centaines;centaines#خمس مية;خمس مية;Khems mya;Cinq cents (500);;OK;;;
+3. Carnet de phrases;Les centaines;centaines#ربع مية;ربع مية;Rbe3 mya;Quatre cents (400);;OK;;;
+3. Carnet de phrases;Les centaines;centaines#مية;مية;Mya;Cent (100);;OK;;;
+3. Carnet de phrases;Les centaines;centaines#ميتين;ميتين;Myatayn;Deux cents (200) — forme spéciale;;OK;;;
+3. Carnet de phrases;Les centaines;centaines#تلت مية;تلت مية;Tlet mya;Trois cents (300);;OK;;;
+3. Carnet de phrases;Les chiffres 11 à 20;chiffres_11_20#عشرين;عشرين;3achrin;Vingt (20) — nouvelle forme;;A corriger;;3ichrin;
+3. Carnet de phrases;Les chiffres 11 à 20;chiffres_11_20#تسعطاش;تسعطاش;Tsa3tach;Dix-neuf (19) — tes3a + tach;;OK;;;
+3. Carnet de phrases;Les chiffres 11 à 20;chiffres_11_20#تلطاش;تلطاش;Tletach;Treize (13) — tlata + tach;;OK;;;
+3. Carnet de phrases;Les chiffres 11 à 20;chiffres_11_20#ربعطاش;ربعطاش;Rba3tach;Quatorze (14) — rab3a + tach;;OK;;;
+3. Carnet de phrases;Les chiffres 11 à 20;chiffres_11_20#حضاش;حضاش;Hdach;Onze (11) — irrégulier;;OK;;;
+3. Carnet de phrases;Les chiffres 11 à 20;chiffres_11_20#طناش;طناش;Tnach;Douze (12) — irrégulier;;OK;;;
+3. Carnet de phrases;Les chiffres 11 à 20;chiffres_11_20#سبعطاش;سبعطاش;Sba3tach;Dix-sept (17) — seb3a + tach;;OK;;;
+3. Carnet de phrases;Les chiffres 11 à 20;chiffres_11_20#تمنطاش;تمنطاش;Tmentach;Dix-huit (18) — tmnya + tach;;OK;;;
+3. Carnet de phrases;Les chiffres 11 à 20;chiffres_11_20#خمسطاش;خمسطاش;Khmestach;Quinze (15) — khamsa + tach;;OK;;;
+3. Carnet de phrases;Les chiffres 11 à 20;chiffres_11_20#سطاش;سطاش;Settach;Seize (16) — setta + tach;;OK;;;
+3. Carnet de phrases;Les dizaines (20 à 100);dizaines#خمسين;خمسين;Khamsin;Cinquante (50) — khamsa + in;;OK;;;
+3. Carnet de phrases;Les dizaines (20 à 100);dizaines#ستين;ستين;Settin;Soixante (60) — setta + in;;OK;;;
+3. Carnet de phrases;Les dizaines (20 à 100);dizaines#ربعين;ربعين;Reb3in;Quarante (40) — rab3a + in;;OK;;;
+3. Carnet de phrases;Les dizaines (20 à 100);dizaines#تسعين;تسعين;Tes3in;Quatre-vingt-dix (90) — tes3a + in;;OK;;;
+3. Carnet de phrases;Les dizaines (20 à 100);dizaines#عشرين;عشرين;3achrin;Vingt (20);;A corriger;;3ichrin 3am;
+3. Carnet de phrases;Les dizaines (20 à 100);dizaines#تلاتين;تلاتين;Tlatin;Trente (30) — tlata + in;;OK;;;
+3. Carnet de phrases;Les dizaines (20 à 100);dizaines#سبعين;سبعين;Seb3in;Soixante-dix (70) — seb3a + in;;OK;;;
+3. Carnet de phrases;Les dizaines (20 à 100);dizaines#خمسة و تلاتين;خمسة و تلاتين;Khamsa w tlatin;Trente-cinq (35) — « cinq et trente »;;OK;;;
+3. Carnet de phrases;Les dizaines (20 à 100);dizaines#تمنية و ربعين;تمنية و ربعين;Tmnya w reb3in;Quarante-huit (48) — « huit et quarante »;;OK;;;
+3. Carnet de phrases;Les dizaines (20 à 100);dizaines#تسعة و تسعين;تسعة و تسعين;Tes3a w tes3in;Quatre-vingt-dix-neuf (99) — « neuf et quatre-vingt-dix »;;OK;;;
+3. Carnet de phrases;Les dizaines (20 à 100);dizaines#تمانين;تمانين;Tmanin;Quatre-vingts (80) — tmnya + in;;OK;;;
+3. Carnet de phrases;Les dizaines (20 à 100);dizaines#مية;مية;Mya;Cent (100);;OK;;;
+3. Carnet de phrases;Les dizaines (20 à 100);dizaines#واحد و عشرين;واحد و عشرين;Wahed w 3achrin;Vingt-et-un (21) — « un et vingt »;;A corriger;;Wahdou 3ichrin;
+3. Carnet de phrases;Mille et au-delà;grands_nombres#مية ألف;مية ألف;Mya alf;Cent mille (100 000) — mya (cent) + alf (mille);;OK;;;
+3. Carnet de phrases;Mille et au-delà;grands_nombres#عشرة آلاف;عشرة آلاف;3achra alaf;Dix mille (10 000);;OK;;;
+3. Carnet de phrases;Mille et au-delà;grands_nombres#جوج ملايين;جوج ملايين;Jouj mlayen;Deux millions (2 000 000);;OK;;;
+3. Carnet de phrases;Mille et au-delà;grands_nombres#مليون;مليون;Melyoun;Un million (1 000 000);;OK;;;
+3. Carnet de phrases;Mille et au-delà;grands_nombres#خمس آلاف;خمس آلاف;Khems alaf;Cinq mille (5 000);;OK;;;
+3. Carnet de phrases;Mille et au-delà;grands_nombres#ألف;ألف;Alf;Mille (1 000);;OK;;;
+3. Carnet de phrases;Mille et au-delà;grands_nombres#ألف و ميتين و ستة و خمسين;ألف و ميتين و ستة و خمسين;Alf w myatayn w setta w khamsin;Mille deux cent cinquante-six (1 256);;OK;;;
+3. Carnet de phrases;Mille et au-delà;grands_nombres#تلت آلاف;تلت آلاف;Tlet alaf;Trois mille (3 000) — chiffre + alaf;;OK;;;
+3. Carnet de phrases;Mille et au-delà;grands_nombres#ألفين;ألفين;Alfayn;Deux mille (2 000) — forme spéciale;;OK;;;
+4. Comprendre la langue;1. Les pronoms;gram_pronoms#نتي;نتي;Nti;toi (à une femme);;OK;;;
+4. Comprendre la langue;1. Les pronoms;gram_pronoms#هو;هو;Houwa;lui;;OK;;;
+4. Comprendre la langue;1. Les pronoms;gram_pronoms#أنا;أنا;Ana;moi, je;;OK;;;
+4. Comprendre la langue;1. Les pronoms;gram_pronoms#نتا;نتا;Nta;toi (à un homme);;OK;;;
+4. Comprendre la langue;1. Les pronoms;gram_pronoms#نتوما;نتوما;Ntouma;vous;;OK;;;
+4. Comprendre la langue;1. Les pronoms;gram_pronoms#هوما;هوما;Houma;eux, elles;;OK;;;
+4. Comprendre la langue;1. Les pronoms;gram_pronoms#هي;هي;Hiya;elle;;OK;;;
+4. Comprendre la langue;1. Les pronoms;gram_pronoms#حنا;حنا;Hna;nous;;OK;;;
+4. Comprendre la langue;10. Compter avec les noms;gram_nombres#خمسة دراهم;خمسة دراهم;Khamsa drahem;cinq dirhams;;OK;;;
+4. Comprendre la langue;10. Compter avec les noms;gram_nombres#تلاتة د القهاوي;تلاتة د القهاوي;Tlata d lqhawi;trois cafés;;OK;;;
+4. Comprendre la langue;10. Compter avec les noms;gram_nombres#جوج قهاوي;جوج قهاوي;Jouj qhawi;deux cafés;;OK;;;
+4. Comprendre la langue;10. Compter avec les noms;gram_nombres#شحال من مرة;شحال من مرة;Chhal men marra;combien de fois;;OK;;;
+4. Comprendre la langue;10. Compter avec les noms;gram_nombres#عشرين عام;عشرين عام;3achrin 3am;vingt ans;;A corriger;;3ichrin 3am;
+4. Comprendre la langue;10. Compter avec les noms;gram_nombres#حضاشن عام;حضاشن عام;Hdachen 3am;onze ans;;OK;;;
+4. Comprendre la langue;10. Compter avec les noms;gram_nombres#واحد القهوة;واحد القهوة;Wahed lqahwa;un café;;OK;;;
+4. Comprendre la langue;10. Compter avec les noms;gram_nombres#عشرة دقايق;عشرة دقايق;3achra dqayq;dix minutes;;OK;;;
+4. Comprendre la langue;2. À qui c\;gram_possessifs#سميتي;سميتي;Smiti;mon nom;;OK;;;
+4. Comprendre la langue;2. À qui c\;gram_possessifs#الدار ديالي;الدار ديالي;Ddar dyali;la maison à moi;;OK;;;
+4. Comprendre la langue;2. À qui c\;gram_possessifs#دارو;دارو;Daro;sa maison (à lui);;OK;;;
+4. Comprendre la langue;2. À qui c\;gram_possessifs#دارها;دارها;Darha;sa maison (à elle);;OK;;;
+4. Comprendre la langue;2. À qui c\;gram_possessifs#دارنا;دارنا;Darna;notre maison;;OK;;;
+4. Comprendre la langue;2. À qui c\;gram_possessifs#دارك;دارك;Darek;ta maison;;OK;;;
+4. Comprendre la langue;2. À qui c\;gram_possessifs#داري;داري;Dari;ma maison;;OK;;;
+4. Comprendre la langue;2. À qui c\;gram_possessifs#الكتاب ديالك;الكتاب ديالك;Lktab dyalek;ton livre;;OK;;;
+4. Comprendre la langue;3. Le présent en ka-;gram_present#كياكلو;كياكلو;Kayaklou;ils mangent;;OK;;;
+4. Comprendre la langue;3. Le présent en ka-;gram_present#كنشرب أتاي;كنشرب أتاي;Kancherb atay;je bois du thé;;OK;;;
+4. Comprendre la langue;3. Le présent en ka-;gram_present#كنهضر الدارجة;كنهضر الدارجة;Kanhder ddarija;je parle le darija;;OK;;;
+4. Comprendre la langue;3. Le présent en ka-;gram_present#كتاكل;كتاكل;Katakol;tu manges / elle mange;;OK;;;
+4. Comprendre la langue;3. Le présent en ka-;gram_present#كياكل;كياكل;Kayakol;il mange;;OK;;;
+4. Comprendre la langue;3. Le présent en ka-;gram_present#كتاكلو;كتاكلو;Kataklou;vous mangez;;OK;;;
+4. Comprendre la langue;3. Le présent en ka-;gram_present#كناكل;كناكل;Kanakol;je mange;;OK;;;
+4. Comprendre la langue;3. Le présent en ka-;gram_present#كناكلو;كناكلو;Kanaklou;nous mangeons;;OK;;;
+4. Comprendre la langue;4. Dire non;gram_negation#ما عرفتش;ما عرفتش;Ma 3reftch;je ne sais pas;;OK;;;
+4. Comprendre la langue;4. Dire non;gram_negation#ما كنشربش;ما كنشربش;Ma kancherbch;je ne bois pas;;OK;;;
+4. Comprendre la langue;4. Dire non;gram_negation#ماشي هو;ماشي هو;Machi houwa;ce n'est pas lui;;OK;;;
+4. Comprendre la langue;4. Dire non;gram_negation#ما عنديش;ما عنديش;Ma 3andich;je n'ai pas;;OK;;;
+4. Comprendre la langue;4. Dire non;gram_negation#ما بغيتش;ما بغيتش;Ma bghitch;je ne veux pas;;OK;;;
+4. Comprendre la langue;4. Dire non;gram_negation#ما كاينش;ما كاينش;Ma kaynch;il n'y a pas;;OK;;;
+4. Comprendre la langue;4. Dire non;gram_negation#ما كناكلش;ما كناكلش;Ma kanaklch;je ne mange pas;;OK;;;
+4. Comprendre la langue;4. Dire non;gram_negation#ما فهمتش;ما فهمتش;Ma fhemtch;je n'ai pas compris;;OK;;;
+4. Comprendre la langue;5. Le passé;gram_passe#كلينا;كلينا;Klina;nous avons mangé;;OK;;;
+4. Comprendre la langue;5. Le passé;gram_passe#مشيت;مشيت;Mchit;je suis allé;;OK;;;
+4. Comprendre la langue;5. Le passé;gram_passe#كليتي;كليتي;Kliti;tu as mangé;;OK;;;
+4. Comprendre la langue;5. Le passé;gram_passe#كلا;كلا;Kla;il a mangé;;OK;;;
+4. Comprendre la langue;5. Le passé;gram_passe#كليت;كليت;Klit;j'ai mangé;;OK;;;
+4. Comprendre la langue;5. Le passé;gram_passe#كلات;كلات;Klat;elle a mangé;;OK;;;
+4. Comprendre la langue;5. Le passé;gram_passe#شفت;شفت;Cheft;j'ai vu;;OK;;;
+4. Comprendre la langue;5. Le passé;gram_passe#مشا;مشا;Mcha;il est allé;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#أنا فرحان;أنا فرحان;Ana ferhan;je suis content;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#الدار كبيرة;الدار كبيرة;Ddar kbira;la grande maison;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#غدا غادي نمشي;غدا غادي نمشي;Ghedda ghadi nemchi;demain je vais partir;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#غادي نشوفك;غادي نشوفك;Ghadi nchoufek;je vais te voir;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#ما غاديش نمشي;ما غاديش نمشي;Ma ghadich nemchi;je ne vais pas aller;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#هاد الدار;هاد الدار;Had ddar;cette maison;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#هادا الكتاب;هادا الكتاب;Hada lktab;ceci est le livre;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#واحد الراجل مزيان;واحد الراجل مزيان;Wahed rajel mezyan;un homme bien;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#هو ف الدار;هو ف الدار;Houwa f ddar;il est à la maison;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#الطاجين بنين;الطاجين بنين;Tajine bnin;le tajine est bon;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#الما بارد;الما بارد;Lma bared;l'eau est froide;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#غادي تمشي;غادي تمشي;Ghadi temchi;tu vas aller;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#غادي نمشي;غادي نمشي;Ghadi nemchi;je vais aller;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#غادي يمشي;غادي يمشي;Ghadi ymchi;il va aller;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#غادي ناكل;غادي ناكل;Ghadi nakol;je vais manger;;OK;;;
+4. Comprendre la langue;6. Le futur avec ghadi;gram_futur#غادية تمشي;غادية تمشي;Ghadya temchi;elle va aller;;OK;;;
+4. Comprendre la langue;8. Poser une question;gram_questions#واش نتا مغربي؟;واش نتا مغربي؟;Wach nta maghribi?;Es-tu marocain ?;;OK;;;
+4. Comprendre la langue;8. Poser une question;gram_questions#شكون هادا؟;شكون هادا؟;Chkoun hada?;Qui est-ce ?;;OK;;;
+4. Comprendre la langue;8. Poser une question;gram_questions#فين كاينة المحطة؟;فين كاينة المحطة؟;Fin kayna lmahatta?;Où est la gare ?;;OK;;;
+4. Comprendre la langue;8. Poser une question;gram_questions#نتا مغربي؟;نتا مغربي؟;Nta maghribi?;Tu es marocain ? (à l\;;OK;;;
+4. Comprendre la langue;8. Poser une question;gram_questions#شنو كتقول؟;شنو كتقول؟;Chnou katqoul?;Que dis-tu ?;;OK;;;
+4. Comprendre la langue;8. Poser une question;gram_questions#علاش؟;علاش؟;3lach?;Pourquoi ?;;OK;;;
+4. Comprendre la langue;8. Poser une question;gram_questions#واش عندك الوقت؟;واش عندك الوقت؟;Wach 3andek lweqt?;As-tu le temps ?;;OK;;;
+4. Comprendre la langue;8. Poser une question;gram_questions#كيفاش سميتك؟;كيفاش سميتك؟;Kifach smitek?;Comment t'appelles-tu ?;;A corriger;;;
+4. Comprendre la langue;9. Les mots de liaison;gram_liaison#ولاكن;ولاكن;Walakin;mais;;OK;;;
+4. Comprendre la langue;9. Les mots de liaison;gram_liaison#اللي;اللي;Lli;qui, que;;OK;;;
+4. Comprendre la langue;9. Les mots de liaison;gram_liaison#ملي;ملي;Melli;quand, dès que;;OK;;;
+4. Comprendre la langue;9. Les mots de liaison;gram_liaison#إلا;إلا;Ila;si;;OK;;;
+4. Comprendre la langue;9. Les mots de liaison;gram_liaison#ولا;ولا;Wla;ou;;OK;;;
+4. Comprendre la langue;9. Les mots de liaison;gram_liaison#حيت;حيت;Hit;parce que;;A corriger;;;
+4. Comprendre la langue;9. Les mots de liaison;gram_liaison#باش;باش;Bach;pour, afin de;;OK;;;
+4. Comprendre la langue;9. Les mots de liaison;gram_liaison#و;و;W;et;;OK;;;
+5. Quiz images;avance;quiz_avance#الصحراء;الصحراء;ssahra;désert;;OK;;;
+5. Quiz images;avance;quiz_avance#الشتا;الشتا;chta;pluie;;OK;;;
+5. Quiz images;avance;quiz_avance#التومة;التومة;ttouma;ail;;A corriger;;;
+5. Quiz images;avance;quiz_avance#الجبل;الجبل;jbel;montagne;;OK;;;
+5. Quiz images;avance;quiz_avance#الثلج;الثلج;telj;neige;;OK;;;
+5. Quiz images;avance;quiz_avance#الدري;الدري;dderri;enfant;;A corriger;;;
+5. Quiz images;avance;quiz_avance#العجوزة;العجوزة;l3jouza;vieille dame;;A corriger;;;
+5. Quiz images;avance;quiz_avance#العافية;العافية;l3afiya;feu;;OK;;;
+5. Quiz images;avance;quiz_avance#النجمة;النجمة;nnejma;étoile;;OK;;;
+5. Quiz images;avance;quiz_avance#الفلفلة الحارة;الفلفلة الحارة;lfelfla harra;piment;;OK;;;
+5. Quiz images;avance;quiz_avance#النحلة;النحلة;nnehla;abeille;;OK;;;
+5. Quiz images;avance;quiz_avance#الهندية;الهندية;lhendiya;figuier de barbarie;;OK;;;
+5. Quiz images;avance;quiz_avance#الجمل;الجمل;jmel;chameau;;OK;;;
+5. Quiz images;avance;quiz_avance#الموكة;الموكة;lmouka;chouette;;OK;;;
+5. Quiz images;avance;quiz_avance#الزيتون;الزيتون;zzitoun;olives;;OK;;;
+5. Quiz images;avance;quiz_avance#البراد;البراد;berrad;théière;;OK;;;
+5. Quiz images;avance;quiz_avance#الكسكسو;الكسكسو;kesksou;couscous;;OK;;;
+5. Quiz images;avance;quiz_avance#الزرع;الزرع;zzr3;blé, culture;Zra3;A corriger;;;
+5. Quiz images;avance;quiz_avance#العتروس;العتروس;l3atrous;bouc;;OK;;;
+5. Quiz images;avance;quiz_avance#الزربية;الزربية;zerbiya;tapis;;OK;;;
+5. Quiz images;Avancé;avance#الطيارة;الطيارة;tyara;avion;;OK;;;
+5. Quiz images;Avancé;avance#السيارة;السيارة;ssiyara;voiture;;OK;;;
+5. Quiz images;Avancé;avance#موطو;موطو;moto;moto;;OK;;;
+5. Quiz images;Avancé;avance#الطوبيس;الطوبيس;tobis;bus;;OK;;;
+5. Quiz images;Avancé;avance#الطاكسي;الطاكسي;taxi;taxi;;OK;;;
+5. Quiz images;Avancé;avance#الطران;الطران;tran;train;;OK;;;
+5. Quiz images;Avancé;avance#الخبز;الخبز;khobz;pain;;OK;;;
+5. Quiz images;Avancé;avance#موش;موش;mouch;chat;qett,qatt,mech;A corriger;;;
+5. Quiz images;Avancé;avance#كلب;كلب;kelb;chien;;OK;;;
+5. Quiz images;Avancé;avance#الحليب;الحليب;hlib;lait;;OK;;;
+5. Quiz images;Avancé;avance#أتاي;أتاي;atay;thé;;OK;;;
+5. Quiz images;Avancé;avance#قهوة;قهوة;qahwa;café;;OK;;;
+5. Quiz images;debutant;quiz_debutant#البيض;البيض;beid;œufs;;OK;;;
+5. Quiz images;debutant;quiz_debutant#الخبز;الخبز;khobz;pain;;OK;;;
+5. Quiz images;debutant;quiz_debutant#الحليب;الحليب;hlib;lait;;OK;;;
+5. Quiz images;debutant;quiz_debutant#قهوة;قهوة;qahwa;café;;OK;;;
+5. Quiz images;debutant;quiz_debutant#أتاي;أتاي;atay;thé;;OK;;;
+5. Quiz images;debutant;quiz_debutant#الطاكسي;الطاكسي;taxi;taxi;;OK;;;
+5. Quiz images;debutant;quiz_debutant#الطوبيس;الطوبيس;tobis;bus;;OK;;;
+5. Quiz images;debutant;quiz_debutant#السيارة;السيارة;ssiyara;voiture;tomobil,tonobil;OK;;;
+5. Quiz images;debutant;quiz_debutant#موش;موش;mouch;chat;qett,qatt,mech;OK;;;
+5. Quiz images;debutant;quiz_debutant#كلب;كلب;kelb;chien;;OK;;;
+5. Quiz images;debutant;quiz_debutant#الدار;الدار;ddar;maison;;OK;;;
+5. Quiz images;debutant;quiz_debutant#العين;العين;3in;œil;;OK;;;
+5. Quiz images;debutant;quiz_debutant#الما;الما;lma;eau;;OK;;;
+5. Quiz images;debutant;quiz_debutant#اليد;اليد;yed;main;;OK;;;
+5. Quiz images;debutant;quiz_debutant#الشمس;الشمس;chems;soleil;;OK;;;
+5. Quiz images;debutant;quiz_debutant#القمر;القمر;qamar;lune;;OK;;;
+5. Quiz images;ghizlane;b_blitz_perfect#العائلة;العائلة;l3a2ila;Ma famille;l3a'ïla, L3a ila;A corriger;;;
+5. Quiz images;ghizlane;b_blitz_perfect#المغرب;المغرب;lmaghrib;Le Maroc;;OK;;;
+5. Quiz images;ghizlane;b_blitz_perfect#الماكلة;الماكلة;lmakla;La cuisine/nourriture;;A corriger;;;
+5. Quiz images;ghizlane;b_blitz_perfect#الجو;الجو;jjaw;Le temps qu'il fait;;OK;;;
+5. Quiz images;ghizlane;b_blitz_perfect#الخدمة;الخدمة;lkhedma;Mon travail;;OK;;;
+5. Quiz images;ghizlane;b_blitz_perfect#الكورة;الكورة;lkoura;Le foot;;OK;;;
+5. Quiz images;ghizlane;b_blitz_perfect#الموسيقى;الموسيقى;lmousiqa;La musique;;OK;;;
+5. Quiz images;ghizlane;b_blitz_perfect#العطلة;العطلة;l3otla;Mes vacances;;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#التفاح;التفاح;tteffah;pomme;;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#اللحم;اللحم;llham;viande;;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#البصلة;البصلة;lbsla;oignon;;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#الليمون;الليمون;llimoun;orange;;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#الحوت;الحوت;lhout;poisson;;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#الطران;الطران;tran;train;;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#الطيارة;الطيارة;tyara;avion;;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#الطاجين;الطاجين;tajine;tajine;;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#موطو;موطو;moto;moto;;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#الفلوس;الفلوس;flous;argent;;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#الصباط;الصباط;sebbat;chaussures;;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#البحر;البحر;lbhar;mer;;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#الجامع;الجامع;jame3;mosquée;jama3;A corriger;;;
+5. Quiz images;intermediaire;quiz_intermediaire#القاميجة;القاميجة;qamija;chemise;;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#الساروت;الساروت;sarout;clé;meftah;A corriger;;;
+5. Quiz images;intermediaire;quiz_intermediaire#الخيزو;الخيزو;khizzou;carotte;;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#الشلية;الشلية;chelya;chaise;kursi;OK;;;
+5. Quiz images;intermediaire;quiz_intermediaire#الباب;الباب;lbab;porte;;OK;;;
+6. Ouvertures de scenarios;À l\;ecole#صباح الخير! أنا المعلمة. نقولو مع بعض: صباح الخير!;صباح الخير! أنا المعلمة. نقولو مع بعض: صباح الخير!;Sbah lkhir! Ana lm3alma. Ngoulou m3a b3d: sbah lkhir!;Bonjour ! Je suis la maîtresse. On dit ensemble : bonjour !;;A corriger;صباح الخير! أنا المعلمة. قولو معايا: صباح الخير!;Sbah lkhir! Ana lmou3alima. Goulou m3aya : sbah lkhir!;
+6. Ouvertures de scenarios;À la mairie;mairie#صباح الخير، مرحبا بيك. أشنو خدمة بغيتي؟;صباح الخير، مرحبا بيك. أشنو خدمة بغيتي؟;Sbah lkhir, marhba bik. Achno khedma bghiti?;Bonjour, bienvenue. Quel service désirez-vous ?;;OK;;;
+6. Ouvertures de scenarios;À la pharmacie;pharmacie#صباح الخير، أشنو بغيتي؟;صباح الخير، أشنو بغيتي؟;Sbah lkhir, achno bghiti?;Bonjour, qu'est-ce qu'il vous faut ?;;OK;;;
+6. Ouvertures de scenarios;Au restaurant;restaurant#مرحبا بيكم، شحال ديال الناس؟ وأشنو غادي تشربو؟;مرحبا بيكم، شحال ديال الناس؟ وأشنو غادي تشربو؟;Marhba bikoum, chhal dyal nnas? Wa achno ghadi tchrbo?;Bienvenue, vous êtes combien ? Et qu'est-ce que vous prendrez à boire ?;;OK;;;
+6. Ouvertures de scenarios;Au souk;souk#مرحبا بيك! شوف هاد الزربية، بغالي بزاف، صنعة اليد!;مرحبا بيك! شوف هاد الزربية، بغالي بزاف، صنعة اليد!;Marhba bik! Chouf had zerbiya, bghalya bezzaf, sna3a lyed!;Bienvenue ! Regarde ce tapis, il me tient à cœur, fait main !;;OK;;;
+6. Ouvertures de scenarios;Chez l\;epicerie#أهلا بيك خويا! أشنو بغيتي اليوم؟;أهلا بيك خويا! أشنو بغيتي اليوم؟;Ahlan bik khouya! Achno bghiti lyoum?;Bienvenue mon frère ! Qu'est-ce que tu veux aujourd'hui ?;;OK;;;
+6. Ouvertures de scenarios;Chez le coiffeur;coiffeur#أهلا بيك! أشنو بغيتي نصاوبلك اليوم؟;أهلا بيك! أشنو بغيتي نصاوبلك اليوم؟;Ahlan bik! Achno bghiti nsawablek lyoum?;Bienvenue ! Qu'est-ce que je te fais aujourd'hui ?;;OK;;;
+6. Ouvertures de scenarios;Chez le docteur;docteur#صباح الخير، أشنو عندك اليوم؟;صباح الخير، أشنو عندك اليوم؟;Sbah lkhir, achno 3endek lyoum?;Bonjour, qu'est-ce qui vous amène aujourd'hui ?;;OK;;;
+6. Ouvertures de scenarios;Contrôle policier;police#مساء الخير، الوراق ديال السيارة من فضلك.;مساء الخير، الوراق ديال السيارة من فضلك.;Msa lkhir, lwraq dyal ssiyara min fadlik.;Bonsoir, les papiers de la voiture s'il vous plaît.;;OK;;;
+6. Ouvertures de scenarios;Dans un taxi;taxi#مرحبا، فين غادي؟;مرحبا، فين غادي؟;Marhba, fin ghadi?;Bonjour, où allez-vous ?;;OK;;;
+6. Ouvertures de scenarios;Entre amis;amie#أهلا خويتي! شحال هادي ما تلاقينا، أشنو خبارك؟;أهلا خويتي! شحال هادي ما تلاقينا، أشنو خبارك؟;Ahlan khouiti! Chhal hadi ma tlaqina, achno khbarek?;Salut ma belle ! Ça fait un moment qu'on s'est pas vues, quelles nouvelles ?;;OK;;;
+6. Ouvertures de scenarios;Les animaux;animaux#مرحبا صغيري! شوف، هادا لحمار! لحمار... لحمار! قوليها معايا!;مرحبا صغيري! شوف، هادا لحمار! لحمار... لحمار! قوليها معايا!;Marhba sghiri! Chouf, hada lhmar! Lhmar... lhmar! Goulha m3aya!;Bonjour petit/petite ! Regarde, voici l'âne ! L'âne... l'âne ! Dis-le avec moi !;;Ok;;;
+6. Ouvertures de scenarios;Ma famille;famille_kids#يا حبيبي! أنا جدة. هادي ماما، ماما... ماما! فين ماما ديالك؟;يا حبيبي! أنا جدة. هادي ماما، ماما... ماما! فين ماما ديالك؟;Ya hbibi! Ana jida. Hadi mama, mama... mama! Fin mama dyalek?;Mon chéri ! Je suis mamie. Voici maman, maman... maman ! Où est ta maman ?;;OK;;;
+6. Ouvertures de scenarios;On joue !;jeu#سالام صاحبي! نلعبو! شوف، هادا لهمر! لهمر... لهمر! كاين شي حاجة حمراء عندك؟;سالام صاحبي! نلعبو! شوف، هادا لهمر! لهمر... لهمر! كاين شي حاجة حمراء عندك؟;Salam sahbi! Nl3abou! Chouf, hada lahmar! Lahmar... lahmar! Kayn chi haja hamra 3endek?;Salut copain ! On joue ! Regarde, ça c'est rouge ! Rouge... rouge ! Tu as quelque chose de rouge près de toi ?;;OK;;;
+6. Ouvertures de scenarios;Retrouvailles;famille#واه شحال هاد الوقت ما تشافينا! كيداير راسك؟;واه شحال هاد الوقت ما تشافينا! كيداير راسك؟;Waah chhal had lwaqt ma tchafina! Kidayer rassek?;Waouh, ça fait si longtemps qu'on ne s'est pas vus ! Comment vas-tu ?;;OK;;;

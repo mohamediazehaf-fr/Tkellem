@@ -67,6 +67,8 @@
     --palm:#2FBE8F; --palm-dark:#1D7D5D;
     --cream:#FFFBF4; --card:#FFFFFF; --ink:#17211F; --muted:#7C8A88; --line:#EDE6D8;
     --display:'Baloo 2',sans-serif; --body:'Nunito',sans-serif; --arabic:'Cairo',sans-serif;
+    /* largeur du contenu et respiration latérale, communes à l'en-tête et au corps */
+    --maxw:1140px; --gutter:clamp(20px,4vw,40px);
   }
   *{box-sizing:border-box;}
   body{
@@ -74,19 +76,25 @@
     font-family:var(--body);font-size:17px;line-height:1.6;
     -webkit-font-smoothing:antialiased;
   }
-  .wrap{max-width:940px;margin:0 auto;padding:0 22px;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter);}
   a{color:var(--zellige);}
 
   /* ---------- en-tête ---------- */
   .top{
     display:flex;align-items:center;gap:12px;padding:18px 0;
-    max-width:940px;margin:0 auto;padding-left:22px;padding-right:22px;
+    max-width:var(--maxw);margin:0 auto;
+    padding-left:var(--gutter);padding-right:var(--gutter);
   }
   .mark{
     width:40px;height:40px;border-radius:12px;background:var(--zellige);color:var(--cream);
     display:grid;place-items:center;font-family:var(--arabic);font-size:20px;font-weight:700;
   }
   .brand{font-family:var(--display);font-weight:800;font-size:21px;color:var(--zellige);flex:1;}
+  /* Lien vers les fiches : il donne aux moteurs un chemin vers les pages de contenu,
+     et aux visiteurs de quoi lire sans créer de compte. Masqué sur petit écran,
+     où l'en-tête serait à l'étroit — le lien du pied de page prend le relais. */
+  .nav-link{font-weight:700;font-size:15.5px;text-decoration:none;margin-right:4px;}
+  @media (max-width:620px){ .nav-link{display:none;} }
   .btn{
     display:inline-block;background:var(--zellige);color:var(--cream);text-decoration:none;
     border-radius:16px;padding:12px 20px;font-family:var(--display);font-weight:800;font-size:15.5px;
@@ -98,10 +106,18 @@
   .btn-lg{padding:16px 30px;font-size:18px;}
 
   /* ---------- accroche ---------- */
-  .hero{padding:34px 0 46px;}
+  .hero{padding:34px 0 52px;}
+  /* Sur ordinateur : le texte à gauche, la démonstration à droite. C'est ce qui
+     occupe la largeur, au lieu d'une colonne étroite perdue au milieu de l'écran.
+     En dessous de 900px les deux blocs s'empilent. */
+  .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:46px;align-items:center;}
+  .hero-text, .hero-demo{min-width:0;}
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr;gap:28px;}
+  }
   h1{
-    font-family:var(--display);font-weight:800;font-size:clamp(31px,6vw,50px);
-    line-height:1.08;letter-spacing:-.02em;color:var(--zellige);margin:0 0 16px;max-width:16ch;
+    font-family:var(--display);font-weight:800;font-size:clamp(30px,4.6vw,46px);
+    line-height:1.1;letter-spacing:-.02em;color:var(--zellige);margin:0 0 16px;
   }
   .lede{font-size:19.5px;line-height:1.55;max-width:56ch;margin:0 0 12px;}
   .lede-2{color:var(--muted);font-size:17px;max-width:56ch;margin:0 0 26px;}
@@ -126,7 +142,7 @@
     width:38px;height:38px;border-radius:11px;flex:none;display:grid;place-items:center;
     background:var(--zellige);color:var(--cream);font-size:16px;
   }
-  .demo-note{font-size:13.5px;color:var(--muted);text-align:center;margin:0 0 46px;}
+  .demo-note{font-size:13.5px;color:var(--muted);text-align:center;margin:10px 0 0;}
   /* la ligne qui montre la correction : c'est elle qui porte la différence */
   .demo-mic{background:rgba(47,190,143,.10);border-radius:14px;margin:4px;border-bottom:none;}
   .demo-mic .demo-fr{color:#3B4644;font-size:14.5px;}
@@ -170,7 +186,10 @@
     padding:14px 16px;margin-bottom:10px;
   }
   summary{font-family:var(--display);font-weight:700;font-size:16.5px;color:var(--zellige);cursor:pointer;}
-  details p{margin:10px 0 0;font-size:15.5px;color:#4c463c;}
+  /* le conteneur est large ; on borne les blocs de texte, au-delà de ~80 caractères
+     par ligne l'œil perd le début de la ligne suivante */
+  details p{margin:10px 0 0;font-size:15.5px;color:#4c463c;max-width:80ch;}
+  .step span{max-width:82ch;}
 
   .final{text-align:center;padding:52px 0 60px;}
   .final h2{margin-bottom:8px;}
@@ -191,22 +210,24 @@
 <header class="top">
   <div class="mark">ب</div>
   <div class="brand">Beldi</div>
+  <a class="nav-link" href="/darija">Fiches de darija</a>
   <a class="btn" href="/app">Ouvrir l'app</a>
 </header>
 
 <main>
   <div class="wrap hero">
-    <h1>Apprends le darija en le parlant, et fais-toi corriger</h1>
-    <p class="lede">Tu prononces chaque phrase au micro. L'application écoute, compare, et te dit précisément quel son reprendre — jusqu'à ce que ça sonne juste.</p>
-    <p class="lede-2">Ensuite tu tiens une vraie conversation : chez l'épicier, dans un taxi, avec ta belle-famille. En darija marocain, celui qu'on entend vraiment dans la rue.</p>
-    <div class="hero-actions">
-      <a class="btn btn-saf btn-lg" href="/app">Commencer maintenant</a>
-      <span class="free">Gratuit · sans installation · mobile et ordinateur</span>
+   <div class="hero-grid">
+    <div class="hero-text">
+      <h1>Le darija, simplement</h1>
+      <p class="lede">Tu écoutes, tu parles, on te corrige. Trois gestes, et tu progresses à l'oral dès la première séance.</p>
+      <p class="lede-2">Puis tu tiens une vraie conversation : chez l'épicier, dans un taxi, avec ta belle-famille. En darija marocain, celui qu'on entend vraiment dans la rue.</p>
+      <div class="hero-actions">
+        <a class="btn btn-saf btn-lg" href="/app">Commencer maintenant</a>
+        <span class="free">Gratuit · sans installation · mobile et ordinateur</span>
+      </div>
     </div>
-  </div>
-
-  <div class="wrap">
-    <div class="demo">
+    <div class="hero-demo">
+     <div class="demo">
       <div class="demo-row">
         <div class="demo-txt">
           <div class="demo-ar">شحال هادا؟</div>
@@ -238,8 +259,10 @@
         </div>
         <div class="demo-ico ico-mic">🎤</div>
       </div>
+     </div>
+     <p class="demo-note">Chaque phrase s'écoute, puis se répète au micro : l'application compare et te corrige.</p>
     </div>
-    <p class="demo-note">Chaque phrase s'écoute, puis se répète au micro : l'application compare et te corrige.</p>
+   </div>
   </div>
 
   <div class="wrap">
@@ -317,7 +340,10 @@
 </main>
 
 <footer>
-  <div class="wrap">Beldi — apprendre le darija marocain en le parlant</div>
+  <div class="wrap">
+    <p style="margin:0 0 10px"><a href="/darija">Toutes les fiches de vocabulaire et de grammaire</a></p>
+    Beldi — apprendre le darija marocain en le parlant
+  </div>
 </footer>
 
 </body>
