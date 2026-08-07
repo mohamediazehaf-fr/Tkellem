@@ -18,6 +18,9 @@
 const fs = require('fs');
 const path = require('path');
 const { PHRASEBOOK, GRAMMAR } = require('./public/data/content.js');
+// Commentaire d'usage en tête de fiche. Fichier distinct : ce texte n'a pas reçu la
+// relecture native qu'ont eue les phrases. Une fiche sans entrée s'affiche sans intro.
+const { FICHE_INTROS } = require('./public/data/intros.js');
 
 // Date de dernière modification du contenu, pour le plan de site. On lit la date du
 // fichier source : elle avance à chaque déploiement qui touche au contenu, et
@@ -108,6 +111,8 @@ h2{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:22px;color:#0E4F56
 .intro{font-size:18px;max-width:70ch;margin:0 0 8px}
 .regle{background:#fff;border:1.5px solid #EDE6D8;border-radius:16px;padding:18px 20px;margin:22px 0;
    max-width:78ch}
+/* prose d'usage : volontairement sans cadre, c'est du texte à lire, pas un encadré à survoler */
+.usage{font-size:17.5px;line-height:1.68;max-width:74ch;color:#3B4644;margin:20px 0 6px}
 table{width:100%;border-collapse:collapse;background:#fff;border:1.5px solid #EDE6D8;
    border-radius:16px;overflow:hidden;margin:20px 0}
 th,td{text-align:left;padding:12px 14px;border-bottom:1px solid #EDE6D8;vertical-align:top}
@@ -255,10 +260,18 @@ ${autresLiens('Comprendre la langue', GRAMMAR.map(r => ({ url: urlRegle(r), nom:
     const voisins = [LEAVES[i - 1], LEAVES[i + 1]].filter(Boolean)
       .map(v => ({ url: urlFeuille(v), nom: leafTitle(v) }));
 
+    // Certaines fiches — les nombres — portent déjà une règle dans leurs données.
+    // Elle fait autorité et a été relue : on ne lui superpose pas un commentaire écrit
+    // par-dessus, qui ne ferait que la paraphraser. D'où le "sinon".
+    const regle = e.leaf.note;
+    const prose = regle ? null : FICHE_INTROS[e.leaf.id];
+
     const body = `
 <h1>${esc(titre)}</h1>
 <p class="intro">${nb} expressions en darija marocain, avec l'écriture arabe, la prononciation
 en lettres latines et la traduction en français.</p>
+${regle ? `<div class="regle">${regle}</div>` : ''}
+${prose ? `<p class="usage">${esc(prose)}</p>` : ''}
 ${table(e.leaf.phrases)}
 ${autresLiens('À lire ensuite', voisins.concat([{ url: '/darija', nom: 'Toutes les fiches' }]))}`;
 
