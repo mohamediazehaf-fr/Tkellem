@@ -106,7 +106,9 @@
   .btn-lg{padding:16px 30px;font-size:18px;}
 
   /* ---------- accroche ---------- */
-  .hero{padding:34px 0 52px;}
+  /* padding-top/bottom seulement : la forme raccourcie `padding` remettrait les
+     côtés à zéro et annulerait la marge posée par .wrap, que ce bloc porte aussi. */
+  .hero{padding-top:34px;padding-bottom:52px;}
   /* Sur ordinateur : le texte à gauche, la démonstration à droite. C'est ce qui
      occupe la largeur, au lieu d'une colonne étroite perdue au milieu de l'écran.
      En dessous de 900px les deux blocs s'empilent. */
@@ -201,7 +203,7 @@
   }
   @media (max-width:560px){
     body{font-size:16px;}
-    .hero{padding:22px 0 34px;}
+    .hero{padding-top:22px;padding-bottom:34px;}
   }
 </style>
 </head>
