@@ -9,7 +9,7 @@
 <meta name="google-site-verification" content="WbyP6ZMf-FvfBnFyqKmBrYe1Bu3kf9jf84iDiXM2hMs">
 
 <title>Beldi — Apprendre le darija marocain en le parlant</title>
-<meta name="description" content="Apprends le darija marocain en le parlant : tu prononces au micro, l'application te corrige. Conversations en situation, quiz en images et défis entre amis. Gratuit, sur mobile et ordinateur.">
+<meta name="description" content="Apprends le darija marocain à ton rythme : tu parles, l'application te corrige. Quiz par niveau, défis entre amis, conversations en situation. Enfants et adultes, gratuit.">
 <link rel="canonical" href="https://beldi-darija.fr/">
 
 <!-- Aperçu au partage : c'est ce qui s'affiche quand un lien est envoyé sur WhatsApp -->
@@ -177,7 +177,9 @@
     line-height:1.1;letter-spacing:-.02em;color:var(--zellige);margin:0 0 16px;
   }
   .lede{font-size:19.5px;line-height:1.55;max-width:56ch;margin:0 0 12px;}
-  .lede-2{color:var(--muted);font-size:17px;max-width:56ch;margin:0 0 26px;}
+  /* Ce second paragraphe porte désormais la méthode, le jeu et la progression :
+     il reste plus petit que le premier, mais plus en gris pâle — on le lit vraiment. */
+  .lede-2{color:#3B4644;font-size:17px;max-width:56ch;margin:0 0 26px;}
   .hero-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
   .free{font-size:14.5px;color:var(--palm-dark);font-weight:700;}
 
@@ -213,7 +215,10 @@
     color:var(--zellige);margin:0 0 10px;letter-spacing:-.01em;
   }
   .sub{color:var(--muted);max-width:60ch;margin:0 0 26px;}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:16px;}
+  /* Deux colonnes fixes, pas d'auto-fit : avec quatre cartes, laisser le navigateur
+     décider donnait 3 + 1, une ligne orpheline. Deux et deux se lisent mieux. */
+  .grid{display:grid;grid-template-columns:1fr;gap:16px;}
+  @media (min-width:760px){ .grid{grid-template-columns:1fr 1fr;} }
   .card{
     background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:20px;
   }
@@ -276,11 +281,11 @@
    <div class="hero-grid">
     <div class="hero-text">
       <h1>Le darija, simplement</h1>
-      <p class="lede">Tu écoutes, tu parles, on te corrige. Trois gestes, et tu progresses à l'oral dès la première séance.</p>
-      <p class="lede-2">Puis tu tiens une vraie conversation : chez l'épicier, dans un taxi, avec ta belle-famille. Et quand tu veux réviser sans y penser, tu joues — quiz contre la montre et défis entre amis.</p>
+      <p class="lede">Apprends à ton rythme, du premier mot à la vraie conversation : chez l'épicier, dans un taxi, avec ta belle-famille.</p>
+      <p class="lede-2">Tu écoutes, tu parles, on te corrige. Tu joues pour réviser — quiz, défis entre amis, classement — et tu vois ta progression à chaque étape.</p>
       <div class="hero-actions">
         <a class="btn btn-saf btn-lg" href="/app">Commencer maintenant</a>
-        <span class="free">Gratuit · sans installation · mobile et ordinateur</span>
+        <span class="free">Gratuit · enfants, ados et adultes · trois niveaux · mobile et ordinateur</span>
       </div>
     </div>
     <div class="hero-demo">
