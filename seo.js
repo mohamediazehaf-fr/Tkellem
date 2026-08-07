@@ -158,7 +158,10 @@ function layout({ title, description, canonical, crumbs, body }) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${esc(title)} | Beldi</title>
+<!-- Pas de suffixe « | Beldi » : il coûtait huit caractères sur chaque page et poussait
+     douze titres au-delà des 60 caractères affichés par Google. La marque reste portée
+     par l'URL, par og:site_name et par le titre de la page d'accueil. -->
+<title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${esc(canonical)}">
 <meta property="og:type" content="article">
