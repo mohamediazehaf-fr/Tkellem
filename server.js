@@ -191,7 +191,18 @@ function logUsage(task, model, usage){
 // ne coûte qu'au premier auditeur — autant prendre le meilleur. En conversation en
 // revanche, chaque réponse est unique et jamais réutilisée : là, le rythme primer.
 const TTS_MODEL = process.env.ELEVENLABS_TTS_MODEL || 'eleven_multilingual_v2';
-const TTS_MODEL_FAST = process.env.ELEVENLABS_TTS_MODEL_FAST || 'eleven_flash_v2_5';
+// Conversation : turbo plutôt que flash. Flash est taillé pour la latence pure et son
+// rendu s'entend — un timbre plat, mécanique, alors que la voix EST le produit ici.
+// Turbo est le compromis : nettement plus naturel que flash, très loin de la lenteur de
+// multilingual_v2, qui ferait attendre 1,5 à 2,5 s à chaque réplique.
+//
+// Ce réglage ne touche PAS le stock audio : la clé de cache est calculée sur TTS_MODEL,
+// et l'audio de conversation n'est jamais mis en cache. On peut donc en changer autant
+// qu'on veut sans rien regénérer.
+//   ELEVENLABS_TTS_MODEL_FAST=eleven_flash_v2_5      revient au plus rapide
+//   ELEVENLABS_TTS_MODEL_FAST=eleven_multilingual_v2 pour la qualité maximale, au prix
+//                                                    de l'attente et du double de crédits
+const TTS_MODEL_FAST = process.env.ELEVENLABS_TTS_MODEL_FAST || 'eleven_turbo_v2_5';
 
 // ---------------------------------------------------------------
 // STOCK D'AUDIO PARTAGÉ (Supabase Storage)

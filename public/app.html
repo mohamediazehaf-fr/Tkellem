@@ -2958,7 +2958,12 @@ function startScenario(s, forceRestart){
     const openingBtn = addBubble('avatar', s.opening.ar, s.opening.latin, s.opening.fr);
     history.push({role:'avatar', ...s.opening});
     saveHistory();
-    speak(s.opening.ar, s.opening.latin, openingBtn, 'fast', VOICE_IDS[s.voice] || null);
+    // 'high' et non 'fast' : l'ouverture est un texte FIXE de SCENARIOS, identique pour
+    // tout le monde. En 'fast' elle échappait au stock partagé et était donc regénérée
+    // à chaque scénario ouvert, par chaque utilisateur. En 'high' elle est produite une
+    // seule fois pour tous, puis servie depuis Supabase — donc gratuitement, plus vite,
+    // et en meilleure qualité, ce qui compte pour la première phrase qu'on entend.
+    speak(s.opening.ar, s.opening.latin, openingBtn, 'high', VOICE_IDS[s.voice] || null);
   }
   setupSpeechRecognition();
 }
