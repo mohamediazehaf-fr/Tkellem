@@ -91,7 +91,7 @@ const MODELS_WITH_SCHEMA = ['claude-sonnet-5', 'claude-opus-5', 'claude-haiku-4-
 const AVATAR_SCHEMA = {
   type: 'object',
   properties: {
-    darija_ar:      { type: 'string', description: "La réponse en darija, en alphabet arabe. Jamais un mot de français ici." },
+    darija_ar:      { type: 'string', description: "La réponse en darija, en alphabet arabe. UNE ou DEUX phrases courtes, jamais davantage : c'est un échange oral avec un débutant, pas un texte. Une réplique longue le noie et l'empêche de répondre. Jamais un mot de français ici." },
     darija_latin:   { type: 'string', description: "La même réponse en alphabet latin (arabizi)." },
     french:         { type: 'string', description: "Traduction française naturelle de la réponse." },
     feedback:       { type: 'string', description: "Remarque pédagogique en français sur le dernier message de l'apprenant, 20 mots maximum. Chaîne vide si sa phrase était correcte — ne commente pas systématiquement." },
@@ -112,6 +112,12 @@ const CHAT_EFFORT = ['low','medium','high','max'].includes(process.env.TKELLEM_C
 // inconnue retombe sur 'chat', donc rien venu du navigateur ne peut choisir un
 // modèle hors de cette table (sinon n'importe qui pourrait faire facturer le
 // compte sur le modèle le plus cher).
+// NE PAS abaisser maxTokens pour « économiser » : c'est un plafond, pas une cible, et la
+// facturation porte sur les tokens réellement produits. Le baisser ne ferait que tronquer
+// les réponses longues — or la réponse est du JSON structuré, donc une troncature la rend
+// impossible à analyser et affiche du JSON brut à l'utilisateur. Pour raccourcir les
+// répliques, c'est la description de darija_ar dans AVATAR_SCHEMA qu'il faut resserrer.
+// Mesuré en août 2026 : 249 tokens de sortie par appel en moyenne, plafond jamais atteint.
 const TASK_PROFILES = {
   chat:      { model: CHAT_MODEL,         maxTokens: 1000, effort: CHAT_EFFORT, cache: true,
                schema: AVATAR_SCHEMA },
