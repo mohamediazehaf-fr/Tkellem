@@ -1835,8 +1835,17 @@ function getUnlockedBadges(){
 // ---------------------------------------------------------------
 // STREAK (jours consécutifs d'activité)
 // ---------------------------------------------------------------
+// Date du jour au format AAAA-MM-JJ, dans le fuseau de l'apprenant.
+// toISOString() renvoie une date UTC : une séance faite à 00 h 30 en France était
+// comptée sur la veille, ce qui pouvait casser une série injustement — le pire des
+// défauts pour un mécanisme dont tout l'intérêt est la confiance qu'on lui accorde.
+function localDateKey(){
+  const d = new Date();
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+}
+
 function touchStreak(){
-  const today = new Date().toISOString().slice(0,10);
+  const today = localDateKey();
   const last = localStorage.getItem('tkellem_last_active');
   let streak = parseInt(localStorage.getItem('tkellem_streak') || '0', 10);
   if(last === today) return streak; // déjà compté aujourd'hui
@@ -2502,7 +2511,19 @@ function loadSrs(){
 }
 function saveSrs(data){ localStorage.setItem(SRS_KEY, JSON.stringify(data)); }
 
-function dayNumber(ts){ return Math.floor((ts || Date.now()) / 86400000); }
+// Numéro de jour aligné sur MINUIT LOCAL, pas sur minuit UTC.
+// Diviser simplement les millisecondes epoch par une journée place la frontière à
+// minuit UTC — soit 2 h du matin en France l'été. Conséquence vécue : une séance faite
+// à 1 h revenait une heure plus tard, une séance faite à 22 h revenait quatre heures
+// plus tard. Le rendez-vous quotidien devenait un délai flottant. Le décalage horaire
+// remet la frontière à minuit chez l'apprenant.
+//
+// Aucune migration à prévoir : les échéances déjà enregistrées deviennent au pire dues
+// un jour plus tôt, ce qui se résorbe à la première séance.
+function dayNumber(ts){
+  const d = ts ? new Date(ts) : new Date();
+  return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 86400000);
+}
 
 // Identifiants stables : ils doivent survivre à un ajout de phrase dans la liste,
 // donc on s'appuie sur le texte arabe et non sur la position.
@@ -2619,7 +2640,9 @@ document.addEventListener('visibilitychange', ()=>{ if(document.hidden) flushUsa
 // ---------------------------------------------------------------
 const DAILY_CAPS = { chat: 120, pron: 200 };
 
-function quotaKey(){ return 'tkellem_quota_' + new Date().toISOString().slice(0, 10); }
+// localDateKey et non toISOString : le quota doit repartir à minuit chez l'apprenant,
+// pas à 2 h du matin — sinon le message « reviens demain » ne dit pas la vérité.
+function quotaKey(){ return 'tkellem_quota_' + localDateKey(); }
 
 function quotaLeft(kind){
   let used = {};
@@ -5205,7 +5228,7 @@ function renderReviewCard(){
         ? 'Séance parfaite. Ces phrases sont à toi.'
         : 'Séance terminée — ce qui a résisté reviendra bientôt.'}</div>
       ${gained ? `<div class="result-best">+${gained} ⭐</div>` : ''}
-      <div class="result-label" style="margin-top:14px;">Reviens demain : les cartes se représenteront au bon moment.</div>
+      <div class="result-label" style="margin-top:14px;">Les cartes se représenteront au bon moment — l'accueil t'indiquera quand.</div>
       <button class="basics-cta" id="review-home">Retour à l'accueil</button>`;
     document.getElementById('review-home').onclick = ()=> showScreen('screen-home');
     return;
@@ -5364,10 +5387,19 @@ function renderDailySession(){
   if(!el) return;
   const due = dueReviews(REVIEW_SESSION_SIZE);
   if(!due.length){
-    const total = Object.keys(loadSrs()).length;
-    el.innerHTML = total
-      ? `<div class="daily-done"><svg class="ic-sm"><use href="#s-check"/></svg> Révisions à jour — reviens demain</div>`
-      : '';
+    // « reviens demain » était une promesse fausse : les intervalles montent à 2, 4, 8
+    // puis 60 jours, donc la prochaine carte peut n'arriver que la semaine suivante.
+    // L'apprenant voyait la tuile disparaître sans comprendre. On annonce le vrai délai.
+    const echeances = Object.values(loadSrs())
+      .map(c => c && c.due)
+      .filter(n => typeof n === 'number');
+    if(!echeances.length){ el.innerHTML = ''; return; }
+    const dans = echeances.reduce((min, n) => n < min ? n : min, Infinity) - dayNumber();
+    const quand = dans <= 1 ? 'demain'
+      : dans < 7 ? `dans ${dans} jours`
+      : dans < 14 ? 'la semaine prochaine'
+      : `dans ${Math.round(dans / 7)} semaines`;
+    el.innerHTML = `<div class="daily-done"><svg class="ic-sm"><use href="#s-check"/></svg> Révisions à jour — prochaine séance ${quand}</div>`;
     return;
   }
   el.innerHTML = `
