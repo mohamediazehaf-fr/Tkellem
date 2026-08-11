@@ -18,7 +18,7 @@
 const PHRASEBOOK = [
   { id:'salutations_groupe', icon:'👋', name:'Salutations', progressive:true, children:[
   { id:'salutations', icon:'👋', name:'1. Les bases', phrases:[
-    {ar:'سلام',latin:'Salam',fr:'Salut'},
+    {ar:'سلام',latin:'Salam',fr:'Salut',say:'سَلام'},
     {ar:'صباح الخير',latin:'Sbah lkhir',fr:'Bonjour (le matin)'},
     {ar:'مسا الخير',latin:'Msa lkhir',fr:'Bonsoir'},
     {ar:'كيف داير',latin:'Kif dayer',fr:'Comment ça va (à un homme)'},

@@ -1663,7 +1663,7 @@ const BASICS_SOUNDS = [
 // Douze mots choisis pour couvrir saluer / remercier / demander / s'excuser : de quoi
 // survivre à un premier échange sans rien apprendre par cœur.
 const BASICS_WORDS = [
-  {ar:'سلام',latin:'Salam',fr:'Salut'},
+  {ar:'سلام',latin:'Salam',fr:'Salut',say:'سَلام'},
   {ar:'صباح الخير',latin:'Sbah lkhir',fr:'Bonjour (le matin)'},
   {ar:'بسلامة',latin:'Bslama',fr:'Au revoir',say:'بْسلامة'},
   {ar:'شكرا',latin:'Choukran',fr:'Merci',say:'شُكْراً'},
@@ -1679,6 +1679,9 @@ const BASICS_WORDS = [
 
 const BASICS_SENTENCE = {
   ar:'سلام، سميتي كريم و أنا من فرنسا',
+  // fathas sur le س et le ك : sans elles le moteur supprime les voyelles brèves et
+  // prononce « Slam smiti Krim ». C'est la toute première phrase que l'apprenant répète.
+  say:'سَلام، سميتي كَريم و أنا من فرنسا',
   latin:'Salam, smiti Karim w ana men Fransa',
   fr:"Salut, je m'appelle Karim et je viens de France — mets ton prénom à la place"
 };
@@ -4515,7 +4518,7 @@ function getQuestionPool(){
   };
   BASICS_WORDS.forEach(p => add(p, 'bases'));
   PHRASEBOOK_LEAVES.forEach(leaf => leaf.phrases.forEach(p => add(p, leaf.id)));
-  QUIZ_ITEMS.forEach(q => add({ ar:q.ar, latin:q.latin, fr:q.fr }, 'objets'));
+  QUIZ_ITEMS.forEach(q => add({ ar:q.ar, latin:q.latin, fr:q.fr, say:q.say }, 'objets'));
   questionPool = pool;
   return pool;
 }
