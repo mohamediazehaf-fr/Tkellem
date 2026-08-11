@@ -24,12 +24,12 @@ const PHRASEBOOK = [
     {ar:'كيف داير',latin:'Kif dayer',fr:'Comment ça va (à un homme)'},
     {ar:'كيف دايرة',latin:'Kif dayra',fr:'Comment ça va (à une femme)'},
     {ar:'لاباس، الحمد لله',latin:'Labas, lhamdulah',fr:'Ça va, merci Dieu'},
-    {ar:'بسلامة',latin:'Bslama',fr:'Au revoir'},
+    {ar:'بسلامة',latin:'Bslama',fr:'Au revoir',say:'بْسلامة'},
     {ar:'تصبح على خير',latin:'Tsbah 3la khir',fr:'Bonne nuit'}
   ]},
   { id:'salutations_2', icon:'🤗', name:'2. Accueillir, prendre des nouvelles', phrases:[
     {ar:'مرحبا بيك',latin:'Marhba bik',fr:'Sois le bienvenu'},
-    {ar:'أهلا وسهلا',latin:'Ahlan wa sahlan',fr:'Bienvenue (chaleureux)'},
+    {ar:'أهلا وسهلا',latin:'Ahlan wa sahlan',fr:'Bienvenue (chaleureux)',say:'أهلاً وسهلاً'},
     {ar:'كيف الحال؟',latin:'Kif lhal?',fr:'Comment vas-tu ? (neutre)'},
     {ar:'كلشي بخير؟',latin:'Koulchi bikhir?',fr:'Tout va bien ?'},
     {ar:'أش خبارك؟',latin:'Ach khbarek?',fr:'Quelles nouvelles ?'},
@@ -88,7 +88,7 @@ const PHRASEBOOK = [
     {ar:'شكرا',latin:'Choukran',fr:'Merci',say:'شُكْراً'},
     {ar:'بلا جميل',latin:'Bla jmil',fr:'De rien'},
     {ar:'سمح لي',latin:'Smah li',fr:'Excuse-moi / pardon'},
-    {ar:'واخا',latin:'Wakha',fr:"D'accord"},
+    {ar:'واخا',latin:'Wakha',fr:"D'accord",say:'واخَا'},
     {ar:'إن شاء الله',latin:'Inchallah',fr:'Si Dieu le veut'},
     {ar:'ماشي مشكل',latin:'Machi mouchkil',fr:'Pas de souci'},
     {ar:'نعم / لا',latin:'Ih / Lla',fr:'Oui / Non'},
@@ -175,7 +175,7 @@ const PHRASEBOOK = [
     {ar:'مبروك',latin:'Mabrouk',fr:'Félicitations'},
     {ar:'الله يسهل',latin:'Allah ysehhel',fr:'Que Dieu facilite'},
     {ar:'تهلا في راسك',latin:'Thella f rasek',fr:'Prends soin de toi'},
-    {ar:'بسلامة',latin:'Bslama',fr:'Va en paix'},
+    {ar:'بسلامة',latin:'Bslama',fr:'Va en paix',say:'بْسلامة'},
     {ar:'الله يرحم الوالدين',latin:'Allah yrhem lwalidin',fr:'Formule de remerciement appuyé'},
     {ar:'واه؟',latin:'Wah?',fr:'Ah bon ?'}
   ]},

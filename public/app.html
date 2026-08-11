@@ -1655,7 +1655,7 @@ const BASICS_SOUNDS = [
   { key:'gh', desc:"Le même son que kh, mais avec la voix — proche d'un r parisien bien grasseyé.", ar:'بغيت', latin:'Bghit', fr:'je veux' },
   { key:'q', desc:"Un k articulé beaucoup plus en arrière, presque avalé.", ar:'قهوة', latin:'Qahwa', fr:'café' },
   { key:'ch', desc:"Comme le « ch » de chat. Celui-là ne te posera aucun problème.", ar:'شكرا', latin:'Choukran', fr:'merci', say:'شُكْراً' },
-  { key:'w', desc:"Se lit « oua », comme dans oui. Et tout seul, « w » veut simplement dire « et ».", ar:'واخا', latin:'Wakha', fr:"d'accord" },
+  { key:'w', desc:"Se lit « oua », comme dans oui. Et tout seul, « w » veut simplement dire « et ».", ar:'واخا', latin:'Wakha', fr:"d'accord", say:'واخَا' },
   { key:'t s d', desc:"Les versions « lourdes » de t, s et d : mêmes lettres, mais prononcées plus sourdes, en gonflant l'arrière de la bouche.", ar:'طاجين', latin:'Tajine', fr:'le tajine' },
   { key:'7 9', desc:"Tu les verras chez tes amis sur WhatsApp : 7 c'est notre h soufflé, 9 c'est notre q. Même sons, autre habitude d'écriture.", ar:'قريب', latin:'Qrib', fr:'proche' }
 ];
@@ -1665,10 +1665,10 @@ const BASICS_SOUNDS = [
 const BASICS_WORDS = [
   {ar:'سلام',latin:'Salam',fr:'Salut'},
   {ar:'صباح الخير',latin:'Sbah lkhir',fr:'Bonjour (le matin)'},
-  {ar:'بسلامة',latin:'Bslama',fr:'Au revoir'},
+  {ar:'بسلامة',latin:'Bslama',fr:'Au revoir',say:'بْسلامة'},
   {ar:'شكرا',latin:'Choukran',fr:'Merci',say:'شُكْراً'},
   {ar:'عافاك',latin:'3afak',fr:"S'il te plaît"},
-  {ar:'واخا',latin:'Wakha',fr:"D'accord"},
+  {ar:'واخا',latin:'Wakha',fr:"D'accord",say:'واخَا'},
   {ar:'نعم / لا',latin:'Ih / Lla',fr:'Oui / Non'},
   {ar:'سمح لي',latin:'Smah li',fr:'Pardon, excuse-moi'},
   {ar:'ما فهمتش',latin:'Ma fhemtch',fr:"Je n'ai pas compris"},
@@ -2905,6 +2905,10 @@ Le sujet choisi par l'apprenant est : « ${topicFr} ». Reste sur ce sujet, mais
 Adapte-toi à son niveau : s'il écrit des phrases très simples, réponds simplement. S'il se débrouille bien, enrichis un peu ton vocabulaire.`,
     opening: {
       ar: `واخا! نهضرو على ${ar}. أشنو بغيتي تقول ليا؟`,
+      // même phrase, avec la fatha qui ancre le « a » final de واخا — sans elle le
+      // moteur ferme la voyelle en « é ». C'est la première phrase de chaque discussion
+      // libre, donc celle qui donne le ton.
+      say: `واخَا! نهضرو على ${ar}. أشنو بغيتي تقول ليا؟`,
       latin: `Wakha! Nehedro 3la ${latin}. Achnou bghiti tqoul liya?`,
       fr: `D'accord ! Parlons de ${topicFr}. Qu'est-ce que tu veux me dire ?`
     }
