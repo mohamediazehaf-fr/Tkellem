@@ -85,7 +85,7 @@ const PHRASEBOOK = [
   { id:'expressions_groupe', icon:'💬', name:'Expressions courantes', progressive:true, children:[
   { id:'expressions', icon:'🤝', name:'1. La politesse essentielle', phrases:[
     {ar:'عافاك',latin:'3afak',fr:"S'il te plaît"},
-    {ar:'شكرا',latin:'Choukran',fr:'Merci'},
+    {ar:'شكرا',latin:'Choukran',fr:'Merci',say:'شُكْراً'},
     {ar:'بلا جميل',latin:'Bla jmil',fr:'De rien'},
     {ar:'سمح لي',latin:'Smah li',fr:'Excuse-moi / pardon'},
     {ar:'واخا',latin:'Wakha',fr:"D'accord"},

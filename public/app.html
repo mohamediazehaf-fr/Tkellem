@@ -1654,7 +1654,7 @@ const BASICS_SOUNDS = [
   { key:'kh', desc:"Le son raclé du fond de la bouche : la jota espagnole, ou le « ch » allemand de Bach.", ar:'خمسة', latin:'Khamsa', fr:'cinq' },
   { key:'gh', desc:"Le même son que kh, mais avec la voix — proche d'un r parisien bien grasseyé.", ar:'بغيت', latin:'Bghit', fr:'je veux' },
   { key:'q', desc:"Un k articulé beaucoup plus en arrière, presque avalé.", ar:'قهوة', latin:'Qahwa', fr:'café' },
-  { key:'ch', desc:"Comme le « ch » de chat. Celui-là ne te posera aucun problème.", ar:'شكرا', latin:'Choukran', fr:'merci' },
+  { key:'ch', desc:"Comme le « ch » de chat. Celui-là ne te posera aucun problème.", ar:'شكرا', latin:'Choukran', fr:'merci', say:'شُكْراً' },
   { key:'w', desc:"Se lit « oua », comme dans oui. Et tout seul, « w » veut simplement dire « et ».", ar:'واخا', latin:'Wakha', fr:"d'accord" },
   { key:'t s d', desc:"Les versions « lourdes » de t, s et d : mêmes lettres, mais prononcées plus sourdes, en gonflant l'arrière de la bouche.", ar:'طاجين', latin:'Tajine', fr:'le tajine' },
   { key:'7 9', desc:"Tu les verras chez tes amis sur WhatsApp : 7 c'est notre h soufflé, 9 c'est notre q. Même sons, autre habitude d'écriture.", ar:'قريب', latin:'Qrib', fr:'proche' }
@@ -1666,7 +1666,7 @@ const BASICS_WORDS = [
   {ar:'سلام',latin:'Salam',fr:'Salut'},
   {ar:'صباح الخير',latin:'Sbah lkhir',fr:'Bonjour (le matin)'},
   {ar:'بسلامة',latin:'Bslama',fr:'Au revoir'},
-  {ar:'شكرا',latin:'Choukran',fr:'Merci'},
+  {ar:'شكرا',latin:'Choukran',fr:'Merci',say:'شُكْراً'},
   {ar:'عافاك',latin:'3afak',fr:"S'il te plaît"},
   {ar:'واخا',latin:'Wakha',fr:"D'accord"},
   {ar:'نعم / لا',latin:'Ih / Lla',fr:'Oui / Non'},
@@ -2748,6 +2748,18 @@ async function fetchSpeechBlob(text, quality, voiceId){
 
 // voiceId : voix du personnage, uniquement en conversation. Ailleurs on garde la
 // voix de référence, celle dont le catalogue est déjà en stock.
+// Ce qui s'affiche n'est pas toujours ce qu'il faut faire lire. L'arabe sans voyelles est
+// ambigu pour un moteur de synthèse : « شكرا » se lit « choukra », parce que le tanwin qui
+// porte le « -an » final ne s'écrit pas. Le champ optionnel `say` fournit au moteur une
+// version vocalisée, sans alourdir l'affichage de diacritiques.
+//
+// Pourquoi ne pas corriger `ar` directement : il sert d'identifiant aux cartes de révision
+// (phraseId = leafId + '#' + ar). Le changer orphelinerait la progression déjà acquise.
+//
+// À n'utiliser que sur du contenu venu d'un fichier de données. Le texte produit par le
+// modèle en conversation n'a pas de `say` et n'en aura jamais.
+function sayText(p){ return (p && p.say) || (p && p.ar) || ''; }
+
 async function speak(text, latinText, btn, quality, voiceId){
   setAudioLoading(btn, true);
   try{
@@ -2986,7 +2998,7 @@ function startScenario(s, forceRestart){
     // à chaque scénario ouvert, par chaque utilisateur. En 'high' elle est produite une
     // seule fois pour tous, puis servie depuis Supabase — donc gratuitement, plus vite,
     // et en meilleure qualité, ce qui compte pour la première phrase qu'on entend.
-    speak(s.opening.ar, s.opening.latin, openingBtn, 'high', VOICE_IDS[s.voice] || null);
+    speak(sayText(s.opening), s.opening.latin, openingBtn, 'high', VOICE_IDS[s.voice] || null);
   }
   setupSpeechRecognition();
 }
@@ -3703,7 +3715,7 @@ function renderPronVerdict(verdict, heard, phrase, progressKey, feedbackEl, retr
     </div>`;
   if(!perfect){
     const listenBtn = feedbackEl.querySelector('.pron-listen');
-    listenBtn.onclick = ()=> speak(phrase.ar, phrase.latin, listenBtn);
+    listenBtn.onclick = ()=> speak(sayText(phrase), phrase.latin, listenBtn);
     feedbackEl.querySelector('.pron-retry').onclick = retry;
   }
 }
@@ -3725,7 +3737,7 @@ function buildPhraseRow(p, progressKey){
     </div>
     <div class="pron-feedback"></div>`;
   const listenBtn = item.querySelector('.listen-btn');
-  listenBtn.onclick = ()=> speak(p.ar, p.latin, listenBtn);
+  listenBtn.onclick = ()=> speak(sayText(p), p.latin, listenBtn);
 
   const practiceBtn = item.querySelector('.practice-btn');
   const feedbackEl = item.querySelector('.pron-feedback');
@@ -3774,7 +3786,7 @@ function renderBasics(){
       </div>
       <button class="listen-btn" title="Écouter"><span class="btn-ic"><svg class="ic"><use href="#s-speaker"/></svg></span></button>`;
     const btn = row.querySelector('.listen-btn');
-    btn.onclick = ()=> speak(s.ar, s.latin, btn);
+    btn.onclick = ()=> speak(sayText(s), s.latin, btn);
     soundsEl.appendChild(row);
   });
 
@@ -4312,7 +4324,7 @@ function revealQuizAnswer(){
     <div class="reveal-latin">${item.latin}</div>
     ${item.alt ? `<div class="reveal-alt">on dit aussi ${item.alt.join(', ')}</div>` : ''}
     <div class="reveal-tip">Écoute-le, répète-le à voix haute — c'est comme ça qu'il rentrera.</div>`;
-  speak(item.ar, item.latin);
+  speak(sayText(item), item.latin);
   noteReview(quizItemId(item), false); // à revoir bientôt
 
   const nextBtn = document.createElement('button');
@@ -4364,7 +4376,7 @@ Réponds UNIQUEMENT en JSON : {"correct": true ou false, "message": "courte phra
         + (item.alt ? ` — on dit aussi ${item.alt.join(', ')}` : '');
       emojiEl.classList.add('shake');
     }
-    speak(item.ar, item.latin);
+    speak(sayText(item), item.latin);
     const nextBtn = document.createElement('button');
     nextBtn.className = 'quiz-next-btn';
     nextBtn.textContent = quizIndex + 1 < quizOrder.length ? 'Suivant →' : 'Voir mon score →';
@@ -5263,8 +5275,8 @@ function renderReviewCard(){
   document.getElementById('review-quit').onclick = ()=> showScreen('screen-home');
   if(listening){
     const lb = document.getElementById('review-listen');
-    lb.onclick = ()=> speak(p.ar, p.latin, lb);
-    speak(p.ar, p.latin, lb); // on joue d'emblée : c'est l'énoncé de la question
+    lb.onclick = ()=> speak(sayText(p), p.latin, lb);
+    speak(sayText(p), p.latin, lb); // on joue d'emblée : c'est l'énoncé de la question
   }
 
   const input = document.getElementById('review-input');
@@ -5294,7 +5306,7 @@ function resolveReviewCard(p, listening, success, gaveUp){
     <div class="reveal-latin">${p.latin}</div>
     ${listening ? `<div class="review-prompt" style="font-size:19px;margin-top:8px;">${p.fr}</div>` : ''}
     ${p.alt ? `<div class="reveal-alt">on dit aussi ${p.alt.join(', ')}</div>` : ''}`;
-  if(!listening) speak(p.ar, p.latin); // on l'entend, même quand on a trouvé
+  if(!listening) speak(sayText(p), p.latin); // on l'entend, même quand on a trouvé
 
   actions.innerHTML = `<button class="basics-cta" id="review-next">${
     reviewIndex + 1 < reviewQueue.length ? 'Suivant →' : 'Terminer'}</button>`;
