@@ -43,11 +43,18 @@
 <h1>Labo de prononciation</h1>
 <p class="intro">Page d'outillage, non indexée et non liée depuis le site. Elle sert à trouver, à l'oreille,
 l'écriture qui fait prononcer correctement un mot par la voix de synthèse — sans passer par un déploiement.
-Chaque écoute consomme quelques crédits ElevenLabs : le modèle rapide est utilisé et rien n'est mis en cache.</p>
+<strong>Choisis le moteur qui correspond à l'endroit que tu corriges</strong> : l'app en utilise deux, et ils ne
+prononcent pas de la même façon. Le carnet, « Je débute » et les quiz passent par le moteur <em>Qualité</em> ;
+seules les conversations utilisent le <em>Rapide</em>. Un réglage validé sur l'un ne vaut pas sur l'autre.</p>
 
 <div class="bar">
   <label for="voix">Voix</label>
   <select id="voix"><option value="">chargement…</option></select>
+  <label for="qual">Moteur</label>
+  <select id="qual">
+    <option value="high" selected>Qualité — carnet, « Je débute », quiz</option>
+    <option value="fast">Rapide — conversations uniquement</option>
+  </select>
   <span id="etat"></span>
 </div>
 
@@ -80,15 +87,59 @@ Chaque écoute consomme quelques crédits ElevenLabs : le modèle rapide est uti
 <script>
 // Les mots signalés à l'oreille, avec plusieurs graphies candidates par mot.
 // « quoi » décrit la stratégie testée, pour savoir laquelle a gagné.
-// SÉRIE 2. Les six mots résolus lors de la première série sont sortis de la liste :
-// سَلام (fatha), بْسلامة (soukoun), كولشي بيخير et شوكران (écriture pleine),
-// كنهضر شويا الدارجا (ta marbouta → alif) et « blajmil » (latin). Ils sont en production.
+// La série 1 a été mesurée avec le moteur RAPIDE alors que ces mots se jouent avec le
+// moteur QUALITÉ dans l'app. Ses conclusions ne valent donc que pour les conversations,
+// et tout est à revérifier ici avec « Qualité » sélectionné en haut.
 //
-// Enseignement de la série 1 : aucune stratégie ne gagne partout, et le LATIN peut battre
-// l'arabe. Il est donc davantage représenté ici. Nouvelle piste testée : les consonnes
-// EMPHATIQUES (ط ص ض ق) qui assombrissent la voyelle voisine — utile quand un « a »
-// doit sonner plus grave.
+// Deux enseignements tiennent malgré tout : aucune stratégie ne gagne partout, et le
+// LATIN peut battre l'arabe. Nouvelle piste : les consonnes EMPHATIQUES (ط ص ض ق)
+// assombrissent la voyelle voisine — utile quand un « a » sonne trop clair.
+//
+// « en prod » signale la graphie actuellement déployée, pour comparer sans se tromper.
 const MOTS = [
+  { titre:'Salam', attendu:'sa-LAM (ni « slam », ni « salalam »)', cands:[
+    { t:'سلام',   q:'en prod — donne « slam »' },
+    { t:'سَلام',   q:'fatha — donne « salalam »' },
+    { t:'سالام',  q:'écriture pleine' },
+    { t:'سلاام',  q:'alif doublé' },
+    { t:'salam',  q:'latin' },
+    { t:'sa lam', q:'latin, coupé' }
+  ]},
+  { titre:'Salam, smiti Karim…', attendu:'sa-LAM smiti ka-RIM', cands:[
+    { t:'سلام، سميتي كريم و أنا من فرنسا',   q:'en prod — donne « slam smiti krim »' },
+    { t:'سالام، سميتي كاريم و أنا من فرنسا', q:'écriture pleine' },
+    { t:'سَلام، سميتي كَريم و أنا من فرنسا',   q:'fathas' },
+    { t:'Salam, smiti Karim w ana men Fransa', q:'latin' }
+  ]},
+  { titre:'Bslama', attendu:'bslama / beslama (et non « bislama »)', cands:[
+    { t:'بْسلامة',  q:'en prod' },
+    { t:'بسلامة',  q:'original' },
+    { t:'بسلاما',  q:'ta marbouta → alif' },
+    { t:'bslama',  q:'latin' },
+    { t:'beslama', q:'latin, voyelle explicite' }
+  ]},
+  { titre:'Koulchi bikhir', attendu:'koul-CHI bi-KHIR', cands:[
+    { t:'كولشي بيخير؟', q:'en prod — écriture pleine' },
+    { t:'كلشي بخير؟',   q:'original' },
+    { t:'koulchi bikhir', q:'latin' }
+  ]},
+  { titre:'Choukran', attendu:'chou-KRAN', cands:[
+    { t:'شوكران',  q:'en prod — écriture pleine' },
+    { t:'شكرا',    q:'original' },
+    { t:'شُكْراً',    q:'diacritiques' },
+    { t:'choukran', q:'latin' }
+  ]},
+  { titre:'Kanhder chwiya ddarija', attendu:'…CHWI-ya dda-RI-ja', cands:[
+    { t:'كنهضر شويا الدارجا', q:'en prod — ta marbouta → alif' },
+    { t:'كنهضر شوية الدارجة', q:'original' },
+    { t:'kanhder chwiya ddarija', q:'latin' }
+  ]},
+  { titre:'Bla jmil', attendu:'bla JMIL (et non « bila jamil »)', cands:[
+    { t:'blajmil',   q:'en prod — latin collé' },
+    { t:'bla jmil',  q:'latin espacé' },
+    { t:'بلا جميل',  q:'original arabe' },
+    { t:'بلاجميل',   q:'arabe collé' }
+  ]},
   { titre:'Thella', attendu:'THAL-la, avec le premier « a » plus grave', cands:[
     { t:'تهلا',    q:'actuel' },
     { t:'طهلا',    q:'ta emphatique → voyelle grave' },
@@ -128,6 +179,7 @@ const MOTS = [
 ];
 
 const voixSel = document.getElementById('voix');
+const qualSel = document.getElementById('qual');
 const etat = document.getElementById('etat');
 let audio = new Audio();
 
@@ -174,9 +226,12 @@ async function ecouter(texte, btn){
     const r = await fetch('/api/speak', {
       method:'POST',
       headers:{ 'Content-Type':'application/json' },
-      // quality 'fast' : moitié moins de crédits, et surtout AUCUNE mise en cache —
-      // sinon les essais successifs pollueraient le stock partagé de l'app.
-      body: JSON.stringify({ text: texte, voice_id: voixSel.value, quality:'fast' })
+      // Le moteur DOIT correspondre au contexte visé, sinon le résultat ne veut rien dire :
+      // 'high' = eleven_multilingual_v2, celui du carnet et de « Je débute » ;
+      // 'fast' = eleven_turbo_v2_5, celui des conversations. Ils ne prononcent pas pareil.
+      // Contrepartie de 'high' : le serveur met le résultat en stock, donc les essais
+      // laissent des fichiers orphelins dans le bucket. Sans conséquence, jamais relus.
+      body: JSON.stringify({ text: texte, voice_id: voixSel.value, quality: qualSel.value })
     });
     if(!r.ok){
       // le serveur répond en JSON sur erreur : on montre son message plutôt qu'un code nu

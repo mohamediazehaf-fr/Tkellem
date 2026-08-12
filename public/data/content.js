@@ -18,7 +18,7 @@
 const PHRASEBOOK = [
   { id:'salutations_groupe', icon:'👋', name:'Salutations', progressive:true, children:[
   { id:'salutations', icon:'👋', name:'1. Les bases', phrases:[
-    {ar:'سلام',latin:'Salam',fr:'Salut',say:'سَلام'},
+    {ar:'سلام',latin:'Salam',fr:'Salut'},
     {ar:'صباح الخير',latin:'Sbah lkhir',fr:'Bonjour (le matin)'},
     {ar:'مسا الخير',latin:'Msa lkhir',fr:'Bonsoir'},
     {ar:'كيف داير',latin:'Kif dayer',fr:'Comment ça va (à un homme)'},
@@ -59,7 +59,10 @@ const PHRASEBOOK = [
     {ar:'فرحت بيك',latin:'Frahte bik',fr:'Ravi de te rencontrer'}
   ]},
   { id:'presentation_2', icon:'👨‍👩‍👧', name:'2. Ta vie, ta famille', phrases:[
-    {ar:'أنا متزوج',latin:'Ana mzewwej',fr:'Je suis marié'},
+    // مزوج et non متزوج : le second est le mot de l'arabe standard (« moutazawij »),
+    // le premier est la forme darija que porte la translittération. C'était une
+    // incohérence de données, pas un défaut du moteur.
+    {ar:'أنا مزوج',latin:'Ana mzewwej',fr:'Je suis marié'},
     {ar:'أنا مزال',latin:'Ana mazal',fr:'Je suis encore célibataire'},
     {ar:'عندي وليدات',latin:'3andi wlidat',fr:"J'ai des enfants"},
     {ar:'كنسكن ف...',latin:'Kanseken f...',fr:"J'habite à..."},
