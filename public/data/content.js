@@ -79,6 +79,9 @@ const PHRASEBOOK = [
     {ar:'كنبغي المغرب بزاف',latin:'Kanebghi lmaghrib bezzaf',fr:"J'aime beaucoup le Maroc"},
     {ar:'أشمن مدينة كتسكن؟',latin:'Achmen mdina katseken?',fr:'Dans quelle ville habites-tu ?'},
     {ar:'أشنو كتخدم؟',latin:'Achnou katkhdem?',fr:'Tu fais quoi comme travail ?'},
+    // pas de `say` ici : le بشوية est en FIN de phrase, donc son ة est muet et
+    // correctement prononcé. Ne pas confondre avec « بشوية عافاك », où le mot suivant
+    // déclenche la lecture en « t ».
     {ar:'عاود ليا عافاك، بشوية',latin:'3awed liya 3afak, bchwiya',fr:'Répète doucement, merci'}
   ]}
   ]},
@@ -152,7 +155,11 @@ const PHRASEBOOK = [
     {ar:'عاوني عافاك',latin:'3awenni 3afak',fr:"Aide-moi s'il te plaît"},
     {ar:'ما عرفتش',latin:'Ma 3reftch',fr:'Je ne sais pas'},
     {ar:'ضاع ليا',latin:'Da3 liya',fr:"Je l'ai perdu",alt:['Woudartou']},
-    {ar:'تكلم بشوية عافاك',latin:'Tkellem bchwiya 3afak',fr:'Parle doucement, merci'},
+    // ة SUIVI D'UN AUTRE MOT → remplacé par ا. C'est l'état d'annexion de l'arabe : le ة
+    // se lit alors « t » (« bchwiyat 3afak »). Isolé ou en fin de phrase il est muet, et
+    // n'a donc pas besoin d'être touché — c'est pourquoi عشرة, خمسة ou مية n'ont jamais
+    // posé de problème malgré leur ة final.
+    {ar:'تكلم بشوية عافاك',latin:'Tkellem bchwiya 3afak',fr:'Parle doucement, merci',say:'تكلم بشويا عافاك'},
     {ar:'كتهضر لفرنسي؟',latin:'Katehder lfransi?',fr:'Tu parles français ?'},
     {ar:'بغيت نمشي ل...',latin:'Bghit nemchi l...',fr:'Je veux aller à...'},
     {ar:'عندك...؟',latin:'3andek...?',fr:'Est-ce que tu as... ?'},
@@ -185,14 +192,14 @@ const PHRASEBOOK = [
     {ar:'واه؟',latin:'Wah?',fr:'Ah bon ?'}
   ]},
   { id:'exp_9', icon:'🎭', name:'9. Expressions imagées', phrases:[
-    {ar:'شوية بشوية',latin:'Chwiya b chwiya',fr:'Petit à petit'},
+    {ar:'شوية بشوية',latin:'Chwiya b chwiya',fr:'Petit à petit',say:'شويا بشويا'},
     {ar:'على قد الحال',latin:'3la qed lhal',fr:'Modestement, comme on peut'},
     {ar:'الله غالب',latin:'Allah ghaleb',fr:"On n'y peut rien, c'est ainsi"},
     {ar:'صافي بقيت أنا',latin:'Safi bqit ana',fr:"Ça suffit, j'arrête là"},
     {ar:'بصح؟',latin:'Bsseh?',fr:'Vraiment ?'},
     {ar:'ما كاين باس',latin:'Ma kayn bas',fr:'Il n’y a pas de mal'},
     {ar:'دير النية',latin:'Dir nniya',fr:'Fais-le de bon cœur'},
-    {ar:'غير بشوية عليك',latin:'Ghir bchwiya 3lik',fr:'Vas-y doucement'},
+    {ar:'غير بشوية عليك',latin:'Ghir bchwiya 3lik',fr:'Vas-y doucement',say:'غير بشويا عليك'},
     {ar:'واقيلا',latin:'Waqila',fr:'Il me semble que'},
     {ar:'زعما؟',latin:'Z3ma?',fr:'Ah bon, c’est-à-dire ?'}
   ]},
@@ -354,7 +361,7 @@ const PHRASEBOOK = [
     {ar:'بغيت نفطر',latin:'Bghit neftar',fr:'Je voudrais déjeuner'},
     {ar:'أشنو كاين اليوم؟',latin:'Achnou kayn lyoum?',fr:"Qu'y a-t-il aujourd'hui ?"},
     {ar:'بلا سكر عافاك',latin:'Bla soukkar 3afak',fr:'Sans sucre, merci'},
-    {ar:'شوية من الملحة',latin:'Chwiya men lmelha',fr:'Un peu de sel'},
+    {ar:'شوية من الملحة',latin:'Chwiya men lmelha',fr:'Un peu de sel',say:'شويا من الملحا'},
     {ar:'هادا بنين بزاف',latin:'Hada bnin bezzaf',fr:"C'est vraiment délicieux"},
     {ar:'شبعت، الحمد لله',latin:'Chbe3t, lhamdoullah',fr:"J'ai assez mangé, merci"},
     {ar:'الحساب عافاك',latin:'Lhsab 3afak',fr:"L'addition, s'il te plaît"},

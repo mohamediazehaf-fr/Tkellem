@@ -122,46 +122,54 @@ seules les conversations utilisent le <em>Rapide</em>. Un réglage validé sur l
 // STANDARD sous la graphie darija — نتا évoque أنت (anta), نتي évoque أنتِ (anti),
 // نتوما évoque أنتم. Il faut donc l'empêcher de retrouver le mot classique. Le latin
 // est le candidat le plus sérieux, puisqu'il a déjà gagné sur « blajmil ».
+// SÉRIE 4, moteur QUALITÉ. Les vingt-et-une vocalisations validées sont en production.
+//
+// Acquis des séries précédentes, à réutiliser ici :
+//   - sur un mot COURT et ISOLÉ, le latin bat presque toujours l'arabe ;
+//   - la PONCTUATION compte : une virgule arabe écourte le mot qui la précède ;
+//   - un ة final se lit « t » ; le remplacer par ا le corrige, mais attention, ça peut
+//     aussi écraser la syllabe voisine — c'est ce qui est arrivé à « ddarija ».
 const MOTS = [
-  { titre:'Nta', attendu:'NTA (le moteur dit « anta », forme de l\'arabe standard)', cands:[
-    { t:'نتا',   q:'en prod' },
-    { t:'نْتا',   q:'soukoun sur le noun' },
-    { t:'ntا',   q:'mélange — à voir' },
-    { t:'nta',   q:'latin' },
-    { t:'ntaa',  q:'latin allongé' }
+  { titre:'Asli men lmaghrib', attendu:'AS-li (le moteur dit « sli »)', cands:[
+    { t:'أصلي من المغرب',   q:'en prod' },
+    { t:'اصلي من المغرب',   q:'alif sans hamza' },
+    { t:'أَصلي من المغرب',   q:'fatha sur la hamza' },
+    { t:'آصلي من المغرب',   q:'alif long' },
+    { t:'asli men lmaghrib', q:'latin' },
+    { t:'assli men lmaghrib', q:'latin, s doublé' }
   ]},
-  { titre:'Nti', attendu:'NTI (le moteur dit « anti »)', cands:[
-    { t:'نتي',   q:'en prod' },
-    { t:'نْتي',   q:'soukoun' },
-    { t:'nti',   q:'latin' },
-    { t:'ntii',  q:'latin allongé' }
+  { titre:'Kanhder chwiya ddarija', attendu:'…chwiya dda-RI-ja (le « ri » disparaît)', cands:[
+    { t:'كنهضر شويا الدارجا',    q:'en prod — donne « darja »' },
+    { t:'كنهضر شويا الداريجا',   q:'ya ajouté pour le « ri »' },
+    { t:'كنهضر شويا الدّاريجا',  q:'ya + shadda' },
+    { t:'كنهضر شويا ddarija',   q:'fin en latin' },
+    { t:'kanhder chwiya ddarija', q:'tout en latin' }
   ]},
-  { titre:'Hna', attendu:'HNA (le moteur dit « hena »)', cands:[
-    { t:'حنا',   q:'en prod' },
-    { t:'حْنا',   q:'soukoun sur le ha' },
-    { t:'hna',   q:'latin' },
-    { t:'hnaa',  q:'latin allongé' }
+  { titre:'Bla jmil', attendu:'bla JMIL — le « j » de « jour » doit s\'entendre', cands:[
+    { t:'blajmil',   q:'en prod — le j disparaît' },
+    { t:'bla jmil',  q:'latin espacé' },
+    { t:'bla jemil', q:'latin, voyelle ajoutée' },
+    { t:'bla jmeel', q:'latin, i long' },
+    { t:'بلاجميل',   q:'arabe collé' },
+    { t:'بلا جميل',  q:'arabe original' }
   ]},
-  { titre:'Ntouma', attendu:'NTOU-ma (le moteur dit « natouma »)', cands:[
-    { t:'نتوما',  q:'en prod' },
-    { t:'نْتوما',  q:'soukoun' },
-    { t:'ntouma', q:'latin' },
-    { t:'ntuma',  q:'latin, autre graphie' }
+  { titre:'Kifach', attendu:'ki-FACH (le moteur dit « kifech »)', cands:[
+    { t:'كيفاش؟',   q:'en prod' },
+    { t:'كيفااش؟',  q:'alif doublé' },
+    { t:'كيفاشْ؟',   q:'soukoun final' },
+    { t:'kifach',   q:'latin' },
+    { t:'kifash',   q:'latin, sh' },
+    { t:'ki fach',  q:'latin, coupé' }
   ]},
-  { titre:'Ana mazal', attendu:'ana ma-ZAL', cands:[
-    { t:'أنا مزال',   q:'en prod' },
-    { t:'أنا مازال',  q:'écriture pleine' },
-    { t:'أنا مَزال',   q:'fatha' },
-    { t:'ana mazal',  q:'latin' },
-    { t:'ana ma zal', q:'latin, coupé' }
+  { titre:'Kifach smitek ? — même mot en phrase', attendu:'ki-FACH smitek', cands:[
+    { t:'كيفاش سميتك؟',  q:'en prod' },
+    { t:'كيفااش سميتك؟', q:'alif doublé' },
+    { t:'kifach smitek', q:'latin' }
   ]},
-  { titre:'Salam, smiti Karim…', attendu:'sa-LAM smiti ka-RIM', cands:[
-    { t:'سلام، سميتي كريم و أنا من فرنسا',    q:'en prod — donne « slam smiti krim »' },
-    { t:'سلام سميتي كريم و أنا من فرنسا',     q:'sans la virgule — la ponctuation change la prosodie' },
-    { t:'سالام سميتي كاريم و أنا من فرنسا',   q:'sans virgule + écriture pleine' },
-    { t:'سلام. سميتي كريم و أنا من فرنسا',   q:'point au lieu de la virgule' },
-    { t:'Salam, smiti Karim w ana men Fransa', q:'latin' },
-    { t:'سلام، سميتي Karim و أنا من فرنسا',   q:'prénom en latin dans la phrase arabe' }
+  { titre:'Kifach nousel l… ? — même mot en phrase', attendu:'ki-FACH nousel', cands:[
+    { t:'كيفاش نوصل ل...؟',  q:'en prod' },
+    { t:'كيفااش نوصل ل...؟', q:'alif doublé' },
+    { t:'kifach nousel l',   q:'latin' }
   ]}
 ];
 
