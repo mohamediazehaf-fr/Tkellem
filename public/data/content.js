@@ -73,7 +73,7 @@ const PHRASEBOOK = [
   ]},
   { id:'presentation_3', icon:'💬', name:'3. Aller plus loin', phrases:[
     {ar:'أصلي من المغرب',latin:'Asli men lmaghrib',fr:'Je suis d’origine marocaine'},
-    {ar:'كنهضر شوية الدارجة',latin:'Kanhder chwiya ddarija',fr:'Je parle un peu le darija',say:'كنهضر شويا الدارجا'},
+    {ar:'كنهضر شوية الدارجة',latin:'Kanhder chwiya ddarija',fr:'Je parle un peu le darija',say:'كنهضر شويا الدّاريجا'},
     {ar:'مازال كنتعلم',latin:'Mazal kant3ellem',fr:"J'apprends encore"},
     {ar:'جيت هنا للعطلة',latin:'Jit hna l l3otla',fr:'Je suis venu ici en vacances'},
     {ar:'كنبغي المغرب بزاف',latin:'Kanebghi lmaghrib bezzaf',fr:"J'aime beaucoup le Maroc"},
@@ -92,9 +92,10 @@ const PHRASEBOOK = [
   { id:'expressions', icon:'🤝', name:'1. La politesse essentielle', phrases:[
     {ar:'عافاك',latin:'3afak',fr:"S'il te plaît"},
     {ar:'شكرا',latin:'Choukran',fr:'Merci',say:'شوكران'},
-    // seul cas où le latin l'emporte sur l'arabe : le moteur lit « بلا جميل » comme
-    // « bila jamil » quoi qu'on écrive, alors qu'il dit correctement « blajmil » en latin.
-    {ar:'بلا جميل',latin:'Bla jmil',fr:'De rien',say:'blajmil'},
+    // C'est l'ESPACE qui trompait le moteur : séparé, بلا est lu comme le mot « bila ».
+    // Collé, il devient une seule unité et se prononce correctement. Le latin « blajmil »
+    // fonctionnait presque, mais escamotait le « j ».
+    {ar:'بلا جميل',latin:'Bla jmil',fr:'De rien',say:'بلاجميل'},
     {ar:'سمح لي',latin:'Smah li',fr:'Excuse-moi / pardon'},
     {ar:'واخا',latin:'Wakha',fr:"D'accord",say:'واخَا'},
     {ar:'إن شاء الله',latin:'Inchallah',fr:'Si Dieu le veut'},
