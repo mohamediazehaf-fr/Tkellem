@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Labo de prononciation — Beldi</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#FFFBF4;color:#17211F;font-family:'Nunito',system-ui,sans-serif;
+       font-size:16px;line-height:1.55;padding:22px}
+  .wrap{max-width:900px;margin:0 auto}
+  h1{font-size:24px;color:#0E4F56;margin:0 0 6px}
+  .intro{color:#4c463c;max-width:70ch;margin:0 0 20px}
+  .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#fff;border:1.5px solid #EDE6D8;
+       border-radius:14px;padding:12px 14px;margin:0 0 20px;position:sticky;top:0;z-index:5}
+  select,input{font-family:inherit;font-size:15px;padding:9px 11px;border:1.5px solid #EDE6D8;
+       border-radius:10px;background:#fff}
+  input.ar{font-family:'Cairo',serif;font-size:18px;direction:rtl;text-align:right}
+  button{font-family:inherit;font-weight:700;font-size:14.5px;padding:9px 14px;border:none;border-radius:10px;
+       background:#0E4F56;color:#FFFBF4;cursor:pointer}
+  button:disabled{opacity:.45;cursor:default}
+  button.alt{background:#FFB238;color:#3D2A08}
+  .mot{background:#fff;border:1.5px solid #EDE6D8;border-radius:16px;padding:14px 16px;margin:0 0 14px}
+  .mot h2{font-size:17px;color:#0E4F56;margin:0 0 2px}
+  .attendu{font-size:14px;color:#7C8A88;margin:0 0 10px}
+  .cand{display:flex;gap:10px;align-items:center;padding:7px 0;border-top:1px solid #F3EEE3}
+  .cand:first-of-type{border-top:none}
+  .cand .txt{flex:1;min-width:0;font-family:'Cairo',serif;font-size:19px;direction:rtl;text-align:right}
+  .cand .txt.lat{font-family:'Nunito',sans-serif;font-size:16px;direction:ltr;text-align:left;font-style:italic}
+  .cand .quoi{width:190px;flex:none;font-size:13px;color:#7C8A88;direction:ltr;text-align:left}
+  .libre{margin-top:26px}
+  .note{background:#fff;border:1.5px solid #EDE6D8;border-radius:14px;padding:14px 16px;font-size:14.5px;
+        color:#4c463c;margin:22px 0 0}
+  #etat{font-size:14px;color:#7C8A88}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Labo de prononciation</h1>
+<p class="intro">Page d'outillage, non indexée et non liée depuis le site. Elle sert à trouver, à l'oreille,
+l'écriture qui fait prononcer correctement un mot par la voix de synthèse — sans passer par un déploiement.
+Chaque écoute consomme quelques crédits ElevenLabs : le modèle rapide est utilisé et rien n'est mis en cache.</p>
+
+<div class="bar">
+  <label for="voix">Voix</label>
+  <select id="voix"><option value="">chargement…</option></select>
+  <span id="etat"></span>
+</div>
+
+<div id="mots"></div>
+
+<div class="libre">
+  <div class="mot">
+    <h2>Essai libre</h2>
+    <p class="attendu">Colle n'importe quelle graphie — arabe ou lettres latines — et écoute.</p>
+    <div class="cand">
+      <input class="ar" id="libre-txt" style="flex:1" placeholder="اكتب هنا… ou du texte latin">
+      <button id="libre-go">Écouter</button>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  <strong>Comment s'en servir.</strong> Pour chaque mot, écoute les propositions dans l'ordre et retiens celle qui
+  sonne juste. Les champs sont modifiables : tu peux corriger une graphie et réécouter aussitôt.
+  Envoie-moi ensuite, pour chaque mot, la graphie gagnante — je la place dans le champ <code>say</code>.
+  <br><br>
+  <strong>Quatre stratégies sont testées</strong>, parce qu'on ne sait pas laquelle ce moteur préfère :
+  l'orthographe actuelle (référence), les <em>diacritiques</em> (qui ont échoué jusqu'ici),
+  l'<em>écriture pleine</em> — les voyelles brèves écrites avec ا و ي, ce que fait déjà « سالام » ailleurs dans
+  l'app — et la <em>translittération latine</em>, pour voir si le moteur la lit mieux que l'arabe.
+</div>
+
+</div>
+
+<script>
+// Les mots signalés à l'oreille, avec plusieurs graphies candidates par mot.
+// « quoi » décrit la stratégie testée, pour savoir laquelle a gagné.
+const MOTS = [
+  { titre:'Salam', attendu:'sa-LAM (et non « slam » ni « salalam »)', cands:[
+    { t:'سلام',   q:'actuel' },
+    { t:'سالام',  q:'écriture pleine (alif)' },
+    { t:'سَلام',   q:'fatha (a échoué)' },
+    { t:'salam',  q:'latin' }
+  ]},
+  { titre:'Salam, smiti Karim…', attendu:'sa-LAM smiti ka-RIM', cands:[
+    { t:'سلام، سميتي كريم و أنا من فرنسا',   q:'actuel' },
+    { t:'سالام، سميتي كاريم و أنا من فرنسا', q:'écriture pleine' },
+    { t:'Salam, smiti Karim w ana men Fransa', q:'latin' }
+  ]},
+  { titre:'Bslama', attendu:'bslama / beslama (et non « bislama »)', cands:[
+    { t:'بسلامة',  q:'actuel' },
+    { t:'بسلاما',  q:'ta marbouta → alif' },
+    { t:'بْسلامة',  q:'soukoun (a échoué)' },
+    { t:'بسّلامة', q:'shadda sur le s' },
+    { t:'bslama', q:'latin' }
+  ]},
+  { titre:'Koulchi bikhir', attendu:'koul-CHI bi-KHIR (et non « klchi bkhir »)', cands:[
+    { t:'كلشي بخير',    q:'actuel' },
+    { t:'كولشي بيخير',  q:'écriture pleine (waw + ya)' },
+    { t:'koulchi bikhir', q:'latin' }
+  ]},
+  { titre:'Thella', attendu:'THEL-la (et non « thalla »)', cands:[
+    { t:'تهلا',   q:'actuel' },
+    { t:'تهيلا',  q:'ya pour le e' },
+    { t:'thella', q:'latin' }
+  ]},
+  { titre:'Ana mzewwej', attendu:'ana mzew-WEJ (et non « moutazawej »)', cands:[
+    { t:'أنا متزوج',  q:'actuel — graphie arabe standard' },
+    { t:'أنا مزوج',   q:'graphie darija' },
+    { t:'أنا مزوّج',  q:'darija + shadda' },
+    { t:'ana mzewwej', q:'latin' }
+  ]},
+  { titre:'Ana mazal', attendu:'ana ma-ZAL (et non « mzal »)', cands:[
+    { t:'أنا مزال',   q:'actuel' },
+    { t:'أنا مازال',  q:'écriture pleine' },
+    { t:'ana mazal',  q:'latin' }
+  ]},
+  { titre:'Kanseken', attendu:'kan-se-KEN (et non « kenskoun »)', cands:[
+    { t:'كنسكن',   q:'actuel' },
+    { t:'كانسكن',  q:'alif après le k' },
+    { t:'كنسيكن',  q:'ya pour le e' },
+    { t:'kanseken', q:'latin' }
+  ]},
+  { titre:'Asli men lmaghrib', attendu:'AS-li (et non « sli »)', cands:[
+    { t:'أصلي من المغرب',  q:'actuel' },
+    { t:'اصلي من المغرب',  q:'alif simple' },
+    { t:'أاصلي من المغرب', q:'alif doublé' },
+    { t:'asli men lmaghrib', q:'latin' }
+  ]},
+  { titre:'Kanhder chwiya ddarija', attendu:'…CHWI-ya dda-RI-ja (et non « chwiyt ddarja »)', cands:[
+    { t:'كنهضر شوية الدارجة', q:'actuel' },
+    { t:'كنهضر شويا الدارجا', q:'ta marbouta → alif' },
+    { t:'kanhder chwiya ddarija', q:'latin' }
+  ]},
+  { titre:'Bla jmil', attendu:'bla JMIL (et non « bila jamil »)', cands:[
+    { t:'بلا جميل',  q:'actuel' },
+    { t:'بلا جميل',  q:'idem, pour comparer' },
+    { t:'blajmil',   q:'latin collé' },
+    { t:'bla jmil',  q:'latin' }
+  ]},
+  { titre:'Choukran', attendu:'chou-KRAN', cands:[
+    { t:'شكرا',    q:'actuel' },
+    { t:'شُكْراً',    q:'diacritiques (posé en prod)' },
+    { t:'شوكران',  q:'écriture pleine' },
+    { t:'choukran', q:'latin' }
+  ]}
+];
+
+const voixSel = document.getElementById('voix');
+const etat = document.getElementById('etat');
+let audio = new Audio();
+
+// Cette page a besoin du SERVEUR : ouverte en file:// ses appels ne peuvent pas aboutir.
+if(location.protocol === 'file:'){
+  etat.innerHTML = '<strong style="color:#A8391E">Ouvre cette page via le serveur</strong> ' +
+    '— node server.js puis localhost:3000/tts-lab.html, ou l\'adresse en ligne. ' +
+    'En file:// les appels à l\'API sont impossibles.';
+}
+
+// La liste vient de /api/voices : aucun identifiant codé en dur, donc rien à mettre à jour
+// ici si tu changes de voix sur ton compte. On présélectionne la voix que l'app utilise
+// réellement, sinon les essais ne diraient rien de ce qu'entendent tes apprenants :
+// même cascade que loadVoices() dans app.html.
+fetch('/api/voices').then(r => r.json()).then(d => {
+  const vs = (d && d.voices) || [];
+  if(!vs.length){ voixSel.innerHTML = '<option value="">aucune voix</option>'; return; }
+  const nom = v => (v.name || '').toLowerCase();
+  const etiquettes = v => (nom(v) + ' ' + JSON.stringify(v.labels || {})).toLowerCase();
+  const prefere = vs.find(v => nom(v).includes('ghizlan'))
+    || vs.find(v => /darija|morocc|maroc|arab/.test(etiquettes(v)))
+    || vs[0];
+  voixSel.innerHTML = vs
+    .map(v => `<option value="${v.voice_id}"${v === prefere ? ' selected' : ''}>${v.name}</option>`)
+    .join('');
+  etat.textContent = `${vs.length} voix · ${prefere.name} présélectionnée`;
+}).catch(err => {
+  voixSel.innerHTML = '<option value="">/api/voices indisponible</option>';
+  etat.textContent = 'liste des voix inaccessible : ' + err.message;
+});
+
+async function ecouter(texte, btn){
+  if(!texte.trim()) return;
+  // /api/speak refuse une requête sans voice_id : autant le dire clairement plutôt que
+  // de laisser l'utilisateur devant un bouton qui ne fait rien.
+  if(!voixSel.value){
+    etat.textContent = 'aucune voix sélectionnée — la page doit être servie par le serveur.';
+    return;
+  }
+  const avant = btn.textContent;
+  btn.disabled = true; btn.textContent = '…';
+  etat.textContent = 'génération…';
+  try{
+    const r = await fetch('/api/speak', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      // quality 'fast' : moitié moins de crédits, et surtout AUCUNE mise en cache —
+      // sinon les essais successifs pollueraient le stock partagé de l'app.
+      body: JSON.stringify({ text: texte, voice_id: voixSel.value, quality:'fast' })
+    });
+    if(!r.ok){
+      // le serveur répond en JSON sur erreur : on montre son message plutôt qu'un code nu
+      let msg = 'HTTP ' + r.status;
+      try{ const j = await r.json(); if(j && j.error) msg += ' — ' + j.error; }catch(e){}
+      throw new Error(msg);
+    }
+    const blob = await r.blob();
+    audio.pause();
+    if(audio.src) URL.revokeObjectURL(audio.src);
+    audio.src = URL.createObjectURL(blob);
+    await audio.play();
+    etat.textContent = '';
+  }catch(e){
+    etat.textContent = 'échec : ' + e.message;
+  }finally{
+    btn.disabled = false; btn.textContent = avant;
+  }
+}
+
+document.getElementById('mots').innerHTML = MOTS.map((m, i) => `
+  <div class="mot">
+    <h2>${m.titre}</h2>
+    <p class="attendu">Attendu : ${m.attendu}</p>
+    ${m.cands.map((c, j) => `
+      <div class="cand">
+        <span class="quoi">${c.q}</span>
+        <input class="txt${/^[؀-ۿ]/.test(c.t) ? '' : ' lat'}" id="c-${i}-${j}" value="${c.t}">
+        <button class="alt" data-cible="c-${i}-${j}">Écouter</button>
+      </div>`).join('')}
+  </div>`).join('');
+
+document.querySelectorAll('button[data-cible]').forEach(b => {
+  b.onclick = ()=> ecouter(document.getElementById(b.dataset.cible).value, b);
+});
+const lb = document.getElementById('libre-go');
+lb.onclick = ()=> ecouter(document.getElementById('libre-txt').value, lb);
+</script>
+</body>
+</html>
