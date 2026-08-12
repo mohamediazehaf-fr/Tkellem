@@ -26,8 +26,19 @@
   .mot{background:#fff;border:1.5px solid #EDE6D8;border-radius:16px;padding:14px 16px;margin:0 0 14px}
   .mot h2{font-size:17px;color:#0E4F56;margin:0 0 2px}
   .attendu{font-size:14px;color:#7C8A88;margin:0 0 10px}
-  .cand{display:flex;gap:10px;align-items:center;padding:7px 0;border-top:1px solid #F3EEE3}
+  .cand{display:flex;gap:10px;align-items:center;padding:7px 6px;border-top:1px solid #F3EEE3;border-radius:8px}
   .cand:first-of-type{border-top:none}
+  .cand input[type=radio]{width:19px;height:19px;flex:none;accent-color:#0E4F56;cursor:pointer;margin:0}
+  .cand.choisi{background:rgba(47,190,143,.13)}
+  .cand.aucune{color:#A8391E}
+  .cand.aucune label{font-size:14px;font-weight:700;cursor:pointer}
+  #resultat{background:#0E4F56;color:#FFFBF4;border-radius:16px;padding:16px 18px;margin:26px 0 0}
+  #resultat h2{font-size:17px;margin:0 0 8px;color:#FFFBF4}
+  #resultat p{margin:0 0 10px;font-size:14px;opacity:.85}
+  #resume{width:100%;min-height:150px;font-family:ui-monospace,Consolas,monospace;font-size:13.5px;
+      border:none;border-radius:10px;padding:12px;resize:vertical}
+  #resultat button{background:#FFB238;color:#3D2A08;margin-top:10px}
+  #compte{font-size:14px;opacity:.85;margin-left:10px}
   .cand .txt{flex:1;min-width:0;font-family:'Cairo',serif;font-size:19px;direction:rtl;text-align:right}
   .cand .txt.lat{font-family:'Nunito',sans-serif;font-size:16px;direction:ltr;text-align:left;font-style:italic}
   .cand .quoi{width:190px;flex:none;font-size:13px;color:#7C8A88;direction:ltr;text-align:left}
@@ -71,10 +82,19 @@ seules les conversations utilisent le <em>Rapide</em>. Un réglage validé sur l
   </div>
 </div>
 
+<div id="resultat">
+  <h2>Récapitulatif à me transmettre</h2>
+  <p>Il se remplit tout seul à mesure que tu cliques sur les ronds. Copie ce bloc et colle-le-moi :
+     j'applique directement, sans interprétation.</p>
+  <textarea id="resume" readonly></textarea>
+  <button id="copier">Copier</button>
+  <span id="compte"></span>
+</div>
+
 <div class="note">
-  <strong>Comment s'en servir.</strong> Pour chaque mot, écoute les propositions dans l'ordre et retiens celle qui
-  sonne juste. Les champs sont modifiables : tu peux corriger une graphie et réécouter aussitôt.
-  Envoie-moi ensuite, pour chaque mot, la graphie gagnante — je la place dans le champ <code>say</code>.
+  <strong>Comment s'en servir.</strong> Pour chaque mot, écoute les propositions puis <strong>coche le rond</strong>
+  de celle qui sonne juste — ou « aucune ne convient ». Les champs restent modifiables : tu peux corriger une
+  graphie, la réécouter, et cocher ta version. Tes choix sont conservés si tu recharges la page.
   <br><br>
   <strong>Quatre stratégies sont testées</strong>, parce qu'on ne sait pas laquelle ce moteur préfère :
   l'orthographe actuelle (référence), les <em>diacritiques</em> (qui ont échoué jusqu'ici),
@@ -96,85 +116,52 @@ seules les conversations utilisent le <em>Rapide</em>. Un réglage validé sur l
 // assombrissent la voyelle voisine — utile quand un « a » sonne trop clair.
 //
 // « en prod » signale la graphie actuellement déployée, pour comparer sans se tromper.
+// SÉRIE 3, avec le moteur QUALITÉ. Tout le reste est validé et déployé.
+//
+// Les quatre pronoms partagent une cause : le moteur reconnaît la forme de l'ARABE
+// STANDARD sous la graphie darija — نتا évoque أنت (anta), نتي évoque أنتِ (anti),
+// نتوما évoque أنتم. Il faut donc l'empêcher de retrouver le mot classique. Le latin
+// est le candidat le plus sérieux, puisqu'il a déjà gagné sur « blajmil ».
 const MOTS = [
-  { titre:'Salam', attendu:'sa-LAM (ni « slam », ni « salalam »)', cands:[
-    { t:'سلام',   q:'en prod — donne « slam »' },
-    { t:'سَلام',   q:'fatha — donne « salalam »' },
-    { t:'سالام',  q:'écriture pleine' },
-    { t:'سلاام',  q:'alif doublé' },
-    { t:'salam',  q:'latin' },
-    { t:'sa lam', q:'latin, coupé' }
+  { titre:'Nta', attendu:'NTA (le moteur dit « anta », forme de l\'arabe standard)', cands:[
+    { t:'نتا',   q:'en prod' },
+    { t:'نْتا',   q:'soukoun sur le noun' },
+    { t:'ntا',   q:'mélange — à voir' },
+    { t:'nta',   q:'latin' },
+    { t:'ntaa',  q:'latin allongé' }
+  ]},
+  { titre:'Nti', attendu:'NTI (le moteur dit « anti »)', cands:[
+    { t:'نتي',   q:'en prod' },
+    { t:'نْتي',   q:'soukoun' },
+    { t:'nti',   q:'latin' },
+    { t:'ntii',  q:'latin allongé' }
+  ]},
+  { titre:'Hna', attendu:'HNA (le moteur dit « hena »)', cands:[
+    { t:'حنا',   q:'en prod' },
+    { t:'حْنا',   q:'soukoun sur le ha' },
+    { t:'hna',   q:'latin' },
+    { t:'hnaa',  q:'latin allongé' }
+  ]},
+  { titre:'Ntouma', attendu:'NTOU-ma (le moteur dit « natouma »)', cands:[
+    { t:'نتوما',  q:'en prod' },
+    { t:'نْتوما',  q:'soukoun' },
+    { t:'ntouma', q:'latin' },
+    { t:'ntuma',  q:'latin, autre graphie' }
+  ]},
+  { titre:'Ana mazal', attendu:'ana ma-ZAL', cands:[
+    { t:'أنا مزال',   q:'en prod' },
+    { t:'أنا مازال',  q:'écriture pleine' },
+    { t:'أنا مَزال',   q:'fatha' },
+    { t:'ana mazal',  q:'latin' },
+    { t:'ana ma zal', q:'latin, coupé' }
   ]},
   { titre:'Salam, smiti Karim…', attendu:'sa-LAM smiti ka-RIM', cands:[
-    { t:'سلام، سميتي كريم و أنا من فرنسا',   q:'en prod — donne « slam smiti krim »' },
-    { t:'سالام، سميتي كاريم و أنا من فرنسا', q:'écriture pleine' },
-    { t:'سَلام، سميتي كَريم و أنا من فرنسا',   q:'fathas' },
-    { t:'Salam, smiti Karim w ana men Fransa', q:'latin' }
-  ]},
-  { titre:'Bslama', attendu:'bslama / beslama (et non « bislama »)', cands:[
-    { t:'بْسلامة',  q:'en prod' },
-    { t:'بسلامة',  q:'original' },
-    { t:'بسلاما',  q:'ta marbouta → alif' },
-    { t:'bslama',  q:'latin' },
-    { t:'beslama', q:'latin, voyelle explicite' }
-  ]},
-  { titre:'Koulchi bikhir', attendu:'koul-CHI bi-KHIR', cands:[
-    { t:'كولشي بيخير؟', q:'en prod — écriture pleine' },
-    { t:'كلشي بخير؟',   q:'original' },
-    { t:'koulchi bikhir', q:'latin' }
-  ]},
-  { titre:'Choukran', attendu:'chou-KRAN', cands:[
-    { t:'شوكران',  q:'en prod — écriture pleine' },
-    { t:'شكرا',    q:'original' },
-    { t:'شُكْراً',    q:'diacritiques' },
-    { t:'choukran', q:'latin' }
-  ]},
-  { titre:'Kanhder chwiya ddarija', attendu:'…CHWI-ya dda-RI-ja', cands:[
-    { t:'كنهضر شويا الدارجا', q:'en prod — ta marbouta → alif' },
-    { t:'كنهضر شوية الدارجة', q:'original' },
-    { t:'kanhder chwiya ddarija', q:'latin' }
-  ]},
-  { titre:'Bla jmil', attendu:'bla JMIL (et non « bila jamil »)', cands:[
-    { t:'blajmil',   q:'en prod — latin collé' },
-    { t:'bla jmil',  q:'latin espacé' },
-    { t:'بلا جميل',  q:'original arabe' },
-    { t:'بلاجميل',   q:'arabe collé' }
-  ]},
-  { titre:'Thella', attendu:'THAL-la, avec le premier « a » plus grave', cands:[
-    { t:'تهلا',    q:'actuel' },
-    { t:'طهلا',    q:'ta emphatique → voyelle grave' },
-    { t:'طهالا',   q:'emphatique + écriture pleine' },
-    { t:'تهالا',   q:'écriture pleine' },
-    { t:'thalla',  q:'latin' },
-    { t:'tahalla', q:'latin, voyelle explicite' }
-  ]},
-  { titre:'Ana mzewwej', attendu:'ana mzouw-WEJ (le plus proche était « mozowej »)', cands:[
-    { t:'أنا مزوج',    q:'darija — le moins mauvais jusqu\'ici' },
-    { t:'أنا مزويج',   q:'ya ajouté' },
-    { t:'أنا مْزوّج',   q:'soukoun + shadda' },
-    { t:'ana mzewwej', q:'latin' },
-    { t:'anamzouwej',  q:'latin collé' },
-    { t:'mzouwej',     q:'latin, mot seul' }
-  ]},
-  { titre:'Kanseken', attendu:'kan-se-KEN (le moteur dit « kenskoun »)', cands:[
-    { t:'كنسكن',      q:'actuel' },
-    { t:'كانسيكن',    q:'alif + ya' },
-    { t:'كنسكَن',     q:'fatha finale' },
-    { t:'kanseken',   q:'latin' },
-    { t:'kanesken',   q:'latin, voyelle déplacée' },
-    { t:'kan seken',  q:'latin, coupé' }
-  ]},
-  { titre:'Wakha — jamais testé', attendu:'WA-kha (le moteur disait « wakhé »)', cands:[
-    { t:'واخا',   q:'actuel' },
-    { t:'واخَا',   q:'fatha — en production, non vérifié' },
-    { t:'واخّا',  q:'shadda' },
-    { t:'wakha',  q:'latin' }
-  ]},
-  { titre:'Ahlan wa sahlan — jamais testé', attendu:'ah-LAN wa sah-LAN', cands:[
-    { t:'أهلا وسهلا',   q:'actuel' },
-    { t:'أهلاً وسهلاً',   q:'tanwin — en production, non vérifié' },
-    { t:'أهلان وسهلان', q:'noun écrit' },
-    { t:'ahlan wa sahlan', q:'latin' }
+    { t:'سلام، سميتي كريم و أنا من فرنسا',    q:'en prod — donne « slam smiti krim »' },
+    { t:'سلام سميتي كريم و أنا من فرنسا',     q:'sans la virgule — la ponctuation change la prosodie' },
+    { t:'سالام سميتي كاريم و أنا من فرنسا',   q:'sans virgule + écriture pleine' },
+    { t:'سلام. سميتي كريم و أنا من فرنسا',   q:'point au lieu de la virgule' },
+    { t:'Salam, smiti Karim w ana men Fransa', q:'latin' },
+    { t:'سلام، سميتي Karim و أنا من فرنسا',   q:'prénom en latin dans la phrase arabe' }
   ]}
 ];
 
@@ -206,6 +193,7 @@ fetch('/api/voices').then(r => r.json()).then(d => {
     .map(v => `<option value="${v.voice_id}"${v === prefere ? ' selected' : ''}>${v.name}</option>`)
     .join('');
   etat.textContent = `${vs.length} voix · ${prefere.name} présélectionnée`;
+  majResume(); // la voix fait partie du récapitulatif : il faut le réécrire une fois chargée
 }).catch(err => {
   voixSel.innerHTML = '<option value="">/api/voices indisponible</option>';
   etat.textContent = 'liste des voix inaccessible : ' + err.message;
@@ -257,11 +245,17 @@ document.getElementById('mots').innerHTML = MOTS.map((m, i) => `
     <h2>${m.titre}</h2>
     <p class="attendu">Attendu : ${m.attendu}</p>
     ${m.cands.map((c, j) => `
-      <div class="cand">
+      <div class="cand" id="l-${i}-${j}">
+        <input type="radio" name="mot-${i}" value="${j}" id="r-${i}-${j}"
+               title="retenir cette graphie">
         <span class="quoi">${c.q}</span>
         <input class="txt${/^[؀-ۿ]/.test(c.t) ? '' : ' lat'}" id="c-${i}-${j}" value="${c.t}">
         <button class="alt" data-cible="c-${i}-${j}">Écouter</button>
       </div>`).join('')}
+      <div class="cand aucune" id="l-${i}-x">
+        <input type="radio" name="mot-${i}" value="x" id="r-${i}-x">
+        <label for="r-${i}-x">aucune ne convient — le mot résiste</label>
+      </div>
   </div>`).join('');
 
 document.querySelectorAll('button[data-cible]').forEach(b => {
@@ -269,6 +263,77 @@ document.querySelectorAll('button[data-cible]').forEach(b => {
 });
 const lb = document.getElementById('libre-go');
 lb.onclick = ()=> ecouter(document.getElementById('libre-txt').value, lb);
+
+// ---------------------------------------------------------------
+// SÉLECTION ET RÉCAPITULATIF
+// Le but est de produire un bloc que je puisse appliquer sans l'interpréter : le mot,
+// la graphie exacte retenue, et la stratégie qui a gagné. Les choix survivent à un
+// rechargement, pour ne pas perdre une séance d'écoute sur une fausse manœuvre.
+// ---------------------------------------------------------------
+const CLE = 'beldi_tts_lab_choix';
+
+function choix(){
+  try{ return JSON.parse(localStorage.getItem(CLE) || '{}'); }catch(e){ return {}; }
+}
+function enregistrer(c){ localStorage.setItem(CLE, JSON.stringify(c)); }
+
+function majResume(){
+  const c = choix();
+  const lignes = MOTS.map((m, i) => {
+    const v = c[i];
+    if(v === undefined) return `${m.titre}\n   (pas encore choisi)`;
+    if(v === 'x')       return `${m.titre}\n   AUCUNE — aucune graphie ne fonctionne`;
+    const champ = document.getElementById(`c-${i}-${v}`);
+    const texte = champ ? champ.value : MOTS[i].cands[v].t;
+    // on relit le champ et non la valeur d'origine : il a pu être modifié à la main
+    const modifie = texte !== MOTS[i].cands[v].t ? '  [modifié à la main]' : '';
+    return `${m.titre}\n   ${texte}\n   (${m.cands[v].q})${modifie}`;
+  });
+  const faits = MOTS.filter((m, i) => c[i] !== undefined).length;
+  document.getElementById('resume').value =
+    `Moteur : ${qualSel.options[qualSel.selectedIndex].text}\n` +
+    `Voix : ${voixSel.options[voixSel.selectedIndex] ? voixSel.options[voixSel.selectedIndex].text : '?'}\n\n` +
+    lignes.join('\n\n');
+  document.getElementById('compte').textContent = `${faits} / ${MOTS.length} tranchés`;
+  MOTS.forEach((m, i) => {
+    m.cands.forEach((_, j) => document.getElementById(`l-${i}-${j}`).classList.toggle('choisi', c[i] === j));
+    document.getElementById(`l-${i}-x`).classList.toggle('choisi', c[i] === 'x');
+  });
+}
+
+// restauration des choix précédents
+const dejaVu = choix();
+Object.keys(dejaVu).forEach(i => {
+  const el = document.getElementById(`r-${i}-${dejaVu[i]}`);
+  if(el) el.checked = true;
+});
+
+document.querySelectorAll('input[type=radio][name^="mot-"]').forEach(r => {
+  r.onchange = ()=>{
+    const i = r.name.split('-')[1];
+    const c = choix();
+    c[i] = r.value === 'x' ? 'x' : Number(r.value);
+    enregistrer(c);
+    majResume();
+  };
+});
+// une graphie corrigée à la main doit se refléter aussitôt dans le récapitulatif
+document.querySelectorAll('input.txt').forEach(f => { f.oninput = majResume; });
+qualSel.onchange = majResume;
+voixSel.addEventListener('change', majResume);
+
+document.getElementById('copier').onclick = async ()=>{
+  const zone = document.getElementById('resume');
+  try{
+    await navigator.clipboard.writeText(zone.value);
+    document.getElementById('compte').textContent = 'copié ✓';
+    setTimeout(majResume, 1600);
+  }catch(e){
+    zone.select(); // repli si le presse-papiers est refusé (contexte non sécurisé)
+  }
+};
+
+majResume();
 </script>
 </body>
 </html>
