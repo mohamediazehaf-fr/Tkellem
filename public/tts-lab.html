@@ -80,74 +80,50 @@ Chaque écoute consomme quelques crédits ElevenLabs : le modèle rapide est uti
 <script>
 // Les mots signalés à l'oreille, avec plusieurs graphies candidates par mot.
 // « quoi » décrit la stratégie testée, pour savoir laquelle a gagné.
+// SÉRIE 2. Les six mots résolus lors de la première série sont sortis de la liste :
+// سَلام (fatha), بْسلامة (soukoun), كولشي بيخير et شوكران (écriture pleine),
+// كنهضر شويا الدارجا (ta marbouta → alif) et « blajmil » (latin). Ils sont en production.
+//
+// Enseignement de la série 1 : aucune stratégie ne gagne partout, et le LATIN peut battre
+// l'arabe. Il est donc davantage représenté ici. Nouvelle piste testée : les consonnes
+// EMPHATIQUES (ط ص ض ق) qui assombrissent la voyelle voisine — utile quand un « a »
+// doit sonner plus grave.
 const MOTS = [
-  { titre:'Salam', attendu:'sa-LAM (et non « slam » ni « salalam »)', cands:[
-    { t:'سلام',   q:'actuel' },
-    { t:'سالام',  q:'écriture pleine (alif)' },
-    { t:'سَلام',   q:'fatha (a échoué)' },
-    { t:'salam',  q:'latin' }
+  { titre:'Thella', attendu:'THAL-la, avec le premier « a » plus grave', cands:[
+    { t:'تهلا',    q:'actuel' },
+    { t:'طهلا',    q:'ta emphatique → voyelle grave' },
+    { t:'طهالا',   q:'emphatique + écriture pleine' },
+    { t:'تهالا',   q:'écriture pleine' },
+    { t:'thalla',  q:'latin' },
+    { t:'tahalla', q:'latin, voyelle explicite' }
   ]},
-  { titre:'Salam, smiti Karim…', attendu:'sa-LAM smiti ka-RIM', cands:[
-    { t:'سلام، سميتي كريم و أنا من فرنسا',   q:'actuel' },
-    { t:'سالام، سميتي كاريم و أنا من فرنسا', q:'écriture pleine' },
-    { t:'Salam, smiti Karim w ana men Fransa', q:'latin' }
+  { titre:'Ana mzewwej', attendu:'ana mzouw-WEJ (le plus proche était « mozowej »)', cands:[
+    { t:'أنا مزوج',    q:'darija — le moins mauvais jusqu\'ici' },
+    { t:'أنا مزويج',   q:'ya ajouté' },
+    { t:'أنا مْزوّج',   q:'soukoun + shadda' },
+    { t:'ana mzewwej', q:'latin' },
+    { t:'anamzouwej',  q:'latin collé' },
+    { t:'mzouwej',     q:'latin, mot seul' }
   ]},
-  { titre:'Bslama', attendu:'bslama / beslama (et non « bislama »)', cands:[
-    { t:'بسلامة',  q:'actuel' },
-    { t:'بسلاما',  q:'ta marbouta → alif' },
-    { t:'بْسلامة',  q:'soukoun (a échoué)' },
-    { t:'بسّلامة', q:'shadda sur le s' },
-    { t:'bslama', q:'latin' }
+  { titre:'Kanseken', attendu:'kan-se-KEN (le moteur dit « kenskoun »)', cands:[
+    { t:'كنسكن',      q:'actuel' },
+    { t:'كانسيكن',    q:'alif + ya' },
+    { t:'كنسكَن',     q:'fatha finale' },
+    { t:'kanseken',   q:'latin' },
+    { t:'kanesken',   q:'latin, voyelle déplacée' },
+    { t:'kan seken',  q:'latin, coupé' }
   ]},
-  { titre:'Koulchi bikhir', attendu:'koul-CHI bi-KHIR (et non « klchi bkhir »)', cands:[
-    { t:'كلشي بخير',    q:'actuel' },
-    { t:'كولشي بيخير',  q:'écriture pleine (waw + ya)' },
-    { t:'koulchi bikhir', q:'latin' }
+  { titre:'Wakha — jamais testé', attendu:'WA-kha (le moteur disait « wakhé »)', cands:[
+    { t:'واخا',   q:'actuel' },
+    { t:'واخَا',   q:'fatha — en production, non vérifié' },
+    { t:'واخّا',  q:'shadda' },
+    { t:'wakha',  q:'latin' }
   ]},
-  { titre:'Thella', attendu:'THEL-la (et non « thalla »)', cands:[
-    { t:'تهلا',   q:'actuel' },
-    { t:'تهيلا',  q:'ya pour le e' },
-    { t:'thella', q:'latin' }
-  ]},
-  { titre:'Ana mzewwej', attendu:'ana mzew-WEJ (et non « moutazawej »)', cands:[
-    { t:'أنا متزوج',  q:'actuel — graphie arabe standard' },
-    { t:'أنا مزوج',   q:'graphie darija' },
-    { t:'أنا مزوّج',  q:'darija + shadda' },
-    { t:'ana mzewwej', q:'latin' }
-  ]},
-  { titre:'Ana mazal', attendu:'ana ma-ZAL (et non « mzal »)', cands:[
-    { t:'أنا مزال',   q:'actuel' },
-    { t:'أنا مازال',  q:'écriture pleine' },
-    { t:'ana mazal',  q:'latin' }
-  ]},
-  { titre:'Kanseken', attendu:'kan-se-KEN (et non « kenskoun »)', cands:[
-    { t:'كنسكن',   q:'actuel' },
-    { t:'كانسكن',  q:'alif après le k' },
-    { t:'كنسيكن',  q:'ya pour le e' },
-    { t:'kanseken', q:'latin' }
-  ]},
-  { titre:'Asli men lmaghrib', attendu:'AS-li (et non « sli »)', cands:[
-    { t:'أصلي من المغرب',  q:'actuel' },
-    { t:'اصلي من المغرب',  q:'alif simple' },
-    { t:'أاصلي من المغرب', q:'alif doublé' },
-    { t:'asli men lmaghrib', q:'latin' }
-  ]},
-  { titre:'Kanhder chwiya ddarija', attendu:'…CHWI-ya dda-RI-ja (et non « chwiyt ddarja »)', cands:[
-    { t:'كنهضر شوية الدارجة', q:'actuel' },
-    { t:'كنهضر شويا الدارجا', q:'ta marbouta → alif' },
-    { t:'kanhder chwiya ddarija', q:'latin' }
-  ]},
-  { titre:'Bla jmil', attendu:'bla JMIL (et non « bila jamil »)', cands:[
-    { t:'بلا جميل',  q:'actuel' },
-    { t:'بلا جميل',  q:'idem, pour comparer' },
-    { t:'blajmil',   q:'latin collé' },
-    { t:'bla jmil',  q:'latin' }
-  ]},
-  { titre:'Choukran', attendu:'chou-KRAN', cands:[
-    { t:'شكرا',    q:'actuel' },
-    { t:'شُكْراً',    q:'diacritiques (posé en prod)' },
-    { t:'شوكران',  q:'écriture pleine' },
-    { t:'choukran', q:'latin' }
+  { titre:'Ahlan wa sahlan — jamais testé', attendu:'ah-LAN wa sah-LAN', cands:[
+    { t:'أهلا وسهلا',   q:'actuel' },
+    { t:'أهلاً وسهلاً',   q:'tanwin — en production, non vérifié' },
+    { t:'أهلان وسهلان', q:'noun écrit' },
+    { t:'ahlan wa sahlan', q:'latin' }
   ]}
 ];
 

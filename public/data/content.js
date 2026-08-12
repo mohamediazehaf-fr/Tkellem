@@ -18,7 +18,7 @@
 const PHRASEBOOK = [
   { id:'salutations_groupe', icon:'👋', name:'Salutations', progressive:true, children:[
   { id:'salutations', icon:'👋', name:'1. Les bases', phrases:[
-    {ar:'سلام',latin:'Salam',fr:'Salut'},
+    {ar:'سلام',latin:'Salam',fr:'Salut',say:'سَلام'},
     {ar:'صباح الخير',latin:'Sbah lkhir',fr:'Bonjour (le matin)'},
     {ar:'مسا الخير',latin:'Msa lkhir',fr:'Bonsoir'},
     {ar:'كيف داير',latin:'Kif dayer',fr:'Comment ça va (à un homme)'},
@@ -31,7 +31,7 @@ const PHRASEBOOK = [
     {ar:'مرحبا بيك',latin:'Marhba bik',fr:'Sois le bienvenu'},
     {ar:'أهلا وسهلا',latin:'Ahlan wa sahlan',fr:'Bienvenue (chaleureux)',say:'أهلاً وسهلاً'},
     {ar:'كيف الحال؟',latin:'Kif lhal?',fr:'Comment vas-tu ? (neutre)'},
-    {ar:'كلشي بخير؟',latin:'Koulchi bikhir?',fr:'Tout va bien ?'},
+    {ar:'كلشي بخير؟',latin:'Koulchi bikhir?',fr:'Tout va bien ?',say:'كولشي بيخير؟'},
     {ar:'أش خبارك؟',latin:'Ach khbarek?',fr:'Quelles nouvelles ?'},
     {ar:'الله يسعد صباحك',latin:'Allah ys3ed sbahek',fr:'Que ta matinée soit heureuse'},
     {ar:'الله يحفظك',latin:'Allah yhefdek',fr:'Que Dieu te garde'},
@@ -70,7 +70,7 @@ const PHRASEBOOK = [
   ]},
   { id:'presentation_3', icon:'💬', name:'3. Aller plus loin', phrases:[
     {ar:'أصلي من المغرب',latin:'Asli men lmaghrib',fr:'Je suis d’origine marocaine'},
-    {ar:'كنهضر شوية الدارجة',latin:'Kanhder chwiya ddarija',fr:'Je parle un peu le darija'},
+    {ar:'كنهضر شوية الدارجة',latin:'Kanhder chwiya ddarija',fr:'Je parle un peu le darija',say:'كنهضر شويا الدارجا'},
     {ar:'مازال كنتعلم',latin:'Mazal kant3ellem',fr:"J'apprends encore"},
     {ar:'جيت هنا للعطلة',latin:'Jit hna l l3otla',fr:'Je suis venu ici en vacances'},
     {ar:'كنبغي المغرب بزاف',latin:'Kanebghi lmaghrib bezzaf',fr:"J'aime beaucoup le Maroc"},
@@ -85,8 +85,10 @@ const PHRASEBOOK = [
   { id:'expressions_groupe', icon:'💬', name:'Expressions courantes', progressive:true, children:[
   { id:'expressions', icon:'🤝', name:'1. La politesse essentielle', phrases:[
     {ar:'عافاك',latin:'3afak',fr:"S'il te plaît"},
-    {ar:'شكرا',latin:'Choukran',fr:'Merci',say:'شُكْراً'},
-    {ar:'بلا جميل',latin:'Bla jmil',fr:'De rien'},
+    {ar:'شكرا',latin:'Choukran',fr:'Merci',say:'شوكران'},
+    // seul cas où le latin l'emporte sur l'arabe : le moteur lit « بلا جميل » comme
+    // « bila jamil » quoi qu'on écrive, alors qu'il dit correctement « blajmil » en latin.
+    {ar:'بلا جميل',latin:'Bla jmil',fr:'De rien',say:'blajmil'},
     {ar:'سمح لي',latin:'Smah li',fr:'Excuse-moi / pardon'},
     {ar:'واخا',latin:'Wakha',fr:"D'accord",say:'واخَا'},
     {ar:'إن شاء الله',latin:'Inchallah',fr:'Si Dieu le veut'},
