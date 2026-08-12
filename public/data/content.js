@@ -63,7 +63,7 @@ const PHRASEBOOK = [
     // le premier est la forme darija que porte la translittération. C'était une
     // incohérence de données, pas un défaut du moteur.
     {ar:'أنا مزوج',latin:'Ana mzewwej',fr:'Je suis marié'},
-    {ar:'أنا مزال',latin:'Ana mazal',fr:'Je suis encore célibataire'},
+    {ar:'أنا مزال',latin:'Ana mazal',fr:'Je suis encore célibataire',say:'أنا مازال'},
     {ar:'عندي وليدات',latin:'3andi wlidat',fr:"J'ai des enfants"},
     {ar:'كنسكن ف...',latin:'Kanseken f...',fr:"J'habite à..."},
     {ar:'كنخدم ف...',latin:'Kankhdem f...',fr:'Je travaille dans...'},
@@ -379,12 +379,17 @@ const GRAMMAR = [
     note:"<strong>La règle :</strong> en darija le pronom se dit rarement, il est déjà contenu dans le verbe. On l'ajoute surtout pour <strong>insister</strong> ou pour lever une ambiguïté. Attention : « toi » change selon qu'on parle à un homme ou à une femme.",
     phrases:[
       {ar:'أنا',latin:'Ana',fr:'moi, je'},
-      {ar:'نتا',latin:'Nta',fr:'toi (à un homme)'},
-      {ar:'نتي',latin:'Nti',fr:'toi (à une femme)'},
+      // Les quatre pronoms ci-dessous portent un `say`, validé à l'oreille sur le moteur
+      // Qualité avec la voix Ghizlane. En arabe, le moteur retrouve la forme de l'arabe
+      // standard sous la graphie darija — نتا devient « anta », حنا devient « hena ».
+      // Trois d'entre eux se lisent mieux en LATIN : ces graphies ne sont pas de
+      // l'orthographe, ce sont des instructions phonétiques pour la synthèse.
+      {ar:'نتا',latin:'Nta',fr:'toi (à un homme)',say:'enta'},
+      {ar:'نتي',latin:'Nti',fr:'toi (à une femme)',say:'entii'},
       {ar:'هو',latin:'Houwa',fr:'lui'},
       {ar:'هي',latin:'Hiya',fr:'elle'},
-      {ar:'حنا',latin:'Hna',fr:'nous'},
-      {ar:'نتوما',latin:'Ntouma',fr:'vous'},
+      {ar:'حنا',latin:'Hna',fr:'nous',say:"a'hna"},
+      {ar:'نتوما',latin:'Ntouma',fr:'vous',say:'نْتوما'},
       {ar:'هوما',latin:'Houma',fr:'eux, elles'}
     ],
     drill:[
